@@ -17,7 +17,8 @@ public class UserController
 	}
 	
 	@GetMapping("/user")
-	public String userAccess() {
+	public String userAccess() 
+	{
 		return "User Content.";
 	}
 }
