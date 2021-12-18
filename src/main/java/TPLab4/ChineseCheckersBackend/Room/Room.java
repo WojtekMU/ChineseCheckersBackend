@@ -1,6 +1,5 @@
-package TPLab4.ChineseCheckersBackend.Game;
+package TPLab4.ChineseCheckersBackend.Room;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -16,16 +15,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Transient;
 
-import TPLab4.ChineseCheckersBackend.Tile.Tile;
 import TPLab4.ChineseCheckersBackend.User.User;
 
 @Entity
-public class Game
+public class Room 
 {
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,27 +29,12 @@ public class Game
 	
     @ManyToMany
     @JoinTable(
-    		  name = "game_user", 
-    		  joinColumns = @JoinColumn(name = "game_id"), 
+    		  name = "room_user", 
+    		  joinColumns = @JoinColumn(name = "room_id"), 
     		  inverseJoinColumns = @JoinColumn(name = "user_id"))
     List<User> players = new ArrayList<User>();
-   
-    @Enumerated(EnumType.STRING)
-    private GameStatus gameStatus;
     
-    @OneToMany(mappedBy="game")
-    private List<Tile> tileList = new ArrayList<Tile>();
-
-    @Column(name = "player_turn")
-    private Long playerTurn;
-
-    public Game() {};
-
-	public Game(GameStatus gameStatus, List<Tile> tileList) 
-	{
-		this.gameStatus = gameStatus;
-		this.tileList = tileList;
-	}
+    public Room() {}
 
 	public Long getId() 
 	{
@@ -64,26 +44,6 @@ public class Game
 	public void setId(Long id) 
 	{
 		this.id = id;
-	}
-
-	public GameStatus getGameStatus() 
-	{
-		return gameStatus;
-	}
-
-	public void setGameStatus(GameStatus gameStatus) 
-	{
-		this.gameStatus = gameStatus;
-	}
-	
-	public List<Tile> getTileList() 
-	{
-		return tileList;
-	}
-
-	public void setTileList(List<Tile> tileList) 
-	{
-		this.tileList = tileList;
 	}
 
 	public List<User> getPlayers() 

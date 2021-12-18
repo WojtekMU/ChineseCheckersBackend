@@ -10,15 +10,10 @@ import TPLab4.ChineseCheckersBackend.Game.Game;
 @Transactional
 public class TileService 
 {
-	private final TileRepository tileRepository;
-	
 	@Autowired
-	public TileService(TileRepository tileRepository) 
-	{
-		this.tileRepository = tileRepository;
-	}
+	private TileRepository tileRepository;
 	
-	public Tile createTile(Long x, Long y, String color, Game game) 
+	public Tile createTile(Long x, Long y, TileColor color, Game game) 
 	{
 		Tile tile = new Tile();
 		tile.setX(x);
@@ -31,7 +26,7 @@ public class TileService
 		return tile;
 	}
 	
-	public void updateTileColor(Tile tile, String color)
+	public void updateTileColor(Tile tile, TileColor color)
 	{
 		tile.setColor(color);
 		tileRepository.save(tile);

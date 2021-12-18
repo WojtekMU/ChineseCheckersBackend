@@ -3,6 +3,7 @@ package TPLab4.ChineseCheckersBackend.Game;
 import java.util.Optional;
 
 import TPLab4.ChineseCheckersBackend.Tile.Tile;
+import TPLab4.ChineseCheckersBackend.Tile.TileColor;
 import TPLab4.ChineseCheckersBackend.Tile.TileRepository;
 
 public class MoveChecker 
@@ -12,16 +13,16 @@ public class MoveChecker
 	public boolean checkMove(Tile firstTile, Tile secondTile, TileRepository tileRepository)
 	{	
 		Long distance = Math.max(Math.abs(firstTile.getX() - secondTile.getX()), Math.abs(firstTile.getY() - secondTile.getY()));
-		String firstTileColor = firstTile.getColor();
-		String secondTileColor = secondTile.getColor();
+		TileColor firstTileColor = firstTile.getColor();
+		TileColor secondTileColor = secondTile.getColor();
 		
 		return correctColors(firstTileColor, secondTileColor) 
 				&& (distanceOneMove(distance) || distanceTwoMove(distance, firstTile, secondTile, tileRepository));
 	}
 	
-	private boolean correctColors(String firstTileColor, String secondTileColor)
+	private boolean correctColors(TileColor firstTileColor, TileColor secondTileColor)
 	{
-		return !firstTileColor.equals("white") && secondTileColor.equals("white");
+		return !firstTileColor.equals(TileColor.WHITE) && secondTileColor.equals(TileColor.WHITE);
 	}
 	
 	private boolean distanceOneMove(Long distance)
@@ -44,6 +45,6 @@ public class MoveChecker
 		Long middleTileY = Math.abs(firstTile.getY() + secondTile.getY()) / 2;
 		Optional<Tile> middleTile = tileRepository.findByXAndYAndGameId(middleTileX, middleTileY, gameId);
 		
-		return !middleTile.get().getColor().equals("white");
+		return !middleTile.get().getColor().equals(TileColor.WHITE);
 	}
 }

@@ -2,7 +2,7 @@ package TPLab4.ChineseCheckersBackend.Request;
 
 import javax.validation.constraints.NotBlank;
 
-public class CreateGameRequest 
+public class CreateRoomRequest 
 {
 	@NotBlank
 	private String username;

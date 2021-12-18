@@ -1,12 +1,8 @@
 package TPLab4.ChineseCheckersBackend.Game;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import TPLab4.ChineseCheckersBackend.Tile.Tile;
 import TPLab4.ChineseCheckersBackend.Tile.TileColor;
@@ -15,46 +11,17 @@ import TPLab4.ChineseCheckersBackend.Tile.TileService;
 import TPLab4.ChineseCheckersBackend.User.User;
 import TPLab4.ChineseCheckersBackend.User.UserRepository;
 
-@Service
-@Transactional
-public class GameService 
+public abstract class GameManager 
 {
-	@Autowired
-	private GameRepository gameRepository;    
-
+    @Autowired
+    TileService tileService;
+	
 	@Autowired
 	private TileRepository tileRepository;
 	
-	@Autowired
-	private TileService tileService;
-
-	public Game createGame(User player) 
-	{
-		Game game = new Game();
-		game.getPlayers().add(player);
-		game.setGameStatus(GameStatus.WAITING_FOR_PLAYERS);
-
-		gameRepository.save(game);
-
-		return game;
-	}
-
-	public void updateGameStatus(Game game, GameStatus gameStatus) 
-	{
-		game.setGameStatus(gameStatus);
-	}
+	public abstract Game createGame(User host);
 	
-	public List<Tile> getBoard(Game game) 
-	{
-		return game.getTileList();
-	}
-
-	public Optional<Game> getGame(Long id) 
-	{
-		return gameRepository.findById(id);
-	}
-	
-	public void createClearBoard(Game game)
+	private void createClearBoard(Game game)
 	{
 		for(Long i = 1L; i <= 17L; i++)
 		{
@@ -75,7 +42,7 @@ public class GameService
 		}
 	}
 	
-	public void fillFirstCorner(Game game, TileColor color)
+	private void fillFirstCorner(Game game, TileColor color)
 	{
 		Long gameId = game.getId();
 		
@@ -112,7 +79,7 @@ public class GameService
 		tileService.updateTileColor(tile.get(), color);
 	}
 	
-	public void fillSecondCorner(Game game, TileColor color)
+	private void fillSecondCorner(Game game, TileColor color)
 	{
 		Long gameId = game.getId();
 		
@@ -149,7 +116,7 @@ public class GameService
 		tileService.updateTileColor(tile.get(), color);
 	}
 	
-	public void fillThirdCorner(Game game, TileColor color)
+	private void fillThirdCorner(Game game, TileColor color)
 	{
 		Long gameId = game.getId();
 		
@@ -186,7 +153,7 @@ public class GameService
 		tileService.updateTileColor(tile.get(), color);
 	}
 	
-	public void fillFourthCorner(Game game, TileColor color)
+	private void fillFourthCorner(Game game, TileColor color)
 	{
 		Long gameId = game.getId();
 		
@@ -223,7 +190,7 @@ public class GameService
 		tileService.updateTileColor(tile.get(), color);
 	}
 	
-	public void fillFifthCorner(Game game, TileColor color)
+	private void fillFifthCorner(Game game, TileColor color)
 	{
 		Long gameId = game.getId();
 		
@@ -260,7 +227,7 @@ public class GameService
 		tileService.updateTileColor(tile.get(), color);
 	}
 	
-	public void fillSixthCorner(Game game, TileColor color)
+	private void fillSixthCorner(Game game, TileColor color)
 	{
 		Long gameId = game.getId();
 		

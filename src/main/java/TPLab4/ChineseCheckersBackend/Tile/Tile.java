@@ -4,22 +4,20 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import TPLab4.ChineseCheckersBackend.Game.Game;
 
 @Entity
-public class Tile implements Serializable
+public class Tile
 {
-	private static final long serialVersionUID = 1L;
-
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
@@ -31,8 +29,8 @@ public class Tile implements Serializable
 	@Column(name = "y", nullable = false)
 	private Long y;
 	
-	@Column(name = "color", nullable = false)
-	private String color;	
+	@Enumerated(EnumType.STRING)
+	private TileColor color;	
 	
     @ManyToOne
     @JoinColumn(name = "game_id")
@@ -45,7 +43,7 @@ public class Tile implements Serializable
 	{
 		this.x = x;
 		this.y = y;
-		this.color = color;
+		this.color = TileColor.WHITE;
 		this.game = game;
 	}
 
@@ -79,12 +77,12 @@ public class Tile implements Serializable
 		this.y = y;
 	}
 	
-	public String getColor() 
+	public TileColor getColor() 
 	{
 		return color;
 	}
 	
-	public void setColor(String color) 
+	public void setColor(TileColor color) 
 	{
 		this.color = color;
 	}
