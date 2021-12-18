@@ -1,4 +1,4 @@
-package TPLab4.ChineseCheckersBackend;
+package TPLab4.ChineseCheckersBackend.User;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,4 +1,4 @@
-package TPLab4.ChineseCheckersBackend;
+package TPLab4.ChineseCheckersBackend.User;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

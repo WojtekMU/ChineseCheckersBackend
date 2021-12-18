@@ -1,4 +1,4 @@
-package TPLab4.ChineseCheckersBackend;
+package TPLab4.ChineseCheckersBackend.Auth;
 
 import java.util.Date;
 
@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import TPLab4.ChineseCheckersBackend.User.UserDetailsImpl;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;

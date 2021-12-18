@@ -1,4 +1,4 @@
-package TPLab4.ChineseCheckersBackend;
+package TPLab4.ChineseCheckersBackend.Auth;
 
 import javax.validation.Valid;
 
@@ -14,6 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import TPLab4.ChineseCheckersBackend.Request.LoginRequest;
+import TPLab4.ChineseCheckersBackend.Request.MessageResponse;
+import TPLab4.ChineseCheckersBackend.Request.SignupRequest;
+import TPLab4.ChineseCheckersBackend.User.User;
+import TPLab4.ChineseCheckersBackend.User.UserDetailsImpl;
+import TPLab4.ChineseCheckersBackend.User.UserRepository;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController

@@ -1,4 +1,4 @@
-package TPLab4.ChineseCheckersBackend;
+package TPLab4.ChineseCheckersBackend.Auth;
 
 import java.io.IOException;
 import java.util.HashMap;

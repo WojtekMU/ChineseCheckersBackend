@@ -1,8 +1,11 @@
-package TPLab4.ChineseCheckersBackend;
+package TPLab4.ChineseCheckersBackend.Request;
+
+import javax.validation.constraints.NotBlank;
 
 public class CreateGameRequest 
 {
-	String username;
+	@NotBlank
+	private String username;
 
 	public String getUsername() 
 	{

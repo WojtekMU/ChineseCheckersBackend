@@ -1,4 +1,4 @@
-package TPLab4.ChineseCheckersBackend;
+package TPLab4.ChineseCheckersBackend.User;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

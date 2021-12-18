@@ -1,9 +1,14 @@
-package TPLab4.ChineseCheckersBackend;
+package TPLab4.ChineseCheckersBackend.Request;
+
+import javax.validation.constraints.NotBlank;
 
 public class JoinRequest 
 {
-	String username;
-	Long gameId;
+	@NotBlank
+	private String username;
+	
+	@NotBlank
+	private Long gameId;
 
 	public String getUsername() 
 	{

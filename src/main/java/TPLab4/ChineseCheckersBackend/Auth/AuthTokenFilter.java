@@ -1,4 +1,4 @@
-package TPLab4.ChineseCheckersBackend;
+package TPLab4.ChineseCheckersBackend.Auth;
 
 import java.io.IOException;
 
@@ -16,6 +16,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import TPLab4.ChineseCheckersBackend.User.UserDetailsServiceImpl;
 
 public class AuthTokenFilter extends OncePerRequestFilter 
 {

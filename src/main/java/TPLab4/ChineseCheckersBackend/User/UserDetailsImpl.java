@@ -1,4 +1,4 @@
-package TPLab4.ChineseCheckersBackend;
+package TPLab4.ChineseCheckersBackend.User;
 
 import java.util.Collection;
 import java.util.Objects;
