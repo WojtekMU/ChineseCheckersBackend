@@ -15,10 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import TPLab4.ChineseCheckersBackend.Request.BoardRequest;
+import TPLab4.ChineseCheckersBackend.Request.CreateGameRequest;
 import TPLab4.ChineseCheckersBackend.Request.CreateRoomRequest;
 import TPLab4.ChineseCheckersBackend.Request.JoinRequest;
 import TPLab4.ChineseCheckersBackend.Request.MessageResponse;
 import TPLab4.ChineseCheckersBackend.Request.MoveRequest;
+import TPLab4.ChineseCheckersBackend.Room.GameStarted;
+import TPLab4.ChineseCheckersBackend.Room.Room;
+import TPLab4.ChineseCheckersBackend.Room.RoomRepository;
 import TPLab4.ChineseCheckersBackend.Tile.Tile;
 import TPLab4.ChineseCheckersBackend.Tile.TileColor;
 import TPLab4.ChineseCheckersBackend.Tile.TileRepository;
@@ -31,10 +35,10 @@ import TPLab4.ChineseCheckersBackend.User.UserRepository;
 public class GameController 
 {
     @Autowired
-    GameService gameService;
+    private GameService gameService;
     
     @Autowired
-    TileService tileService;
+    private TileService tileService;
     
 	@Autowired
 	private UserRepository userRepository;
@@ -43,23 +47,21 @@ public class GameController
 	private GameRepository gameRepository;	
 	
 	@Autowired
-	private TileRepository tileRepository;
+	private RoomRepository roomRepository;	
 	
-	private final List<TileColor> colorOrder = List.of(TileColor.WHITE, TileColor.RED, TileColor.BLUE, TileColor.GREEN, TileColor.PURPLE, TileColor.BROWN, TileColor.ORANGE);
+	@Autowired
+	private TileRepository tileRepository;
 	
 	private static MoveChecker moveChecker = new MoveChecker();
 
     @PostMapping(value = "/createGame")
-    public ResponseEntity<?> createNewGame(@RequestBody CreateRoomRequest createGameRequest) 
+    public ResponseEntity<?> createNewGame(@RequestBody CreateGameRequest createGameRequest) 
     {
-    	Game game = gameService.createGame(userRepository.findByUsername(createGameRequest.getUsername()).get());
-    	gameService.createClearBoard(game);
-    	gameService.fillFirstCorner(game, TileColor.RED);
-    	gameService.fillSecondCorner(game, TileColor.BLUE);
-    	gameService.fillThirdCorner(game, TileColor.GREEN);
-    	gameService.fillFourthCorner(game, TileColor.PURPLE);
-    	gameService.fillFifthCorner(game, TileColor.BROWN);
-    	gameService.fillSixthCorner(game, TileColor.ORANGE);
+    	Room room = roomRepository.getById(createGameRequest.getRoomId());
+    	Game game = gameService.createGame(room.getPlayers());
+    	room.setGameStarted(true);
+    	room.setGame(game);
+    	roomRepository.save(room);
     	
 		return ResponseEntity.ok(game.getId());
     }

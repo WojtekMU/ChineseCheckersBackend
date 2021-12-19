@@ -21,7 +21,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
+import TPLab4.ChineseCheckersBackend.Room.Room;
 import TPLab4.ChineseCheckersBackend.Tile.Tile;
+import TPLab4.ChineseCheckersBackend.Tile.TileColor;
 import TPLab4.ChineseCheckersBackend.User.User;
 
 @Entity
@@ -47,6 +49,9 @@ public class Game
 
     @Column(name = "player_turn")
     private Long playerTurn;
+    
+    @OneToOne(mappedBy = "game")
+    private Room room;
 
     public Game() {};
 
@@ -94,5 +99,25 @@ public class Game
 	public void setPlayers(List<User> players) 
 	{
 		this.players = players;
+	}
+
+	public Long getPlayerTurn() 
+	{
+		return playerTurn;
+	}
+
+	public void setPlayerTurn(Long playerTurn) 
+	{
+		this.playerTurn = playerTurn;
+	}
+
+	public Room getRoom() 
+	{
+		return room;
+	}
+
+	public void setRoom(Room room) 
+	{
+		this.room = room;
 	}
 }

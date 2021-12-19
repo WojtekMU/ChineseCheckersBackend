@@ -16,7 +16,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
+import TPLab4.ChineseCheckersBackend.Game.Game;
 import TPLab4.ChineseCheckersBackend.User.User;
 
 @Entity
@@ -32,7 +34,14 @@ public class Room
     		  name = "room_user", 
     		  joinColumns = @JoinColumn(name = "room_id"), 
     		  inverseJoinColumns = @JoinColumn(name = "user_id"))
-    List<User> players = new ArrayList<User>();
+    private List<User> players = new ArrayList<User>();
+    
+    @Column(name = "game_started")
+    private Boolean gameStarted;
+    
+    @OneToOne
+    @JoinColumn(name = "game_id")
+    private Game game;
     
     public Room() {}
 
@@ -55,4 +64,24 @@ public class Room
 	{
 		this.players = players;
 	}
+
+	public void setGameStarted(Boolean gameStarted) 
+	{
+		this.gameStarted = gameStarted;
+	}
+
+	public Game getGame() 
+	{
+		return game;
+	}
+
+	public void setGame(Game game) 
+	{
+		this.game = game;
+	}
+
+	public Boolean isGameStarted() 
+	{
+		return gameStarted;
+	}	
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import TPLab4.ChineseCheckersBackend.Game.Game;
 import TPLab4.ChineseCheckersBackend.Request.CreateRoomRequest;
+import TPLab4.ChineseCheckersBackend.Request.GameStartedRequest;
+import TPLab4.ChineseCheckersBackend.Request.GetGameIdRequest;
 import TPLab4.ChineseCheckersBackend.Request.JoinRequest;
 import TPLab4.ChineseCheckersBackend.Request.MessageResponse;
 import TPLab4.ChineseCheckersBackend.Request.PlayersInRoomRequest;
@@ -37,9 +40,9 @@ public class RoomController
 	private UserRepository userRepository;
 	
     @PostMapping(value = "/createRoom")
-    public ResponseEntity<?> createNewGame(@RequestBody CreateRoomRequest createGameRequest) 
+    public ResponseEntity<?> createNewGame(@RequestBody CreateRoomRequest createRoomRequest) 
     {
-    	Room room = roomService.createRoom(userRepository.findByUsername(createGameRequest.getUsername()).get());
+    	Room room = roomService.createRoom(userRepository.findByUsername(createRoomRequest.getUsername()).get());
     	
 		return ResponseEntity.ok(room.getId());
     }
@@ -59,7 +62,25 @@ public class RoomController
     @PostMapping(value = "/joinRoom")
     public ResponseEntity<?> joinGame(@RequestBody JoinRequest joinRequest) 
     {
-    	roomService.joinGame(userRepository.findByUsername(joinRequest.getUsername()).get(), roomRepository.getById(joinRequest.getRoomId()));
-		return ResponseEntity.ok(new MessageResponse("Successfully joined room!"));
+    	Room room = roomRepository.getById(joinRequest.getRoomId());
+    	if(room.getPlayers().size() < 6)
+    	{
+	    	roomService.joinGame(userRepository.findByUsername(joinRequest.getUsername()).get(), room);
+			return ResponseEntity.ok(new MessageResponse("Successfully joined room!"));
+    	}
+    	
+    	return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Room is full!"));
+    }
+    
+    @PostMapping(value = "/gameStarted")
+    public ResponseEntity<?> gameStarted(@RequestBody GameStartedRequest gameStartedRequest) 
+    {
+		return ResponseEntity.ok(roomRepository.getById(gameStartedRequest.getRoomId()).isGameStarted().toString());
+    }
+    
+    @PostMapping(value = "/gameId")
+    public ResponseEntity<?> getGameId(@RequestBody GetGameIdRequest getGameIdRequest) 
+    {
+		return ResponseEntity.ok(roomRepository.getById(getGameIdRequest.getRoomId()).getGame().getId());
     }
 }

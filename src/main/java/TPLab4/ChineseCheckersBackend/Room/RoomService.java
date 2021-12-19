@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import TPLab4.ChineseCheckersBackend.User.User;
 
-
 @Service
 @Transactional
 public class RoomService 
@@ -18,6 +17,7 @@ public class RoomService
 	{
 		Room room = new Room();
 		room.getPlayers().add(player);
+		room.setGameStarted(false);
 
 		roomRepository.save(room);
 
