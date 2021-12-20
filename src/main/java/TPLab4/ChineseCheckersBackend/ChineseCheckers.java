@@ -22,6 +22,10 @@ public class ChineseCheckers
         return (args) -> {
         	userRepository.save(new User("player1", new BCryptPasswordEncoder().encode("asdffdsa")));
         	userRepository.save(new User("player2",  new BCryptPasswordEncoder().encode("asdffdsa")));
+        	userRepository.save(new User("player3", new BCryptPasswordEncoder().encode("asdffdsa")));
+        	userRepository.save(new User("player4",  new BCryptPasswordEncoder().encode("asdffdsa")));
+        	userRepository.save(new User("player5", new BCryptPasswordEncoder().encode("asdffdsa")));
+        	userRepository.save(new User("player6",  new BCryptPasswordEncoder().encode("asdffdsa")));
         };
     }
 }

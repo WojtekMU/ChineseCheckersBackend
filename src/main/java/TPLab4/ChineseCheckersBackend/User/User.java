@@ -82,5 +82,9 @@ public class User
 		this.games = games;
 	}
 	
-	
+	@Override
+	public boolean equals(Object o)
+	{
+		return this.id == ((User) o).id;
+	}
 }

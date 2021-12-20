@@ -29,6 +29,7 @@ public class TileService
 	public void updateTileColor(Tile tile, TileColor color)
 	{
 		tile.setColor(color);
+		
 		tileRepository.save(tile);
 	}
 }

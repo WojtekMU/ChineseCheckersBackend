@@ -16,15 +16,15 @@ public class FourPlayerGameFactory extends GameFactory
 		
 		game.getPlayers().addAll(players);
 		game.setGameStatus(GameStatus.WAITING_FOR_PLAYERS);
-		game.setPlayerTurn(1L);
+		game.setPlayerTurn(1);
 		createClearBoard(game);
 		
 		gameRepository.save(game);
 		
-		fillFirstCorner(game, colorOrder.get(1));
-		fillSecondCorner(game, colorOrder.get(2));
-		fillFourthCorner(game, colorOrder.get(3));
-		fillFifthCorner(game, colorOrder.get(4));
+		fillSixthCorner(game, colorOrder.get(1));
+		fillFifthCorner(game, colorOrder.get(2));
+		fillThirdCorner(game, colorOrder.get(3));
+		fillSecondCorner(game, colorOrder.get(4));
 		
 		gameRepository.save(game);
 		

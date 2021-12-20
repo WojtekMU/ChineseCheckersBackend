@@ -25,8 +25,8 @@ public class GameService
 	@Autowired
 	private TileRepository tileRepository;
 	
-	@Autowired
-	private TileService tileService;
+		@Autowired
+		private TileService tileService;
 	
 	@Autowired
 	private TwoPlayerGameFactory twoPlayerGameFactory;
@@ -58,22 +58,30 @@ public class GameService
 		{
 			return sixPlayerGameFactory.createGame(players);
 		}
-		
-		return null;
+		else
+		{
+			throw new IllegalArgumentException("Wrong player number!");
+		}
 	}
 
-	public void updateGameStatus(Game game, GameStatus gameStatus) 
+	public void updatePlayerTurn(Game game) 
 	{
-		game.setGameStatus(gameStatus);
+		Integer playerTurn = game.getPlayerTurn();
+		
+		if(game.getPlayers().size() == playerTurn)
+		{
+			game.setPlayerTurn(1);
+		}
+		else
+		{
+			game.setPlayerTurn(++playerTurn);
+		}
+		
+		gameRepository.save(game);
 	}
 	
 	public List<Tile> getBoard(Game game) 
 	{
 		return game.getTileList();
-	}
-
-	public Optional<Game> getGame(Long id) 
-	{
-		return gameRepository.findById(id);
 	}
 }

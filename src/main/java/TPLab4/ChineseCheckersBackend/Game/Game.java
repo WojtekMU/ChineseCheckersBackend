@@ -48,7 +48,7 @@ public class Game
     private List<Tile> tileList = new ArrayList<Tile>();
 
     @Column(name = "player_turn")
-    private Long playerTurn;
+    private Integer playerTurn;
     
     @OneToOne(mappedBy = "game")
     private Room room;
@@ -101,12 +101,12 @@ public class Game
 		this.players = players;
 	}
 
-	public Long getPlayerTurn() 
+	public Integer getPlayerTurn() 
 	{
 		return playerTurn;
 	}
 
-	public void setPlayerTurn(Long playerTurn) 
+	public void setPlayerTurn(Integer playerTurn) 
 	{
 		this.playerTurn = playerTurn;
 	}
@@ -119,5 +119,10 @@ public class Game
 	public void setRoom(Room room) 
 	{
 		this.room = room;
+	}
+	
+	public User getPlayerWithTurn() 
+	{
+		return players.get(playerTurn - 1);
 	}
 }

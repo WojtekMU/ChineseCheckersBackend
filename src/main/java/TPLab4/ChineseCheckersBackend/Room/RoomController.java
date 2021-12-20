@@ -50,7 +50,7 @@ public class RoomController
     @GetMapping(value = "/roomList", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Room> getGamesToJoin() 
     {
-        return roomService.getRoomsToJoin();
+        return roomRepository.findAll();
     }
     
     @PostMapping(value = "/playerList", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -63,13 +63,18 @@ public class RoomController
     public ResponseEntity<?> joinGame(@RequestBody JoinRequest joinRequest) 
     {
     	Room room = roomRepository.getById(joinRequest.getRoomId());
-    	if(room.getPlayers().size() < 6)
+    	
+    	try
     	{
 	    	roomService.joinGame(userRepository.findByUsername(joinRequest.getUsername()).get(), room);
+	    	
 			return ResponseEntity.ok(new MessageResponse("Successfully joined room!"));
     	}
+    	catch(IllegalArgumentException ex)
+    	{
+    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+    	}
     	
-    	return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Room is full!"));
     }
     
     @PostMapping(value = "/gameStarted")

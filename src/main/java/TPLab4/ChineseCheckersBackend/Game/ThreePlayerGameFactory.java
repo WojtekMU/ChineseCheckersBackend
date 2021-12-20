@@ -16,14 +16,14 @@ public class ThreePlayerGameFactory extends GameFactory
 		
 		game.getPlayers().addAll(players);
 		game.setGameStatus(GameStatus.WAITING_FOR_PLAYERS);
-		game.setPlayerTurn(1L);
+		game.setPlayerTurn(1);
 		createClearBoard(game);
 		
 		gameRepository.save(game);
 		
 		fillFirstCorner(game, colorOrder.get(1));
-		fillThirdCorner(game, colorOrder.get(2));
-		fillFifthCorner(game, colorOrder.get(3));
+		fillFifthCorner(game, colorOrder.get(2));
+		fillThirdCorner(game, colorOrder.get(3));
 		
 		gameRepository.save(game);
 		

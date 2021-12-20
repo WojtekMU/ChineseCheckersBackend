@@ -1,7 +1,5 @@
 package TPLab4.ChineseCheckersBackend.Tile;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;

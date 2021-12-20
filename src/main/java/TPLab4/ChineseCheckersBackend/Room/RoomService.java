@@ -24,15 +24,21 @@ public class RoomService
 		return room;
 	}
 	
-	public List<Room> getRoomsToJoin() 
-	{
-		return roomRepository.findAll();
-	}
-
     public void joinGame(User player, Room room) 
     {
-    	room.getPlayers().add(player);
-   
-        roomRepository.save(room);
+    	if(room.getPlayers().contains(player))
+    	{
+    		throw new IllegalArgumentException("Can't join your own room!");
+    	}
+    	else if(room.getPlayers().size() == 6)
+    	{
+    		throw new IllegalArgumentException("Room is full!");
+    	}
+    	else
+    	{
+	    	room.getPlayers().add(player);
+	 	   
+	        roomRepository.save(room);
+    	}
     }
 }
