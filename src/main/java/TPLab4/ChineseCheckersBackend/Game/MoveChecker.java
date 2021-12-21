@@ -18,29 +18,38 @@ public class MoveChecker
 	
 	@Autowired
 	TileRepository tileRepository;
-	
-	public boolean checkMove(Tile firstTile, Tile secondTile, User player, Game game)
-	{			
-		return correctPlayer(player, game)
-				&& correctColors(firstTile, secondTile, game) 
-				&& distanceOneMove(firstTile, secondTile);
-	}
-	
-	private boolean correctPlayer(User player, Game game)
+
+	public boolean correctPlayer(User player, Game game)
 	{
 		return game.getPlayerWithTurn().equals(player);
 	}
 	
-	private boolean correctColors(Tile firstTile, Tile secondTile, Game game)
+	public boolean isTileWhite(Tile tile)
 	{
-		TileColor firstTileColor = firstTile.getColor();
-		TileColor secondTileColor = secondTile.getColor();
+		TileColor tileColor = tile.getColor();
 		
-		return firstTileColor.equals(colorOrder.get(game.getPlayerTurn())) && secondTileColor.equals(TileColor.WHITE);
+		return tileColor.equals(TileColor.WHITE);
 	}
 	
-	private boolean distanceOneMove(Tile firstTile, Tile secondTile)
+	public boolean isCurrentMovingPlayerColor(Tile tile, Game game)
+	{
+		TileColor tileColor = tile.getColor();
+		
+		return tileColor.equals(colorOrder.get(game.getPlayerTurn()));
+	}
+	
+	public boolean isDistanceOneMove(Tile firstTile, Tile secondTile)
 	{
 		return Math.max(Math.abs(firstTile.getX() - secondTile.getX()), Math.abs(firstTile.getY() - secondTile.getY())) == 1;
+	}
+	
+	public boolean isDistanceTwoMove(Tile firstTile, Tile secondTile)
+	{
+		return Math.max(Math.abs(firstTile.getX() - secondTile.getX()), Math.abs(firstTile.getY() - secondTile.getY())) == 2;
+	}
+
+	public List<TileColor> getColorOrder() 
+	{
+		return colorOrder;
 	}
 }

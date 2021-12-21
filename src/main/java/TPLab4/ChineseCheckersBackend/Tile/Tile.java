@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import TPLab4.ChineseCheckersBackend.Game.Game;
@@ -35,6 +37,10 @@ public class Tile
     @JsonIgnore
     private Game game;
 	
+    @OneToOne(mappedBy = "chosenTile")
+    @JsonIgnore
+    private Game chosenTileGame;
+    
     public Tile() {};
     
 	public Tile(Long x, Long y, String color, Game game) 
@@ -93,5 +99,15 @@ public class Tile
 	public void setGame(Game game) 
 	{
 		this.game = game;
+	}
+
+	public Game getChosenTileGame() 
+	{
+		return chosenTileGame;
+	}
+
+	public void setChosenTileGame(Game chosenTileGame) 
+	{
+		this.chosenTileGame = chosenTileGame;
 	}
 }

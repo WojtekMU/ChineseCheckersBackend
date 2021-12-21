@@ -25,8 +25,8 @@ public class GameService
 	@Autowired
 	private TileRepository tileRepository;
 	
-		@Autowired
-		private TileService tileService;
+	@Autowired
+	private TileService tileService;
 	
 	@Autowired
 	private TwoPlayerGameFactory twoPlayerGameFactory;
@@ -80,8 +80,26 @@ public class GameService
 		gameRepository.save(game);
 	}
 	
+	public void updateChosenTile(Game game, Tile tile) 
+	{
+		game.setChosenTile(tile);
+		
+		gameRepository.save(game);
+	}
+	
 	public List<Tile> getBoard(Game game) 
 	{
 		return game.getTileList();
+	}
+	
+	public void move(Tile firstTile, Tile secondTile)
+	{
+		TileColor firstTileColor = firstTile.getColor();
+		
+		firstTile.setColor(TileColor.WHITE);
+		secondTile.setColor(firstTileColor);
+		
+		tileRepository.save(firstTile);
+		tileRepository.save(secondTile);
 	}
 }

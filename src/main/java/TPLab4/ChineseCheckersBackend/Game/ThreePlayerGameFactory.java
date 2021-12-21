@@ -17,6 +17,7 @@ public class ThreePlayerGameFactory extends GameFactory
 		game.getPlayers().addAll(players);
 		game.setGameStatus(GameStatus.WAITING_FOR_PLAYERS);
 		game.setPlayerTurn(1);
+		game.setChosenTile(null);
 		createClearBoard(game);
 		
 		gameRepository.save(game);

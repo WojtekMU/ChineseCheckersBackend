@@ -1,4 +1,4 @@
-package TPLab4.ChineseCheckersBackend.Request;
+package TPLab4.ChineseCheckersBackend.Response;
 
 public class MessageResponse 
 {

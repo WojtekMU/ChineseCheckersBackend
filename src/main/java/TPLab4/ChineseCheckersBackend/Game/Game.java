@@ -52,6 +52,10 @@ public class Game
     
     @OneToOne(mappedBy = "game")
     private Room room;
+    
+    @OneToOne
+    @JoinColumn(name = "tile_id")
+    private Tile chosenTile;
 
     public Game() {};
 
@@ -124,5 +128,15 @@ public class Game
 	public User getPlayerWithTurn() 
 	{
 		return players.get(playerTurn - 1);
+	}
+
+	public Tile getChosenTile() 
+	{
+		return chosenTile;
+	}
+
+	public void setChosenTile(Tile chosenTile) 
+	{
+		this.chosenTile = chosenTile;
 	}
 }

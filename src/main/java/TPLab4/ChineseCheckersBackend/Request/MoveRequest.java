@@ -5,10 +5,7 @@ import javax.validation.constraints.NotBlank;
 public class MoveRequest 
 {
 	@NotBlank
-	private Long firstTileId;
-	
-	@NotBlank
-	private Long secondTileId;
+	private Long tileId;
 	
 	@NotBlank
 	private Long gameId;
@@ -16,24 +13,14 @@ public class MoveRequest
 	@NotBlank
 	private String username;
 
-	public Long getFirstTileId() 
+	public Long getTileId() 
 	{
-		return firstTileId;
+		return tileId;
 	}
 
-	public void setFirstTileId(Long firstTileId)
+	public void setTileId(Long tileId) 
 	{
-		this.firstTileId = firstTileId;
-	}
-
-	public Long getSecondTileId() 
-	{
-		return secondTileId;
-	}
-
-	public void setSecondTileId(Long secondTileId) 
-	{
-		this.secondTileId = secondTileId;
+		this.tileId = tileId;
 	}
 
 	public Long getGameId() 

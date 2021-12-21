@@ -1,6 +1,6 @@
 package TPLab4.ChineseCheckersBackend.Request;
 
-public class BoardRequest
+public class GameBoardRequest
 {
 	Long gameId;
 
