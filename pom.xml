@@ -11,7 +11,7 @@
 	<packaging>war</packaging>
 
 	<name>ChineseCheckers</name>
-	<url>http://www.example.com</url>
+	<!--  <url>http://www.example.com</url>-->
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

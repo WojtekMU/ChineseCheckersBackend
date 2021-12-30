@@ -62,7 +62,7 @@ public class AuthController
 		{
 			return ResponseEntity
 					.badRequest()
-					.body(new MessageResponse("Error: Username is already taken!"));
+					.body(new MessageResponse("Username is already taken!"));
 		}
 
 		User user = new User(signUpRequest.getUsername(), 

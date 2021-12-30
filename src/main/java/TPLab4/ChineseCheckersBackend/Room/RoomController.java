@@ -27,7 +27,7 @@ import TPLab4.ChineseCheckersBackend.User.UserRepository;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/test")
+@RequestMapping("/api/chineseCheckers")
 public class RoomController 
 {
 	@Autowired

@@ -45,7 +45,16 @@ public class MoveChecker
 	
 	public boolean isDistanceTwoMove(Tile firstTile, Tile secondTile)
 	{
-		return Math.max(Math.abs(firstTile.getX() - secondTile.getX()), Math.abs(firstTile.getY() - secondTile.getY())) == 2;
+		return Math.max(Math.abs(firstTile.getX() - secondTile.getX()), Math.abs(firstTile.getY() - secondTile.getY())) == 2
+				&& (Math.abs(firstTile.getX() - secondTile.getX()) + Math.abs(firstTile.getY() - secondTile.getY()) == 2
+				|| Math.abs(firstTile.getX() - secondTile.getX()) + Math.abs(firstTile.getY() - secondTile.getY()) == 4);
+	}
+	
+	public boolean CorrectTileBetween(Tile firstTile, Tile secondTile, Game game)
+	{
+		Optional<Tile> middleTile = tileRepository.findByXAndYAndGameId((firstTile.getX() + secondTile.getX()) / 2, (firstTile.getY() + secondTile.getY()) / 2, game.getId());
+		
+		return !middleTile.get().getColor().equals(colorOrder.get(0));
 	}
 
 	public List<TileColor> getColorOrder() 

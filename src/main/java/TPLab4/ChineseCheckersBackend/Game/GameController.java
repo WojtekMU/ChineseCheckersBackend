@@ -20,6 +20,7 @@ import TPLab4.ChineseCheckersBackend.Request.ChosenTileRequest;
 import TPLab4.ChineseCheckersBackend.Request.CreateGameRequest;
 import TPLab4.ChineseCheckersBackend.Request.CreateRoomRequest;
 import TPLab4.ChineseCheckersBackend.Request.CurrentPlayerTurnRequest;
+import TPLab4.ChineseCheckersBackend.Request.EndTurnRequest;
 import TPLab4.ChineseCheckersBackend.Request.JoinRequest;
 import TPLab4.ChineseCheckersBackend.Request.MoveRequest;
 import TPLab4.ChineseCheckersBackend.Request.PlayerBoardRequest;
@@ -35,7 +36,7 @@ import TPLab4.ChineseCheckersBackend.User.UserRepository;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/test")
+@RequestMapping("/api/chineseCheckers")
 public class GameController 
 {
     @Autowired
@@ -135,15 +136,46 @@ public class GameController
 	    	}
 	    	else if(moveChecker.isTileWhite(tile.get()))
 	    	{
-	    		if(moveChecker.isDistanceOneMove(game.get().getChosenTile(), tile.get()))
+	    		if(!game.get().getDuringMove().booleanValue()
+	    			&& moveChecker.isDistanceOneMove(game.get().getChosenTile(), tile.get()))
 	    		{
 	    			gameService.move(game.get().getChosenTile(), tile.get());
-	    			game.get().setChosenTile(null);
+	    			gameService.updateChosenTile(game.get(), null);
 	    			gameService.updatePlayerTurn(game.get());
 	    		}
+	    		else if(moveChecker.isDistanceTwoMove(game.get().getChosenTile(), tile.get())
+	    				&& moveChecker.CorrectTileBetween(game.get().getChosenTile(), tile.get(), game.get()))
+	    		{
+	    			gameService.move(game.get().getChosenTile(), tile.get());
+	    			gameService.updateChosenTile(game.get(), tile.get());
+	    			gameService.updateDuringMove(game.get(), Boolean.TRUE);
+	    		}
+	    		else if(!game.get().getDuringMove().booleanValue())
+	    		{
+	    			gameService.updateChosenTile(game.get(), null);
+	    		}
+	    	}
+	    	else if(!game.get().getDuringMove().booleanValue())
+	    	{
+	    		gameService.updateChosenTile(game.get(), null);
 	    	}
     	}
 
+    	return ResponseEntity.ok(new MessageResponse("Ok"));
+    }
+    
+    @PostMapping(value = "/endTurn")
+    public ResponseEntity<?> getPlayerBoard(@RequestBody EndTurnRequest endTurnRequest) 
+    {
+    	Optional<Game> game = gameRepository.findById(endTurnRequest.getGameId());
+    	
+    	if(game.get().getPlayerWithTurn().getUsername().equals(endTurnRequest.getUsername()))
+    	{
+    		gameService.updatePlayerTurn(game.get());
+    		gameService.updateChosenTile(game.get(), null);
+    		gameService.updateDuringMove(game.get(), Boolean.FALSE);
+    	}
+    		
     	return ResponseEntity.ok(new MessageResponse("Ok"));
     }
 }

@@ -87,6 +87,13 @@ public class GameService
 		gameRepository.save(game);
 	}
 	
+	public void updateDuringMove(Game game, Boolean bool) 
+	{
+		game.setDuringMove(bool);
+		
+		gameRepository.save(game);
+	}
+	
 	public List<Tile> getBoard(Game game) 
 	{
 		return game.getTileList();

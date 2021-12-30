@@ -54,221 +54,71 @@ public abstract class GameFactory
 	{
 		Long gameId = game.getId();
 		
-		Optional<Tile> tile;
+		List<Tile> firstCorner = tileRepository.getFirstCorner(gameId);
 		
-		tile = tileRepository.findByXAndYAndGameId(13L, 1L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(13L, 2L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(13L, 3L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(13L, 4L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(12L, 2L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(12L, 3L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(12L, 4L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(11L, 3L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(11L, 4L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(10L, 4L, gameId);
-		tileService.updateTileColor(tile.get(), color);
+		for(Tile tile : firstCorner)
+		{
+			tileService.updateTileColor(tile, color);
+		}
 	}
 	
 	protected void fillSecondCorner(Game game, TileColor color)
 	{
 		Long gameId = game.getId();
 		
-		Optional<Tile> tile;
+		List<Tile> secondCorner = tileRepository.getSecondCorner(gameId);
 		
-		tile = tileRepository.findByXAndYAndGameId(14L, 5L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(15L, 5L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(16L, 5L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(17L, 5L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(14L, 6L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(15L, 6L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(16L, 6L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(14L, 7L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(15L, 7L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(14L, 8L, gameId);
-		tileService.updateTileColor(tile.get(), color);
+		for(Tile tile : secondCorner)
+		{
+			tileService.updateTileColor(tile, color);
+		}
 	}
 	
 	protected void fillThirdCorner(Game game, TileColor color)
 	{
 		Long gameId = game.getId();
 		
-		Optional<Tile> tile;
+		List<Tile> thirdCorner = tileRepository.getThirdCorner(gameId);
 		
-		tile = tileRepository.findByXAndYAndGameId(10L, 13L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(11L, 12L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(11L, 13L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(12L, 11L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(12L, 12L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(12L, 13L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(13L, 10L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(13L, 11L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(13L, 12L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(13L, 13L, gameId);
-		tileService.updateTileColor(tile.get(), color);
+		for(Tile tile : thirdCorner)
+		{
+			tileService.updateTileColor(tile, color);
+		}
 	}
 	
 	protected void fillFourthCorner(Game game, TileColor color)
 	{
 		Long gameId = game.getId();
 		
-		Optional<Tile> tile;
+		List<Tile> fourthCorner = tileRepository.getFourthCorner(gameId);
 		
-		tile = tileRepository.findByXAndYAndGameId(5L, 14L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(6L, 14L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(7L, 14L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(8L, 14L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(5L, 15L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(6L, 15L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(7L, 15L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(5L, 16L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(6L, 16L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(5L, 17L, gameId);
-		tileService.updateTileColor(tile.get(), color);
+		for(Tile tile : fourthCorner)
+		{
+			tileService.updateTileColor(tile, color);
+		}
 	}
 	
 	protected void fillFifthCorner(Game game, TileColor color)
 	{
 		Long gameId = game.getId();
 		
-		Optional<Tile> tile;
+		List<Tile> fifthCorner = tileRepository.getFifthCorner(gameId);
 		
-		tile = tileRepository.findByXAndYAndGameId(1L, 13L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(2L, 13L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(3L, 13L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(4L, 13L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(2L, 12L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(3L, 12L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(4L, 12L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(3L, 11L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(4L, 11L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(4L, 10L, gameId);
-		tileService.updateTileColor(tile.get(), color);
+		for(Tile tile : fifthCorner)
+		{
+			tileService.updateTileColor(tile, color);
+		}
 	}
 	
 	protected void fillSixthCorner(Game game, TileColor color)
 	{
 		Long gameId = game.getId();
 		
-		Optional<Tile> tile;
+		List<Tile> sixthCorner = tileRepository.getSixthCorner(gameId);
 		
-		tile = tileRepository.findByXAndYAndGameId(5L, 5L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(6L, 5L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(7L, 5L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(8L, 5L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(5L, 6L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(6L, 6L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(7L, 6L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(5L, 7L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(6L, 7L, gameId);
-		tileService.updateTileColor(tile.get(), color);
-		
-		tile = tileRepository.findByXAndYAndGameId(5L, 8L, gameId);
-		tileService.updateTileColor(tile.get(), color);
+		for(Tile tile : sixthCorner)
+		{
+			tileService.updateTileColor(tile, color);
+		}
 	}
 }

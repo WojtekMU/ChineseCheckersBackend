@@ -1,6 +1,6 @@
 package TPLab4.ChineseCheckersBackend.Game;
 
-public enum GameStatus 
+public enum GameType 
 {
     WAITING_FOR_PLAYERS,
     IN_PROGRESS,

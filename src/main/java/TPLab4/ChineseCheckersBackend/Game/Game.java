@@ -42,7 +42,7 @@ public class Game
     List<User> players = new ArrayList<User>();
    
     @Enumerated(EnumType.STRING)
-    private GameStatus gameStatus;
+    private GameType gameStatus;
     
     @OneToMany(mappedBy="game")
     private List<Tile> tileList = new ArrayList<Tile>();
@@ -56,10 +56,13 @@ public class Game
     @OneToOne
     @JoinColumn(name = "tile_id")
     private Tile chosenTile;
+    
+    @Column(name = "during_move")
+    private Boolean duringMove;
 
     public Game() {};
 
-	public Game(GameStatus gameStatus, List<Tile> tileList) 
+	public Game(GameType gameStatus, List<Tile> tileList) 
 	{
 		this.gameStatus = gameStatus;
 		this.tileList = tileList;
@@ -75,12 +78,12 @@ public class Game
 		this.id = id;
 	}
 
-	public GameStatus getGameStatus() 
+	public GameType getGameStatus() 
 	{
 		return gameStatus;
 	}
 
-	public void setGameStatus(GameStatus gameStatus) 
+	public void setGameStatus(GameType gameStatus) 
 	{
 		this.gameStatus = gameStatus;
 	}
@@ -138,5 +141,15 @@ public class Game
 	public void setChosenTile(Tile chosenTile) 
 	{
 		this.chosenTile = chosenTile;
+	}
+
+	public Boolean getDuringMove() 
+	{
+		return duringMove;
+	}
+
+	public void setDuringMove(Boolean duringMove) 
+	{
+		this.duringMove = duringMove;
 	}
 }
