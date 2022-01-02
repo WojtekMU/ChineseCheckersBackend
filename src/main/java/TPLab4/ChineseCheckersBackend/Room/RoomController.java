@@ -74,7 +74,6 @@ public class RoomController
     	{
     		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     	}
-    	
     }
     
     @PostMapping(value = "/gameStarted")

@@ -2,8 +2,8 @@ package TPLab4.ChineseCheckersBackend.Game;
 
 public enum GameType 
 {
-    WAITING_FOR_PLAYERS,
-    IN_PROGRESS,
-    FINISHED,
-    TIMEOUT
+    STANDARD_TWO_PLAYERS,
+    STANDARD_THREE_PLAYERS,
+    STANDARD_FOUR_PLAYERS,
+    STANDARD_SIX_PLAYERS
 }

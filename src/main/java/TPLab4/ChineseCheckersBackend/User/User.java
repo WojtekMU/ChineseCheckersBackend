@@ -15,6 +15,7 @@ import javax.persistence.ManyToMany;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import TPLab4.ChineseCheckersBackend.Game.Game;
+import TPLab4.ChineseCheckersBackend.History.History;
 import TPLab4.ChineseCheckersBackend.Room.Room;
 
 @Entity
@@ -30,6 +31,10 @@ public class User
 	
 	@Column(name = "password", nullable = false)
 	private String password;
+	
+    @ManyToMany(mappedBy = "leaderboard")
+    @JsonIgnore
+    Set<History> history = new HashSet<History>();
 	
     @ManyToMany(mappedBy = "players")
     @JsonIgnore

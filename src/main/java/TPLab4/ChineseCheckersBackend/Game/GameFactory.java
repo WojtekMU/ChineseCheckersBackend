@@ -2,10 +2,13 @@ package TPLab4.ChineseCheckersBackend.Game;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import TPLab4.ChineseCheckersBackend.History.History;
+import TPLab4.ChineseCheckersBackend.History.HistoryRepository;
 import TPLab4.ChineseCheckersBackend.Tile.Tile;
 import TPLab4.ChineseCheckersBackend.Tile.TileColor;
 import TPLab4.ChineseCheckersBackend.Tile.TileRepository;
@@ -25,8 +28,13 @@ public abstract class GameFactory
 	@Autowired
 	protected GameRepository gameRepository;
 	
+	@Autowired
+	protected HistoryRepository historyRepository;
+	
     protected final List<TileColor> colorOrder = List.of(TileColor.WHITE, TileColor.RED, TileColor.BLUE, TileColor.GREEN, TileColor.PURPLE, TileColor.BROWN, TileColor.ORANGE);
 
+    protected static Random random = new Random();
+    
 	public abstract Game createGame(List<User> players);
 	
 	protected void createClearBoard(Game game)
@@ -120,5 +128,20 @@ public abstract class GameFactory
 		{
 			tileService.updateTileColor(tile, color);
 		}
+	}
+	
+	protected void setGameProperties(List<User> players, Game game)
+	{
+		game.getPlayers().addAll(players);
+		game.setPlayerTurn(random.nextInt(players.size()) + 1);
+		game.setChosenTile(null);
+		game.setDuringMove(false);
+		game.setGameStatus(GameStatus.ONGOING);
+		createClearBoard(game);
+		
+		History history = new History();
+		history.setGame(game);
+		
+		historyRepository.save(history);
 	}
 }

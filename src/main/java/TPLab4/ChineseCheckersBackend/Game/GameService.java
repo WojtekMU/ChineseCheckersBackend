@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import TPLab4.ChineseCheckersBackend.History.History;
+import TPLab4.ChineseCheckersBackend.History.HistoryRepository;
 import TPLab4.ChineseCheckersBackend.Tile.Tile;
 import TPLab4.ChineseCheckersBackend.Tile.TileColor;
 import TPLab4.ChineseCheckersBackend.Tile.TileRepository;
@@ -24,6 +26,9 @@ public class GameService
 
 	@Autowired
 	private TileRepository tileRepository;
+	
+	@Autowired
+	private HistoryRepository historyRepository;
 	
 	@Autowired
 	private TileService tileService;
@@ -68,14 +73,21 @@ public class GameService
 	{
 		Integer playerTurn = game.getPlayerTurn();
 		
-		if(game.getPlayers().size() == playerTurn)
+		Optional<History> history = historyRepository.findByGameId(game.getId());
+		
+		do
 		{
-			game.setPlayerTurn(1);
+			if(game.getPlayers().size() == playerTurn)
+			{
+				playerTurn = 1;
+				game.setPlayerTurn(playerTurn);
+			}
+			else
+			{
+				game.setPlayerTurn(++playerTurn);
+			}
 		}
-		else
-		{
-			game.setPlayerTurn(++playerTurn);
-		}
+		while(history.get().getLeaderboard().contains(game.getPlayerWithTurn()));
 		
 		gameRepository.save(game);
 	}
@@ -108,5 +120,17 @@ public class GameService
 		
 		tileRepository.save(firstTile);
 		tileRepository.save(secondTile);
+	}
+	
+	public boolean isFinished(Game game)
+	{
+		return game.getPlayers().size() == (historyRepository.findByGameId(game.getId()).get().getLeaderboard().size() + 1);
+	}
+	
+	public void setStatus(Game game, GameStatus gameStatus) 
+	{
+		game.setGameStatus(gameStatus);
+		
+		gameRepository.save(game);
 	}
 }

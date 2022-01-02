@@ -38,7 +38,15 @@ public class RoomService
     	{
 	    	room.getPlayers().add(player);
 	 	   
-	        roomRepository.save(room);
+	    	roomRepository.save(room);
     	}
+    }
+    
+    public void detachGame(Room room) 
+    {
+    	room.setGame(null);
+    	room.setGameStarted(false);
+    	
+    	roomRepository.save(room);
     }
 }

@@ -14,13 +14,10 @@ public class SixPlayerGameFactory extends GameFactory
 	{
 		Game game = new Game();
 		
-		game.getPlayers().addAll(players);
-		game.setGameStatus(GameType.WAITING_FOR_PLAYERS);
-		game.setPlayerTurn(1);
-		game.setChosenTile(null);
-		game.setDuringMove(false);
-		createClearBoard(game);
+		setGameProperties(players, game);
 		
+		game.setGameType(GameType.STANDARD_SIX_PLAYERS);
+
 		gameRepository.save(game);
 		
 		fillFirstCorner(game, colorOrder.get(1));
@@ -29,12 +26,6 @@ public class SixPlayerGameFactory extends GameFactory
 		fillFourthCorner(game, colorOrder.get(4));
 		fillThirdCorner(game, colorOrder.get(5));
 		fillSecondCorner(game, colorOrder.get(6));
-		
-		
-		
-		
-		
-		
 		
 		gameRepository.save(game);
 		

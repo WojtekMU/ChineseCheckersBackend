@@ -17,12 +17,9 @@ public class TwoPlayerGameFactory extends GameFactory
 	{
 		Game game = new Game();
 		
-		game.getPlayers().addAll(players);
-		game.setGameStatus(GameType.WAITING_FOR_PLAYERS);
-		game.setPlayerTurn(1);
-		game.setChosenTile(null);
-		game.setDuringMove(false);
-		createClearBoard(game);
+		setGameProperties(players, game);
+		
+		game.setGameType(GameType.STANDARD_TWO_PLAYERS);
 		
 		gameRepository.save(game);
 		

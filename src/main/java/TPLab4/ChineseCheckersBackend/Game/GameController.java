@@ -16,17 +16,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import TPLab4.ChineseCheckersBackend.Request.GameBoardRequest;
+import TPLab4.ChineseCheckersBackend.Request.GameStatusRequest;
+import TPLab4.ChineseCheckersBackend.History.History;
+import TPLab4.ChineseCheckersBackend.History.HistoryRepository;
 import TPLab4.ChineseCheckersBackend.Request.ChosenTileRequest;
 import TPLab4.ChineseCheckersBackend.Request.CreateGameRequest;
 import TPLab4.ChineseCheckersBackend.Request.CreateRoomRequest;
 import TPLab4.ChineseCheckersBackend.Request.CurrentPlayerTurnRequest;
 import TPLab4.ChineseCheckersBackend.Request.EndTurnRequest;
 import TPLab4.ChineseCheckersBackend.Request.JoinRequest;
+import TPLab4.ChineseCheckersBackend.Request.LeaderboardRequest;
 import TPLab4.ChineseCheckersBackend.Request.MoveRequest;
 import TPLab4.ChineseCheckersBackend.Request.PlayerBoardRequest;
+import TPLab4.ChineseCheckersBackend.Request.RoomIdRequest;
 import TPLab4.ChineseCheckersBackend.Response.MessageResponse;
 import TPLab4.ChineseCheckersBackend.Room.Room;
 import TPLab4.ChineseCheckersBackend.Room.RoomRepository;
+import TPLab4.ChineseCheckersBackend.Room.RoomService;
 import TPLab4.ChineseCheckersBackend.Tile.Tile;
 import TPLab4.ChineseCheckersBackend.Tile.TileColor;
 import TPLab4.ChineseCheckersBackend.Tile.TileRepository;
@@ -45,6 +51,9 @@ public class GameController
     @Autowired
     private TileService tileService;
     
+    @Autowired
+    private RoomService roomService;
+    
 	@Autowired
 	private UserRepository userRepository;
 	
@@ -58,8 +67,11 @@ public class GameController
 	private TileRepository tileRepository;
 	
 	@Autowired
+	private HistoryRepository historyRepository;
+	
+	@Autowired
 	private MoveChecker moveChecker;
-
+	
     @PostMapping(value = "/createGame")
     public ResponseEntity<?> createNewGame(@RequestBody CreateGameRequest createGameRequest) 
     {
@@ -106,6 +118,24 @@ public class GameController
     	return gameRepository.findById(playerBoardRequest.getGameId()).get().getPlayers();
     }
     
+    @PostMapping(value = "/leaderboard", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<User> getPlayerBoard(@RequestBody LeaderboardRequest leaderboardRequest) 
+    {
+    	return gameRepository.findById(leaderboardRequest.getGameId()).get().getHistory().getLeaderboard();
+    }
+    	
+    @PostMapping(value = "/roomId")
+    public ResponseEntity<?> getRoomId(@RequestBody RoomIdRequest roomIdRequest) 
+    {
+    	return ResponseEntity.ok(gameRepository.findById(roomIdRequest.getGameId()).get().getRoom().getId());
+    }
+    
+    @PostMapping(value = "/gameStatus")
+    public ResponseEntity<?> getGameStatus(@RequestBody GameStatusRequest gameStatusRequest) 
+    {
+    	return ResponseEntity.ok(gameRepository.findById(gameStatusRequest.getGameId()).get().getGameStatus());
+    }
+    
     @GetMapping(value = "/colorOrder", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<TileColor> getPlayerBoard() 
     {
@@ -140,8 +170,27 @@ public class GameController
 	    			&& moveChecker.isDistanceOneMove(game.get().getChosenTile(), tile.get()))
 	    		{
 	    			gameService.move(game.get().getChosenTile(), tile.get());
-	    			gameService.updateChosenTile(game.get(), null);
-	    			gameService.updatePlayerTurn(game.get());
+	    			gameService.updateChosenTile(game.get(), null);  
+	    			
+	    			if(moveChecker.isWinner(game.get()))
+	    			{
+	    				Optional<History> history = historyRepository.findByGameId(game.get().getId());
+	    				
+	    				history.get().getLeaderboard().add(player.get());
+	    				
+	    				historyRepository.save(history.get());
+	    			}
+	    			
+	    			if(gameService.isFinished(game.get()))
+	    			{
+	    				gameService.setStatus(game.get(), GameStatus.FINISHED);
+	    				roomService.detachGame(game.get().getRoom());
+	    				
+	    			}
+	    			else
+	    			{
+	    				gameService.updatePlayerTurn(game.get());
+	    			}
 	    		}
 	    		else if(moveChecker.isDistanceTwoMove(game.get().getChosenTile(), tile.get())
 	    				&& moveChecker.CorrectTileBetween(game.get().getChosenTile(), tile.get(), game.get()))
@@ -168,12 +217,31 @@ public class GameController
     public ResponseEntity<?> getPlayerBoard(@RequestBody EndTurnRequest endTurnRequest) 
     {
     	Optional<Game> game = gameRepository.findById(endTurnRequest.getGameId());
+    	Optional<User> player = userRepository.findByUsername(endTurnRequest.getUsername());
     	
     	if(game.get().getPlayerWithTurn().getUsername().equals(endTurnRequest.getUsername()))
     	{
-    		gameService.updatePlayerTurn(game.get());
     		gameService.updateChosenTile(game.get(), null);
     		gameService.updateDuringMove(game.get(), Boolean.FALSE);
+    		
+			if(moveChecker.isWinner(game.get()))
+			{
+				Optional<History> history = historyRepository.findByGameId(game.get().getId());
+				
+				history.get().getLeaderboard().add(player.get());
+				
+				historyRepository.save(history.get());
+			}
+    		
+			if(gameService.isFinished(game.get()))
+			{
+				gameService.setStatus(game.get(), GameStatus.FINISHED);
+				roomService.detachGame(game.get().getRoom());
+			}
+			else
+			{
+				gameService.updatePlayerTurn(game.get());
+			}
     	}
     		
     	return ResponseEntity.ok(new MessageResponse("Ok"));

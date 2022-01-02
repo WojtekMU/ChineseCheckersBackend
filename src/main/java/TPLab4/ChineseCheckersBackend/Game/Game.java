@@ -1,10 +1,7 @@
 package TPLab4.ChineseCheckersBackend.Game;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,14 +13,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.Transient;
 
+import TPLab4.ChineseCheckersBackend.History.History;
 import TPLab4.ChineseCheckersBackend.Room.Room;
 import TPLab4.ChineseCheckersBackend.Tile.Tile;
-import TPLab4.ChineseCheckersBackend.Tile.TileColor;
 import TPLab4.ChineseCheckersBackend.User.User;
 
 @Entity
@@ -39,10 +34,13 @@ public class Game
     		  name = "game_user", 
     		  joinColumns = @JoinColumn(name = "game_id"), 
     		  inverseJoinColumns = @JoinColumn(name = "user_id"))
-    List<User> players = new ArrayList<User>();
+    List<User> players = new ArrayList<User>();	
    
     @Enumerated(EnumType.STRING)
-    private GameType gameStatus;
+    private GameType gameType;
+    
+    @Enumerated(EnumType.STRING)
+    private GameStatus gameStatus;
     
     @OneToMany(mappedBy="game")
     private List<Tile> tileList = new ArrayList<Tile>();
@@ -53,6 +51,9 @@ public class Game
     @OneToOne(mappedBy = "game")
     private Room room;
     
+    @OneToOne(mappedBy = "game")
+    private History history;
+    
     @OneToOne
     @JoinColumn(name = "tile_id")
     private Tile chosenTile;
@@ -61,12 +62,6 @@ public class Game
     private Boolean duringMove;
 
     public Game() {};
-
-	public Game(GameType gameStatus, List<Tile> tileList) 
-	{
-		this.gameStatus = gameStatus;
-		this.tileList = tileList;
-	}
 
 	public Long getId() 
 	{
@@ -78,14 +73,14 @@ public class Game
 		this.id = id;
 	}
 
-	public GameType getGameStatus() 
+	public GameType getGameType() 
 	{
-		return gameStatus;
+		return gameType;
 	}
 
-	public void setGameStatus(GameType gameStatus) 
+	public void setGameType(GameType gameType) 
 	{
-		this.gameStatus = gameStatus;
+		this.gameType = gameType;
 	}
 	
 	public List<Tile> getTileList() 
@@ -151,5 +146,25 @@ public class Game
 	public void setDuringMove(Boolean duringMove) 
 	{
 		this.duringMove = duringMove;
+	}
+
+	public GameStatus getGameStatus() 
+	{
+		return gameStatus;
+	}
+
+	public void setGameStatus(GameStatus gameStatus) 
+	{
+		this.gameStatus = gameStatus;
+	}
+
+	public History getHistory() 
+	{
+		return history;
+	}
+
+	public void setHistory(History history) 
+	{
+		this.history = history;
 	}
 }
