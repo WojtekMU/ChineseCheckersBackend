@@ -87,6 +87,31 @@ public class User
 		this.games = games;
 	}
 	
+	public Set<History> getHistory() 
+	{
+		return history;
+	}
+
+	public void setHistory(Set<History> history) 
+	{
+		this.history = history;
+	}
+
+	public Set<Room> getRooms() 
+	{
+		return rooms;
+	}
+
+	public void setRooms(Set<Room> rooms) 
+	{
+		this.rooms = rooms;
+	}
+
+	public void setId(Long id) 
+	{
+		this.id = id;
+	}
+
 	@Override
 	public boolean equals(Object o)
 	{

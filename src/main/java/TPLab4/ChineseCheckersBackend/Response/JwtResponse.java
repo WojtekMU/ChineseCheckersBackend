@@ -1,4 +1,4 @@
-package TPLab4.ChineseCheckersBackend.Auth;
+package TPLab4.ChineseCheckersBackend.Response;
 
 public class JwtResponse 
 {

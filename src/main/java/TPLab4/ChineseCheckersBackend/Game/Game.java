@@ -16,6 +16,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import TPLab4.ChineseCheckersBackend.History.History;
 import TPLab4.ChineseCheckersBackend.Room.Room;
 import TPLab4.ChineseCheckersBackend.Tile.Tile;
@@ -49,9 +51,11 @@ public class Game
     private Integer playerTurn;
     
     @OneToOne(mappedBy = "game")
+    @JsonIgnore
     private Room room;
     
     @OneToOne(mappedBy = "game")
+    @JsonIgnore
     private History history;
     
     @OneToOne

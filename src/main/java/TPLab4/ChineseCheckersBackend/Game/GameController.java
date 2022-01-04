@@ -19,6 +19,8 @@ import TPLab4.ChineseCheckersBackend.Request.GameBoardRequest;
 import TPLab4.ChineseCheckersBackend.Request.GameStatusRequest;
 import TPLab4.ChineseCheckersBackend.History.History;
 import TPLab4.ChineseCheckersBackend.History.HistoryRepository;
+import TPLab4.ChineseCheckersBackend.Request.CanSeeGameRequest;
+import TPLab4.ChineseCheckersBackend.Request.CanSeeRoomRequest;
 import TPLab4.ChineseCheckersBackend.Request.ChosenTileRequest;
 import TPLab4.ChineseCheckersBackend.Request.CreateGameRequest;
 import TPLab4.ChineseCheckersBackend.Request.CreateRoomRequest;
@@ -49,9 +51,6 @@ public class GameController
     private GameService gameService;
     
     @Autowired
-    private TileService tileService;
-    
-    @Autowired
     private RoomService roomService;
     
 	@Autowired
@@ -77,18 +76,38 @@ public class GameController
     {
     	try
     	{
-	    	Room room = roomRepository.getById(createGameRequest.getRoomId());
-	    	Game game = gameService.createGame(room.getPlayers());
-	    	room.setGameStarted(true);
-	    	room.setGame(game);
+	    	Optional<Room> room = roomRepository.findById(createGameRequest.getRoomId());
+	    	Optional<User> user = userRepository.findByUsername(createGameRequest.getUsername());
 	    	
-	    	roomRepository.save(room);
+	    	if(user.isEmpty())
+	    	{
+	    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("User does not exist!"));
+	    	}
+	    	
+	    	if(room.isEmpty())
+	    	{
+	    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("Room does not exist!"));
+	    	}
+	    	
+	    	if(!room.get().getPlayers().get(0).equals(user.get()))
+	    	{
+	    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("You are not the host!"));
+	    	}
+	    	
+	    	if(room.get().isGameStarted())
+	    	{
+	    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Game already started!"));
+	    	}
+	    	
+	    	Game game = gameService.createGame(room.get().getPlayers());
+	    	
+	    	roomService.startGame(room.get(), game);
 	    	
 	    	return ResponseEntity.ok(game.getId());
     	}
     	catch(IllegalArgumentException ex)
     	{
-    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse(ex.getMessage()));
+    		return ResponseEntity.badRequest().body(new MessageResponse(ex.getMessage()));
     	}
     }
     
@@ -101,10 +120,16 @@ public class GameController
     @PostMapping(value = "/chosenTile")
     public ResponseEntity<?> getChosenTileId(@RequestBody ChosenTileRequest chosenTileRequest) 
     {
-    	Game game = gameRepository.findById(chosenTileRequest.getGameId()).get();
-    	if(game.getChosenTile() != null)
+    	Optional<Game> game = gameRepository.findById(chosenTileRequest.getGameId());
+    	
+    	if(game.isEmpty())
     	{
-    		return ResponseEntity.ok(game.getChosenTile().getId());
+    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Game does not exist!"));
+    	}
+    	
+    	if(game.get().getChosenTile() != null)
+    	{
+    		return ResponseEntity.ok(game.get().getChosenTile().getId());
     	}  
     	else
     	{
@@ -155,7 +180,33 @@ public class GameController
     	Optional<User> player = userRepository.findByUsername(moveRequest.getUsername());
     	Optional<Game> game = gameRepository.findById(moveRequest.getGameId());
     	
-    	if(moveChecker.correctPlayer(player.get(), game.get()))
+    	if(game.isEmpty())
+    	{
+    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Game does not exist!"));
+    	}
+    	
+    	if(player.isEmpty())
+    	{
+    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Player does not exist!"));
+    	}
+    	
+    	if(tile.isEmpty())
+    	{
+    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Tile does not exist!"));
+    	}
+    	
+    	if(!game.get().getPlayers().contains(player.get()))
+    	{
+    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Player does not belong to this game!"));
+    	}
+    	
+    	if(!game.get().getTileList().contains(tile.get()))
+    	{
+    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Tile does not belong to this game!"));
+    	}
+    	
+    	if(moveChecker.correctPlayer(player.get(), game.get()) 
+    		&& game.get().getGameStatus().equals(GameStatus.ONGOING))
     	{
 	    	if(game.get().getChosenTile() == null)
 	    	{
@@ -183,6 +234,16 @@ public class GameController
 	    			
 	    			if(gameService.isFinished(game.get()))
 	    			{
+	    				Optional<History> history = historyRepository.findByGameId(game.get().getId());
+	    				
+	    				for(User p : game.get().players)
+	    				{
+	    					if(!history.get().getLeaderboard().contains(p))
+	    					{
+	    						history.get().getLeaderboard().add(p);
+	    					}
+	    				}
+	    				
 	    				gameService.setStatus(game.get(), GameStatus.FINISHED);
 	    				roomService.detachGame(game.get().getRoom());
 	    				
@@ -214,10 +275,25 @@ public class GameController
     }
     
     @PostMapping(value = "/endTurn")
-    public ResponseEntity<?> getPlayerBoard(@RequestBody EndTurnRequest endTurnRequest) 
+    public ResponseEntity<?> endTurn(@RequestBody EndTurnRequest endTurnRequest) 
     {
     	Optional<Game> game = gameRepository.findById(endTurnRequest.getGameId());
     	Optional<User> player = userRepository.findByUsername(endTurnRequest.getUsername());
+    	
+    	if(player.isEmpty())
+    	{
+    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Player does not exist!"));
+    	}
+    	
+    	if(game.isEmpty())
+    	{
+    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Game does not exist!"));
+    	}
+    	
+    	if(!game.get().getPlayers().contains(player.get()))
+    	{
+    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Player does not belong to this game!"));
+    	}
     	
     	if(game.get().getPlayerWithTurn().getUsername().equals(endTurnRequest.getUsername()))
     	{
@@ -235,6 +311,16 @@ public class GameController
     		
 			if(gameService.isFinished(game.get()))
 			{
+				Optional<History> history = historyRepository.findByGameId(game.get().getId());
+				
+				for(User p : game.get().players)
+				{
+					if(!history.get().getLeaderboard().contains(p))
+					{
+						history.get().getLeaderboard().add(p);
+					}
+				}
+				
 				gameService.setStatus(game.get(), GameStatus.FINISHED);
 				roomService.detachGame(game.get().getRoom());
 			}
@@ -246,4 +332,28 @@ public class GameController
     		
     	return ResponseEntity.ok(new MessageResponse("Ok"));
     }
+    
+    @PostMapping(value = "/canSeeGame")
+    public ResponseEntity<?> canSeeGame(@RequestBody CanSeeGameRequest canSeeGameRequest) 
+    {
+		Optional<Game> game = gameRepository.findById(canSeeGameRequest.getGameId());
+		Optional<User> user = userRepository.findByUsername(canSeeGameRequest.getUsername());
+		
+    	if(user.isEmpty())
+    	{
+    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("User does not exist!"));
+    	}
+		
+		if(game.isEmpty())
+		{
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("Game does not exist!"));
+		}
+		
+		if(!game.get().getPlayers().contains(user.get()))
+		{
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("You are not in this game!"));
+		}
+		
+		return ResponseEntity.ok(new MessageResponse("ok")); 
+	}
 }

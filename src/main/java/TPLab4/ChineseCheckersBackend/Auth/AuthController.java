@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import TPLab4.ChineseCheckersBackend.Request.LoginRequest;
 import TPLab4.ChineseCheckersBackend.Request.SignupRequest;
+import TPLab4.ChineseCheckersBackend.Response.JwtResponse;
 import TPLab4.ChineseCheckersBackend.Response.MessageResponse;
 import TPLab4.ChineseCheckersBackend.User.User;
 import TPLab4.ChineseCheckersBackend.User.UserDetailsImpl;

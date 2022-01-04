@@ -2,13 +2,13 @@ package TPLab4.ChineseCheckersBackend.Request;
 
 import javax.validation.constraints.NotBlank;
 
-public class CreateGameRequest 
-{
-	@NotBlank
-	private Long roomId;
-	
+public class LeaveRoomRequest 
+{	
 	@NotBlank
 	private String username;
+	
+	@NotBlank
+	private Long roomId;
 
 	public String getUsername() 
 	{
@@ -19,7 +19,7 @@ public class CreateGameRequest
 	{
 		this.username = username;
 	}
-
+	
 	public Long getRoomId() 
 	{
 		return roomId;

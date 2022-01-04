@@ -1,6 +1,7 @@
 package TPLab4.ChineseCheckersBackend.Room;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import TPLab4.ChineseCheckersBackend.Game.Game;
+import TPLab4.ChineseCheckersBackend.Request.CanSeeRoomRequest;
 import TPLab4.ChineseCheckersBackend.Request.CreateRoomRequest;
 import TPLab4.ChineseCheckersBackend.Request.GameStartedRequest;
 import TPLab4.ChineseCheckersBackend.Request.GetGameIdRequest;
 import TPLab4.ChineseCheckersBackend.Request.JoinRequest;
+import TPLab4.ChineseCheckersBackend.Request.LeaveRoomRequest;
 import TPLab4.ChineseCheckersBackend.Request.PlayersInRoomRequest;
 import TPLab4.ChineseCheckersBackend.Response.MessageResponse;
 import TPLab4.ChineseCheckersBackend.Tile.TileColor;
@@ -42,6 +45,18 @@ public class RoomController
     @PostMapping(value = "/createRoom")
     public ResponseEntity<?> createNewGame(@RequestBody CreateRoomRequest createRoomRequest) 
     {
+    	Optional<User> user = userRepository.findByUsername(createRoomRequest.getUsername());
+    	
+    	if(user.isEmpty())
+    	{
+    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("User does not exist!"));
+    	}
+    	
+    	if(user.get().getRooms().size() != 0)
+    	{
+        	return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("You cannot be in more than one room!"));
+    	}
+    	
     	Room room = roomService.createRoom(userRepository.findByUsername(createRoomRequest.getUsername()).get());
     	
 		return ResponseEntity.ok(room.getId());
@@ -62,18 +77,73 @@ public class RoomController
     @PostMapping(value = "/joinRoom")
     public ResponseEntity<?> joinGame(@RequestBody JoinRequest joinRequest) 
     {
-    	Room room = roomRepository.getById(joinRequest.getRoomId());
+    	Optional<Room> room = roomRepository.findById(joinRequest.getRoomId());
+    	Optional<User> user = userRepository.findByUsername(joinRequest.getUsername());
     	
-    	try
+    	if(user.isEmpty())
     	{
-	    	roomService.joinGame(userRepository.findByUsername(joinRequest.getUsername()).get(), room);
+    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("User does not exist!"));
+    	}
+    	
+    	if(room.isEmpty())
+    	{
+    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("Room does not exist!"));
+    	}
+    	
+    	if(room.get().getPlayers().contains(user.get()))
+    	{
+    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("You cannot join your own room!"));
+    	}
+    	
+    	if(room.get().getPlayers().size() == 6)
+    	{
+    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Room is full!"));
+    	}
+    	
+    	if(user.get().getRooms().size() != 0)
+    	{
+    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("You cannot be in more than one room!"));
+    	}
+    	
+    	if(room.get().isGameStarted())
+    	{
+    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Game already started!"));
+    	}
+
+	    roomService.joinRoom(user.get(), room.get());
 	    	
-			return ResponseEntity.ok(new MessageResponse("Successfully joined room!"));
-    	}
-    	catch(IllegalArgumentException ex)
+		return ResponseEntity.ok(new MessageResponse("Successfully joined room!"));
+    }
+    
+    @PostMapping(value = "/leaveRoom")
+    public ResponseEntity<?> leaveRoom(@RequestBody LeaveRoomRequest leaveRoomRequest) 
+    {
+    	Optional<Room> room = roomRepository.findById(leaveRoomRequest.getRoomId());
+    	Optional<User> user = userRepository.findByUsername(leaveRoomRequest.getUsername());
+    	
+    	if(user.isEmpty())
     	{
-    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("User does not exist!"));
     	}
+    	
+    	if(room.isEmpty())
+    	{
+    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("Room does not exist!"));
+    	}
+    	
+    	if(!room.get().getPlayers().contains(user.get()))
+    	{
+    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("You are not in this room!"));
+    	}
+    	
+    	if(room.get().isGameStarted())
+    	{
+    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("You cannot leave while in game!"));
+    	}
+
+	    roomService.leaveRoom(user.get(), room.get());
+	    	
+		return ResponseEntity.ok(new MessageResponse("Successfully left room!"));
     }
     
     @PostMapping(value = "/gameStarted")
@@ -87,4 +157,28 @@ public class RoomController
     {
 		return ResponseEntity.ok(roomRepository.getById(getGameIdRequest.getRoomId()).getGame().getId());
     }
+    
+    @PostMapping(value = "/canSeeRoom")
+    public ResponseEntity<?> canSeeRoom(@RequestBody CanSeeRoomRequest canSeeRoomRequest) 
+    {
+		Optional<Room> room = roomRepository.findById(canSeeRoomRequest.getRoomId());
+		Optional<User> user = userRepository.findByUsername(canSeeRoomRequest.getUsername());
+		
+    	if(user.isEmpty())
+    	{
+    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("User does not exist!"));
+    	}
+		
+		if(room.isEmpty())
+		{
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("Room does not exist!"));
+		}
+		
+		if(!room.get().getPlayers().contains(user.get()))
+		{
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("You are not in this room!"));
+		}
+		
+		return ResponseEntity.ok(new MessageResponse("ok")); 
+	}
 }
