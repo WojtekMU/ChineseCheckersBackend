@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,8 @@ import TPLab4.ChineseCheckersBackend.Request.GameBoardRequest;
 import TPLab4.ChineseCheckersBackend.Request.GameStatusRequest;
 import TPLab4.ChineseCheckersBackend.History.History;
 import TPLab4.ChineseCheckersBackend.History.HistoryRepository;
+import TPLab4.ChineseCheckersBackend.MoveChecker.AbstractMoveChecker;
+import TPLab4.ChineseCheckersBackend.MoveChecker.StandardTwoPlayersMoveChecker;
 import TPLab4.ChineseCheckersBackend.Request.CanSeeGameRequest;
 import TPLab4.ChineseCheckersBackend.Request.CanSeeRoomRequest;
 import TPLab4.ChineseCheckersBackend.Request.ChosenTileRequest;
@@ -69,7 +72,7 @@ public class GameController
 	private HistoryRepository historyRepository;
 	
 	@Autowired
-	private MoveChecker moveChecker;
+	private StandardTwoPlayersMoveChecker moveChecker;
 	
     @PostMapping(value = "/createGame")
     public ResponseEntity<?> createNewGame(@RequestBody CreateGameRequest createGameRequest) 
@@ -205,72 +208,18 @@ public class GameController
     		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Tile does not belong to this game!"));
     	}
     	
-    	if(moveChecker.correctPlayer(player.get(), game.get()) 
-    		&& game.get().getGameStatus().equals(GameStatus.ONGOING))
+    	Pair<Boolean, Boolean> result = moveChecker.checkMove(player.get(), game.get(), tile.get());
+    	
+    	if(result.getFirst())
     	{
-	    	if(game.get().getChosenTile() == null)
-	    	{
-	    		if(moveChecker.isCurrentMovingPlayerColor(tile.get(), game.get()))
-	    		{
-	    			gameService.updateChosenTile(game.get(), tile.get());
-	    		}
-	    	}
-	    	else if(moveChecker.isTileWhite(tile.get()))
-	    	{
-	    		if(!game.get().getDuringMove().booleanValue()
-	    			&& moveChecker.isDistanceOneMove(game.get().getChosenTile(), tile.get()))
-	    		{
-	    			gameService.move(game.get().getChosenTile(), tile.get());
-	    			gameService.updateChosenTile(game.get(), null);  
-	    			
-	    			if(moveChecker.isWinner(game.get()))
-	    			{
-	    				Optional<History> history = historyRepository.findByGameId(game.get().getId());
-	    				
-	    				history.get().getLeaderboard().add(player.get());
-	    				
-	    				historyRepository.save(history.get());
-	    			}
-	    			
-	    			if(gameService.isFinished(game.get()))
-	    			{
-	    				Optional<History> history = historyRepository.findByGameId(game.get().getId());
-	    				
-	    				for(User p : game.get().players)
-	    				{
-	    					if(!history.get().getLeaderboard().contains(p))
-	    					{
-	    						history.get().getLeaderboard().add(p);
-	    					}
-	    				}
-	    				
-	    				gameService.setStatus(game.get(), GameStatus.FINISHED);
-	    				roomService.detachGame(game.get().getRoom());
-	    				
-	    			}
-	    			else
-	    			{
-	    				gameService.updatePlayerTurn(game.get());
-	    			}
-	    		}
-	    		else if(moveChecker.isDistanceTwoMove(game.get().getChosenTile(), tile.get())
-	    				&& moveChecker.CorrectTileBetween(game.get().getChosenTile(), tile.get(), game.get()))
-	    		{
-	    			gameService.move(game.get().getChosenTile(), tile.get());
-	    			gameService.updateChosenTile(game.get(), tile.get());
-	    			gameService.updateDuringMove(game.get(), Boolean.TRUE);
-	    		}
-	    		else if(!game.get().getDuringMove().booleanValue())
-	    		{
-	    			gameService.updateChosenTile(game.get(), null);
-	    		}
-	    	}
-	    	else if(!game.get().getDuringMove().booleanValue())
-	    	{
-	    		gameService.updateChosenTile(game.get(), null);
-	    	}
+    		gameService.move(game.get().getChosenTile(), tile.get(), game.get());
     	}
 
+    	if(result.getSecond())
+    	{
+        	this.endTurn(new EndTurnRequest(game.get().getId(), player.get().getUsername()));
+    	}
+    	
     	return ResponseEntity.ok(new MessageResponse("Ok"));
     }
     
@@ -300,7 +249,7 @@ public class GameController
     		gameService.updateChosenTile(game.get(), null);
     		gameService.updateDuringMove(game.get(), Boolean.FALSE);
     		
-			if(moveChecker.isWinner(game.get()))
+			if(moveChecker.isCurrenPlayerWinner(game.get()))
 			{
 				Optional<History> history = historyRepository.findByGameId(game.get().getId());
 				

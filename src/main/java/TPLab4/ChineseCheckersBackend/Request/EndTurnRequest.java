@@ -5,6 +5,14 @@ public class EndTurnRequest
 	private Long gameId;
 	private String username;
 
+	public EndTurnRequest() {};
+	
+	public EndTurnRequest(Long gameId, String username) 
+	{
+		this.gameId = gameId;
+		this.username = username;
+	}
+
 	public Long getGameId() 
 	{
 		return gameId;

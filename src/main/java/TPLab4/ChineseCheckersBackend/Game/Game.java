@@ -15,10 +15,18 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import TPLab4.ChineseCheckersBackend.History.History;
+import TPLab4.ChineseCheckersBackend.MoveChecker.AbstractMoveChecker;
+import TPLab4.ChineseCheckersBackend.MoveChecker.StandardFourPlayersMoveCheckers;
+import TPLab4.ChineseCheckersBackend.MoveChecker.StandardSixPlayersMoveChecker;
+import TPLab4.ChineseCheckersBackend.MoveChecker.StandardThreePlayersMoveChecker;
+import TPLab4.ChineseCheckersBackend.MoveChecker.StandardTwoPlayersMoveChecker;
 import TPLab4.ChineseCheckersBackend.Room.Room;
 import TPLab4.ChineseCheckersBackend.Tile.Tile;
 import TPLab4.ChineseCheckersBackend.User.User;

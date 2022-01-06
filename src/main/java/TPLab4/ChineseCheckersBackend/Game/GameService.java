@@ -72,7 +72,6 @@ public class GameService
 	public void updatePlayerTurn(Game game) 
 	{
 		Integer playerTurn = game.getPlayerTurn();
-		
 		Optional<History> history = historyRepository.findByGameId(game.getId());
 		
 		do
@@ -111,15 +110,17 @@ public class GameService
 		return game.getTileList();
 	}
 	
-	public void move(Tile firstTile, Tile secondTile)
+	public void move(Tile firstTile, Tile secondTile, Game game)
 	{
 		TileColor firstTileColor = firstTile.getColor();
 		
 		firstTile.setColor(TileColor.WHITE);
 		secondTile.setColor(firstTileColor);
+		game.setChosenTile(secondTile);
 		
 		tileRepository.save(firstTile);
 		tileRepository.save(secondTile);
+		gameRepository.save(game);
 	}
 	
 	public boolean isFinished(Game game)
