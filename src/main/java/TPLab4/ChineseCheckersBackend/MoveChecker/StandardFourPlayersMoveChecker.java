@@ -8,9 +8,8 @@ import TPLab4.ChineseCheckersBackend.Game.Game;
 import TPLab4.ChineseCheckersBackend.Tile.Tile;
 
 @Component
-public class StandardFourPlayersMoveCheckers extends AbstractMoveChecker 
+public class StandardFourPlayersMoveChecker extends AbstractMoveChecker 
 {
-
 	@Override
 	public boolean isCurrenPlayerWinner(Game game) 
 	{

@@ -17,6 +17,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderColumn;
 
 import TPLab4.ChineseCheckersBackend.Game.Game;
 import TPLab4.ChineseCheckersBackend.User.User;
@@ -34,6 +35,7 @@ public class Room
     		  name = "room_user", 
     		  joinColumns = @JoinColumn(name = "room_id"), 
     		  inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @OrderColumn
     private List<User> players = new ArrayList<User>();
     
     @Column(name = "game_started")

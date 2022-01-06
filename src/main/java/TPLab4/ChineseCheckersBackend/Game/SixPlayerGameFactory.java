@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import TPLab4.ChineseCheckersBackend.MoveChecker.StandardSixPlayersMoveChecker;
+import TPLab4.ChineseCheckersBackend.MoveChecker.StandardTwoPlayersMoveChecker;
 import TPLab4.ChineseCheckersBackend.User.User;
 
 @Component
@@ -12,11 +14,9 @@ public class SixPlayerGameFactory extends GameFactory
 	@Override
 	public Game createGame(List<User> players) 
 	{
-		Game game = new Game();
+		StandardSixPlayersGame game = new StandardSixPlayersGame();
 		
 		setGameProperties(players, game);
-		
-		game.setGameType(GameType.STANDARD_SIX_PLAYERS);
 
 		gameRepository.save(game);
 		

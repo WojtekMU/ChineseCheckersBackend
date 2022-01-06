@@ -10,7 +10,6 @@ import TPLab4.ChineseCheckersBackend.Tile.Tile;
 @Component
 public class StandardSixPlayersMoveChecker extends AbstractMoveChecker
 {
-
 	@Override
 	public boolean isCurrenPlayerWinner(Game game) 
 	{

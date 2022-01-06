@@ -13,6 +13,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderColumn;
 
 import TPLab4.ChineseCheckersBackend.Game.Game;
 import TPLab4.ChineseCheckersBackend.User.User;
@@ -34,6 +35,7 @@ public class History
     		  name = "history_user", 
     		  joinColumns = @JoinColumn(name = "history_id"), 
     		  inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @OrderColumn
     List<User> leaderboard = new ArrayList<User>();	
     
     public History() {}

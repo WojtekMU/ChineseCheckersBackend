@@ -5,11 +5,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import TPLab4.ChineseCheckersBackend.History.History;
 import TPLab4.ChineseCheckersBackend.History.HistoryRepository;
+import TPLab4.ChineseCheckersBackend.MoveChecker.MoveCheckerGetter;
 import TPLab4.ChineseCheckersBackend.Tile.Tile;
 import TPLab4.ChineseCheckersBackend.Tile.TileColor;
 import TPLab4.ChineseCheckersBackend.Tile.TileRepository;
@@ -31,9 +34,6 @@ public class GameService
 	private HistoryRepository historyRepository;
 	
 	@Autowired
-	private TileService tileService;
-	
-	@Autowired
 	private TwoPlayerGameFactory twoPlayerGameFactory;
 	
 	@Autowired
@@ -45,6 +45,13 @@ public class GameService
 	@Autowired
 	private SixPlayerGameFactory sixPlayerGameFactory;
 
+	@Bean
+	@Scope("singleton")
+	public GameService GameServiceSingleton() 
+	{
+		return new GameService();
+	};
+	
 	public Game createGame(List<User> players) 
 	{
 		if(players.size() == 2)

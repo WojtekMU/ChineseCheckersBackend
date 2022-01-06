@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import TPLab4.ChineseCheckersBackend.MoveChecker.StandardThreePlayersMoveChecker;
+import TPLab4.ChineseCheckersBackend.MoveChecker.StandardTwoPlayersMoveChecker;
 import TPLab4.ChineseCheckersBackend.Tile.TileRepository;
 import TPLab4.ChineseCheckersBackend.Tile.TileService;
 import TPLab4.ChineseCheckersBackend.User.User;
@@ -15,11 +17,9 @@ public class TwoPlayerGameFactory extends GameFactory
 	@Override
 	public Game createGame(List<User> players) 
 	{
-		Game game = new Game();
+		StandardTwoPlayersGame game = new StandardTwoPlayersGame();
 		
 		setGameProperties(players, game);
-		
-		game.setGameType(GameType.STANDARD_TWO_PLAYERS);
 		
 		gameRepository.save(game);
 		

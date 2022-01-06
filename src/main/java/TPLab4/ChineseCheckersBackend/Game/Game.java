@@ -15,15 +15,17 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderColumn;
 import javax.persistence.Transient;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import TPLab4.ChineseCheckersBackend.History.History;
 import TPLab4.ChineseCheckersBackend.MoveChecker.AbstractMoveChecker;
-import TPLab4.ChineseCheckersBackend.MoveChecker.StandardFourPlayersMoveCheckers;
+import TPLab4.ChineseCheckersBackend.MoveChecker.StandardFourPlayersMoveChecker;
 import TPLab4.ChineseCheckersBackend.MoveChecker.StandardSixPlayersMoveChecker;
 import TPLab4.ChineseCheckersBackend.MoveChecker.StandardThreePlayersMoveChecker;
 import TPLab4.ChineseCheckersBackend.MoveChecker.StandardTwoPlayersMoveChecker;
@@ -32,48 +34,44 @@ import TPLab4.ChineseCheckersBackend.Tile.Tile;
 import TPLab4.ChineseCheckersBackend.User.User;
 
 @Entity
-public class Game
+public abstract class Game
 {
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
-    private Long id;
+	protected Long id;
 	
     @ManyToMany
     @JoinTable(
     		  name = "game_user", 
     		  joinColumns = @JoinColumn(name = "game_id"), 
     		  inverseJoinColumns = @JoinColumn(name = "user_id"))
-    List<User> players = new ArrayList<User>();	
-   
-    @Enumerated(EnumType.STRING)
-    private GameType gameType;
+    @OrderColumn
+    protected List<User> players = new ArrayList<User>();	
     
     @Enumerated(EnumType.STRING)
-    private GameStatus gameStatus;
+    protected GameStatus gameStatus;
     
     @OneToMany(mappedBy="game")
-    private List<Tile> tileList = new ArrayList<Tile>();
+    protected List<Tile> tileList = new ArrayList<Tile>();
 
     @Column(name = "player_turn")
-    private Integer playerTurn;
+    protected Integer playerTurn;
     
     @OneToOne(mappedBy = "game")
     @JsonIgnore
-    private Room room;
+    protected Room room;
     
     @OneToOne(mappedBy = "game")
     @JsonIgnore
-    private History history;
+    protected History history;
     
     @OneToOne
     @JoinColumn(name = "tile_id")
-    private Tile chosenTile;
+    protected Tile chosenTile;
     
     @Column(name = "during_move")
-    private Boolean duringMove;
-
-    public Game() {};
+    protected Boolean duringMove;
 
 	public Long getId() 
 	{
@@ -83,16 +81,6 @@ public class Game
 	public void setId(Long id) 
 	{
 		this.id = id;
-	}
-
-	public GameType getGameType() 
-	{
-		return gameType;
-	}
-
-	public void setGameType(GameType gameType) 
-	{
-		this.gameType = gameType;
 	}
 	
 	public List<Tile> getTileList() 

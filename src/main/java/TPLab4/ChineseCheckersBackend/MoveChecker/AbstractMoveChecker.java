@@ -21,10 +21,10 @@ public abstract class AbstractMoveChecker
     protected final List<TileColor> colorOrder = List.of(TileColor.WHITE, TileColor.RED, TileColor.BLUE, TileColor.GREEN, TileColor.PURPLE, TileColor.BROWN, TileColor.ORANGE);
 	
 	@Autowired
-	TileRepository tileRepository;
+	protected TileRepository tileRepository;
 	
     @Autowired
-    GameService gameService;
+    protected GameService gameService;
 	
 	public Pair<Boolean, Boolean> checkMove(User player, Game game, Tile tile)
 	{
