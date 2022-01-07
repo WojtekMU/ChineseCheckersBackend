@@ -32,6 +32,7 @@ import TPLab4.ChineseCheckersBackend.Request.CreateRoomRequest;
 import TPLab4.ChineseCheckersBackend.Request.CurrentPlayerTurnRequest;
 import TPLab4.ChineseCheckersBackend.Request.EndTurnRequest;
 import TPLab4.ChineseCheckersBackend.Request.JoinRequest;
+import TPLab4.ChineseCheckersBackend.Request.LastGameUpdateRequest;
 import TPLab4.ChineseCheckersBackend.Request.LeaderboardRequest;
 import TPLab4.ChineseCheckersBackend.Request.MoveRequest;
 import TPLab4.ChineseCheckersBackend.Request.PlayerBoardRequest;
@@ -84,7 +85,7 @@ public class GameController
     	try
     	{
 	    	Optional<Room> room = roomRepository.findById(createGameRequest.getRoomId());
-	    	Optional<User> user = userRepository.findByUsername(createGameRequest.getUsername());
+	    	Optional<User> user = userRepository.findById(createGameRequest.getUserId());
 	    	
 	    	if(user.isEmpty())
 	    	{
@@ -124,6 +125,14 @@ public class GameController
     	Optional<Game> game = gameRepository.findById(boardRequest.getGameId());
 
     	return gameService.getBoard(game.get());
+    }
+    
+    @PostMapping(value = "/lastGameUpdate")
+    public ResponseEntity<?> getLastGameUpdate(@RequestBody LastGameUpdateRequest lastGameUpdateRequest) 
+    {
+    	Optional<Game> game = gameRepository.findById(lastGameUpdateRequest.getGameId());
+
+    	return ResponseEntity.ok(game.get().getLastUpdate());
     }
     
     @PostMapping(value = "/chosenTile")
@@ -186,7 +195,7 @@ public class GameController
     public ResponseEntity<?> getBoard(@RequestBody MoveRequest moveRequest) 
     {
     	Optional<Tile> tile = tileRepository.findById(moveRequest.getTileId());
-    	Optional<User> player = userRepository.findByUsername(moveRequest.getUsername());
+    	Optional<User> player = userRepository.findById(moveRequest.getUserId());
     	Optional<Game> game = gameRepository.findById(moveRequest.getGameId());
     	
     	if(game.isEmpty())
@@ -223,7 +232,7 @@ public class GameController
 
     	if(result.getSecond())
     	{
-        	this.endTurn(new EndTurnRequest(game.get().getId(), player.get().getUsername()));
+        	this.endTurn(new EndTurnRequest(game.get().getId(), player.get().getId()));
     	}
     	
     	return ResponseEntity.ok(new MessageResponse("Ok"));
@@ -233,7 +242,7 @@ public class GameController
     public ResponseEntity<?> endTurn(@RequestBody EndTurnRequest endTurnRequest) 
     {
     	Optional<Game> game = gameRepository.findById(endTurnRequest.getGameId());
-    	Optional<User> player = userRepository.findByUsername(endTurnRequest.getUsername());
+    	Optional<User> player = userRepository.findById(endTurnRequest.getUserId());
     	
     	if(player.isEmpty())
     	{
@@ -250,7 +259,7 @@ public class GameController
     		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Player does not belong to this game!"));
     	}
     	
-    	if(game.get().getPlayerWithTurn().getUsername().equals(endTurnRequest.getUsername()))
+    	if(game.get().getPlayerWithTurn().getId().equals(endTurnRequest.getUserId()))
     	{
     		gameService.updateChosenTile(game.get(), null);
     		gameService.updateDuringMove(game.get(), Boolean.FALSE);
@@ -292,7 +301,7 @@ public class GameController
     public ResponseEntity<?> canSeeGame(@RequestBody CanSeeGameRequest canSeeGameRequest) 
     {
 		Optional<Game> game = gameRepository.findById(canSeeGameRequest.getGameId());
-		Optional<User> user = userRepository.findByUsername(canSeeGameRequest.getUsername());
+		Optional<User> user = userRepository.findById(canSeeGameRequest.getUserId());
 		
     	if(user.isEmpty())
     	{

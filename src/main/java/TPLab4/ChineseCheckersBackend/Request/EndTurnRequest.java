@@ -1,16 +1,21 @@
 package TPLab4.ChineseCheckersBackend.Request;
 
+import javax.validation.constraints.NotBlank;
+
 public class EndTurnRequest 
 {
+	@NotBlank
 	private Long gameId;
-	private String username;
+	
+	@NotBlank
+	private Long userId;
 
 	public EndTurnRequest() {};
 	
-	public EndTurnRequest(Long gameId, String username) 
+	public EndTurnRequest(Long gameId, Long userId) 
 	{
 		this.gameId = gameId;
-		this.username = username;
+		this.userId = userId;
 	}
 
 	public Long getGameId() 
@@ -23,13 +28,13 @@ public class EndTurnRequest
 		this.gameId = gameId;
 	}
 
-	public String getUsername() 
+	public Long getUserId() 
 	{
-		return username;
+		return userId;
 	}
 
-	public void setUsername(String username) 
+	public void setUserId(Long userId) 
 	{
-		this.username = username;
+		this.userId = userId;
 	}
 }

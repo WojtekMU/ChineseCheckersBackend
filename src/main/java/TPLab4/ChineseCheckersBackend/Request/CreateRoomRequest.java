@@ -5,15 +5,15 @@ import javax.validation.constraints.NotBlank;
 public class CreateRoomRequest 
 {
 	@NotBlank
-	private String username;
+	private Long userId;
 
-	public String getUsername() 
+	public Long getUserId() 
 	{
-		return username;
+		return userId;
 	}
 
-	public void setUsername(String username) 
+	public void setUserId(Long userId) 
 	{
-		this.username = username;
+		this.userId = userId;
 	}
 }

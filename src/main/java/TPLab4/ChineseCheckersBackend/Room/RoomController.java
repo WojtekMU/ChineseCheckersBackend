@@ -21,6 +21,8 @@ import TPLab4.ChineseCheckersBackend.Request.CreateRoomRequest;
 import TPLab4.ChineseCheckersBackend.Request.GameStartedRequest;
 import TPLab4.ChineseCheckersBackend.Request.GetGameIdRequest;
 import TPLab4.ChineseCheckersBackend.Request.JoinRequest;
+import TPLab4.ChineseCheckersBackend.Request.LastGameUpdateRequest;
+import TPLab4.ChineseCheckersBackend.Request.LastRoomUpdateRequest;
 import TPLab4.ChineseCheckersBackend.Request.LeaveRoomRequest;
 import TPLab4.ChineseCheckersBackend.Request.PlayersInRoomRequest;
 import TPLab4.ChineseCheckersBackend.Response.MessageResponse;
@@ -45,7 +47,7 @@ public class RoomController
     @PostMapping(value = "/createRoom")
     public ResponseEntity<?> createNewGame(@RequestBody CreateRoomRequest createRoomRequest) 
     {
-    	Optional<User> user = userRepository.findByUsername(createRoomRequest.getUsername());
+    	Optional<User> user = userRepository.findById(createRoomRequest.getUserId());
     	
     	if(user.isEmpty())
     	{
@@ -57,7 +59,7 @@ public class RoomController
         	return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("You cannot be in more than one room!"));
     	}
     	
-    	Room room = roomService.createRoom(userRepository.findByUsername(createRoomRequest.getUsername()).get());
+    	Room room = roomService.createRoom(userRepository.findById(createRoomRequest.getUserId()).get());
     	
 		return ResponseEntity.ok(room.getId());
     }
@@ -78,7 +80,7 @@ public class RoomController
     public ResponseEntity<?> joinGame(@RequestBody JoinRequest joinRequest) 
     {
     	Optional<Room> room = roomRepository.findById(joinRequest.getRoomId());
-    	Optional<User> user = userRepository.findByUsername(joinRequest.getUsername());
+    	Optional<User> user = userRepository.findById(joinRequest.getUserId());
     	
     	if(user.isEmpty())
     	{
@@ -119,7 +121,7 @@ public class RoomController
     public ResponseEntity<?> leaveRoom(@RequestBody LeaveRoomRequest leaveRoomRequest) 
     {
     	Optional<Room> room = roomRepository.findById(leaveRoomRequest.getRoomId());
-    	Optional<User> user = userRepository.findByUsername(leaveRoomRequest.getUsername());
+    	Optional<User> user = userRepository.findById(leaveRoomRequest.getUserId());
     	
     	if(user.isEmpty())
     	{
@@ -162,7 +164,7 @@ public class RoomController
     public ResponseEntity<?> canSeeRoom(@RequestBody CanSeeRoomRequest canSeeRoomRequest) 
     {
 		Optional<Room> room = roomRepository.findById(canSeeRoomRequest.getRoomId());
-		Optional<User> user = userRepository.findByUsername(canSeeRoomRequest.getUsername());
+		Optional<User> user = userRepository.findById(canSeeRoomRequest.getUserId());
 		
     	if(user.isEmpty())
     	{
@@ -181,4 +183,12 @@ public class RoomController
 		
 		return ResponseEntity.ok(new MessageResponse("ok")); 
 	}
+    
+    @PostMapping(value = "/lastRoomUpdate")
+    public ResponseEntity<?> getLastUpdate(@RequestBody LastRoomUpdateRequest lastRoomUpdateRequest) 
+    {
+    	Optional<Room> room = roomRepository.findById(lastRoomUpdateRequest.getRoomId());
+
+    	return ResponseEntity.ok(room.get().getLastUpdate());
+    }
 }

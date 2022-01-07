@@ -11,7 +11,7 @@ public class MoveRequest
 	private Long gameId;
 	
 	@NotBlank
-	private String username;
+	private Long userId;
 
 	public Long getTileId() 
 	{
@@ -33,13 +33,13 @@ public class MoveRequest
 		this.gameId = gameId;
 	}
 
-	public String getUsername() 
+	public Long getUserId() 
 	{
-		return username;
+		return userId;
 	}
 
-	public void setUsername(String username) 
+	public void setUserId(Long userId) 
 	{
-		this.username = username;
+		this.userId = userId;
 	}
 }

@@ -1,6 +1,7 @@
 package TPLab4.ChineseCheckersBackend.Game;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -16,19 +17,14 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
-import javax.persistence.Transient;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import TPLab4.ChineseCheckersBackend.History.History;
-import TPLab4.ChineseCheckersBackend.MoveChecker.AbstractMoveChecker;
-import TPLab4.ChineseCheckersBackend.MoveChecker.StandardFourPlayersMoveChecker;
-import TPLab4.ChineseCheckersBackend.MoveChecker.StandardSixPlayersMoveChecker;
-import TPLab4.ChineseCheckersBackend.MoveChecker.StandardThreePlayersMoveChecker;
-import TPLab4.ChineseCheckersBackend.MoveChecker.StandardTwoPlayersMoveChecker;
 import TPLab4.ChineseCheckersBackend.Room.Room;
 import TPLab4.ChineseCheckersBackend.Tile.Tile;
 import TPLab4.ChineseCheckersBackend.User.User;
@@ -72,6 +68,11 @@ public abstract class Game
     
     @Column(name = "during_move")
     protected Boolean duringMove;
+    
+    @UpdateTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "last_update")
+    protected Date lastUpdate;
 
 	public Long getId() 
 	{
@@ -166,5 +167,15 @@ public abstract class Game
 	public void setHistory(History history) 
 	{
 		this.history = history;
+	}
+
+	public Date getLastUpdate() 
+	{
+		return lastUpdate;
+	}
+
+	public void setLastUpdate(Date lastUpdate)
+	{
+		this.lastUpdate = lastUpdate;
 	}
 }

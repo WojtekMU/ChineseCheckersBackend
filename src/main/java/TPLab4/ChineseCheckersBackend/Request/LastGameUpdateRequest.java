@@ -1,10 +1,7 @@
 package TPLab4.ChineseCheckersBackend.Request;
 
-import javax.validation.constraints.NotBlank;
-
-public class GameBoardRequest
+public class LastGameUpdateRequest 
 {
-	@NotBlank
 	Long gameId;
 
 	public Long getGameId() 

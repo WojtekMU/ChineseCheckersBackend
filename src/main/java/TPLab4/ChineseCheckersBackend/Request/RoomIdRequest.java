@@ -2,7 +2,7 @@ package TPLab4.ChineseCheckersBackend.Request;
 
 public class RoomIdRequest 
 {
-	Long gameId;
+	private Long gameId;
 
 	public Long getGameId() 
 	{

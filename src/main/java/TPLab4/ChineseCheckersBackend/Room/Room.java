@@ -1,6 +1,7 @@
 package TPLab4.ChineseCheckersBackend.Room;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,6 +19,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.UpdateTimestamp;
 
 import TPLab4.ChineseCheckersBackend.Game.Game;
 import TPLab4.ChineseCheckersBackend.User.User;
@@ -45,6 +50,11 @@ public class Room
     @JoinColumn(name = "game_id")
     private Game game;
     
+    @UpdateTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "last_update")
+    private Date lastUpdate;
+    
     public Room() {}
 
 	public Long getId() 
@@ -67,6 +77,11 @@ public class Room
 		this.players = players;
 	}
 
+	public Boolean getGameStarted() 
+	{
+		return gameStarted;
+	}	
+	
 	public void setGameStarted(Boolean gameStarted) 
 	{
 		this.gameStarted = gameStarted;
@@ -85,5 +100,15 @@ public class Room
 	public Boolean isGameStarted() 
 	{
 		return gameStarted;
-	}	
+	}
+
+	public Date getLastUpdate() 
+	{
+		return lastUpdate;
+	}
+
+	public void setLastUpdate(Date lastUpdate) 
+	{
+		this.lastUpdate = lastUpdate;
+	}
 }

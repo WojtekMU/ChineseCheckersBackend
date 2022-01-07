@@ -5,19 +5,19 @@ import javax.validation.constraints.NotBlank;
 public class CanSeeRoomRequest 
 {
 	@NotBlank
-	private String username;
+	private Long userId;
 	
 	@NotBlank
 	private Long roomId;
 
-	public String getUsername() 
+	public Long getUserId() 
 	{
-		return username;
+		return userId;
 	}
 
-	public void setUsername(String username) 
+	public void setUserId(Long userId) 
 	{
-		this.username = username;
+		this.userId = userId;
 	}
 	
 	public Long getRoomId() 

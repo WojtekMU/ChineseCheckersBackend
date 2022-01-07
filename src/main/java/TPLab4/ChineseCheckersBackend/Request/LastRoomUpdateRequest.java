@@ -2,23 +2,10 @@ package TPLab4.ChineseCheckersBackend.Request;
 
 import javax.validation.constraints.NotBlank;
 
-public class CreateGameRequest 
+public class LastRoomUpdateRequest 
 {
 	@NotBlank
 	private Long roomId;
-	
-	@NotBlank
-	private Long userId;
-	
-	public Long getUserId() 
-	{
-		return userId;
-	}
-
-	public void setUserId(Long userId) 
-	{
-		this.userId = userId;
-	}
 
 	public Long getRoomId() 
 	{

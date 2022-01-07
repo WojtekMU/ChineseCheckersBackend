@@ -5,21 +5,21 @@ import javax.validation.constraints.NotBlank;
 public class CanSeeGameRequest 
 {
 	@NotBlank
-	private String username;
+	private Long userId;
 	
 	@NotBlank
 	private Long gameId;
-
-	public String getUsername() 
-	{
-		return username;
-	}
-
-	public void setUsername(String username) 
-	{
-		this.username = username;
-	}
 	
+	public Long getUserId() 
+	{
+		return userId;
+	}
+
+	public void setUserId(Long userId) 
+	{
+		this.userId = userId;
+	}
+
 	public Long getGameId() 
 	{
 		return gameId;
