@@ -1,4 +1,4 @@
-package TPLab4.ChineseCheckersBackend.Game;
+package TPLab4.ChineseCheckersBackend.GameFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,6 +7,9 @@ import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import TPLab4.ChineseCheckersBackend.Game.Game;
+import TPLab4.ChineseCheckersBackend.Game.GameRepository;
+import TPLab4.ChineseCheckersBackend.Game.GameStatus;
 import TPLab4.ChineseCheckersBackend.History.History;
 import TPLab4.ChineseCheckersBackend.History.HistoryRepository;
 import TPLab4.ChineseCheckersBackend.Tile.Tile;

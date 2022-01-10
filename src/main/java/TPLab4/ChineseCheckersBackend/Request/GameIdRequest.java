@@ -2,7 +2,7 @@ package TPLab4.ChineseCheckersBackend.Request;
 
 import javax.validation.constraints.NotBlank;
 
-public class GetGameIdRequest 
+public class GameIdRequest 
 {
 	@NotBlank
 	private Long roomId;

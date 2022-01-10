@@ -1,8 +1,11 @@
 package TPLab4.ChineseCheckersBackend.Request;
 
+import javax.validation.constraints.NotBlank;
+
 public class ChosenTileRequest 
 {
-	Long gameId;
+	@NotBlank
+	private Long gameId;
 
 	public Long getGameId() 
 	{

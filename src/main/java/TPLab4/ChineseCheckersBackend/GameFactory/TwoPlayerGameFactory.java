@@ -1,10 +1,12 @@
-package TPLab4.ChineseCheckersBackend.Game;
+package TPLab4.ChineseCheckersBackend.GameFactory;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import TPLab4.ChineseCheckersBackend.Game.Game;
+import TPLab4.ChineseCheckersBackend.Game.StandardTwoPlayersGame;
 import TPLab4.ChineseCheckersBackend.MoveChecker.StandardThreePlayersMoveChecker;
 import TPLab4.ChineseCheckersBackend.MoveChecker.StandardTwoPlayersMoveChecker;
 import TPLab4.ChineseCheckersBackend.Tile.TileRepository;

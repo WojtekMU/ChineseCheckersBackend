@@ -10,6 +10,10 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import TPLab4.ChineseCheckersBackend.GameFactory.FourPlayerGameFactory;
+import TPLab4.ChineseCheckersBackend.GameFactory.SixPlayerGameFactory;
+import TPLab4.ChineseCheckersBackend.GameFactory.ThreePlayerGameFactory;
+import TPLab4.ChineseCheckersBackend.GameFactory.TwoPlayerGameFactory;
 import TPLab4.ChineseCheckersBackend.History.History;
 import TPLab4.ChineseCheckersBackend.History.HistoryRepository;
 import TPLab4.ChineseCheckersBackend.MoveChecker.MoveCheckerGetter;
@@ -44,13 +48,6 @@ public class GameService
 	
 	@Autowired
 	private SixPlayerGameFactory sixPlayerGameFactory;
-
-	@Bean
-	@Scope("singleton")
-	public GameService GameServiceSingleton() 
-	{
-		return new GameService();
-	};
 	
 	public Game createGame(List<User> players) 
 	{

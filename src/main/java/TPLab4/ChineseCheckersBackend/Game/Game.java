@@ -20,6 +20,7 @@ import javax.persistence.OrderColumn;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -68,6 +69,11 @@ public abstract class Game
     
     @Column(name = "during_move")
     protected Boolean duringMove;
+    
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "create_date", updatable = false)
+    protected Date createDate;
     
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
@@ -177,5 +183,15 @@ public abstract class Game
 	public void setLastUpdate(Date lastUpdate)
 	{
 		this.lastUpdate = lastUpdate;
+	}
+
+	public Date getCreateDate() 
+	{
+		return createDate;
+	}
+
+	public void setCreateDate(Date createDate) 
+	{
+		this.createDate = createDate;
 	}
 }

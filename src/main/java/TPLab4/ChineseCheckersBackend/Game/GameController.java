@@ -20,6 +20,7 @@ import TPLab4.ChineseCheckersBackend.Request.GameBoardRequest;
 import TPLab4.ChineseCheckersBackend.Request.GameStatusRequest;
 import TPLab4.ChineseCheckersBackend.History.History;
 import TPLab4.ChineseCheckersBackend.History.HistoryRepository;
+import TPLab4.ChineseCheckersBackend.Move.MoveService;
 import TPLab4.ChineseCheckersBackend.MoveChecker.AbstractMoveChecker;
 import TPLab4.ChineseCheckersBackend.MoveChecker.MoveCheckerGetter;
 import TPLab4.ChineseCheckersBackend.MoveChecker.StandardThreePlayersMoveChecker;
@@ -27,6 +28,7 @@ import TPLab4.ChineseCheckersBackend.MoveChecker.StandardTwoPlayersMoveChecker;
 import TPLab4.ChineseCheckersBackend.Request.CanSeeGameRequest;
 import TPLab4.ChineseCheckersBackend.Request.CanSeeRoomRequest;
 import TPLab4.ChineseCheckersBackend.Request.ChosenTileRequest;
+import TPLab4.ChineseCheckersBackend.Request.ColorOrderRequest;
 import TPLab4.ChineseCheckersBackend.Request.CreateGameRequest;
 import TPLab4.ChineseCheckersBackend.Request.CreateRoomRequest;
 import TPLab4.ChineseCheckersBackend.Request.CurrentPlayerTurnRequest;
@@ -59,6 +61,9 @@ public class GameController
     @Autowired
     private RoomService roomService;
     
+    @Autowired
+    private MoveService moveService;
+    
 	@Autowired
 	private UserRepository userRepository;
 	
@@ -76,8 +81,6 @@ public class GameController
 	
 	@Autowired
 	private MoveCheckerGetter moveCheckerGetter;
-	
-	protected final List<TileColor> colorOrder = List.of(TileColor.WHITE, TileColor.RED, TileColor.BLUE, TileColor.GREEN, TileColor.PURPLE, TileColor.BROWN, TileColor.ORANGE);
 	
     @PostMapping(value = "/createGame")
     public ResponseEntity<?> createNewGame(@RequestBody CreateGameRequest createGameRequest) 
@@ -167,11 +170,11 @@ public class GameController
     	return gameRepository.findById(leaderboardRequest.getGameId()).get().getHistory().getLeaderboard();
     }
     	
-    @PostMapping(value = "/roomId")
-    public ResponseEntity<?> getRoomId(@RequestBody RoomIdRequest roomIdRequest) 
-    {
-    	return ResponseEntity.ok(gameRepository.findById(roomIdRequest.getGameId()).get().getRoom().getId());
-    }
+//    @PostMapping(value = "/roomId")
+//    public ResponseEntity<?> getRoomId(@RequestBody RoomIdRequest roomIdRequest) 
+//    {
+//    	return ResponseEntity.ok(gameRepository.findById(roomIdRequest.getGameId()).get().getRoom().getId());
+//    }
     
     @PostMapping(value = "/gameStatus")
     public ResponseEntity<?> getGameStatus(@RequestBody GameStatusRequest gameStatusRequest) 
@@ -179,10 +182,12 @@ public class GameController
     	return ResponseEntity.ok(gameRepository.findById(gameStatusRequest.getGameId()).get().getGameStatus());
     }
     
-    @GetMapping(value = "/colorOrder", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<TileColor> getPlayerBoard() 
+    @PostMapping(value = "/colorOrder", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<TileColor> getPlayerBoard(@RequestBody ColorOrderRequest colorOrderRequest) 
     {
-    	return colorOrder;
+    	Optional<Game> game = gameRepository.findById(colorOrderRequest.getGameId());
+    	
+    	return moveCheckerGetter.getMoveChecker(game.get()).getColorOrder();
     }
     
     @PostMapping(value = "/currentPlayerTurn", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -223,10 +228,13 @@ public class GameController
     		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Tile does not belong to this game!"));
     	}
     	
+    	Optional<History> history = historyRepository.findByGameId(moveRequest.getGameId());
+    	
     	Pair<Boolean, Boolean> result = moveCheckerGetter.getMoveChecker(game.get()).checkMove(player.get(), game.get(), tile.get());
     	
     	if(result.getFirst())
     	{
+    		moveService.saveMove(player.get(), history.get(), game.get().getChosenTile(), tile.get());
     		gameService.move(game.get().getChosenTile(), tile.get(), game.get());
     	}
 

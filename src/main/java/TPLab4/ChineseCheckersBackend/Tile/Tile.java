@@ -1,5 +1,7 @@
 package TPLab4.ChineseCheckersBackend.Tile;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -9,11 +11,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import TPLab4.ChineseCheckersBackend.Game.Game;
+import TPLab4.ChineseCheckersBackend.Move.Move;
 
 @Entity
 public class Tile
@@ -40,6 +44,14 @@ public class Tile
     @OneToOne(mappedBy = "chosenTile")
     @JsonIgnore
     private Game chosenTileGame;
+    
+    @OneToMany(mappedBy="firstTile")
+    @JsonIgnore
+    private Set<Move> movesWithFirstTile;
+    
+    @OneToMany(mappedBy="secondTile")
+    @JsonIgnore
+    private Set<Move> movesWithSecondTile;
     
     public Tile() {};
     
@@ -109,5 +121,25 @@ public class Tile
 	public void setChosenTileGame(Game chosenTileGame) 
 	{
 		this.chosenTileGame = chosenTileGame;
+	}
+
+	public Set<Move> getMovesWithFirstTile() 
+	{
+		return movesWithFirstTile;
+	}
+
+	public void setMovesWithFirstTile(Set<Move> movesWithFirstTile) 
+	{
+		this.movesWithFirstTile = movesWithFirstTile;
+	}
+
+	public Set<Move> getMovesWithSecondTile()
+	{
+		return movesWithSecondTile;
+	}
+
+	public void setMovesWithSecondTile(Set<Move> movesWithSecondTile) 
+	{
+		this.movesWithSecondTile = movesWithSecondTile;
 	}
 }

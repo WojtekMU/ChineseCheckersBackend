@@ -19,7 +19,7 @@ import TPLab4.ChineseCheckersBackend.Game.Game;
 import TPLab4.ChineseCheckersBackend.Request.CanSeeRoomRequest;
 import TPLab4.ChineseCheckersBackend.Request.CreateRoomRequest;
 import TPLab4.ChineseCheckersBackend.Request.GameStartedRequest;
-import TPLab4.ChineseCheckersBackend.Request.GetGameIdRequest;
+import TPLab4.ChineseCheckersBackend.Request.GameIdRequest;
 import TPLab4.ChineseCheckersBackend.Request.JoinRequest;
 import TPLab4.ChineseCheckersBackend.Request.LastGameUpdateRequest;
 import TPLab4.ChineseCheckersBackend.Request.LastRoomUpdateRequest;
@@ -155,7 +155,7 @@ public class RoomController
     }
     
     @PostMapping(value = "/gameId")
-    public ResponseEntity<?> getGameId(@RequestBody GetGameIdRequest getGameIdRequest) 
+    public ResponseEntity<?> getGameId(@RequestBody GameIdRequest getGameIdRequest) 
     {
 		return ResponseEntity.ok(roomRepository.getById(getGameIdRequest.getRoomId()).getGame().getId());
     }

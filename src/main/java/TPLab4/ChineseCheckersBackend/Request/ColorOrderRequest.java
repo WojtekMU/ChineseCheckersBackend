@@ -2,7 +2,7 @@ package TPLab4.ChineseCheckersBackend.Request;
 
 import javax.validation.constraints.NotBlank;
 
-public class GameStatusRequest 
+public class ColorOrderRequest 
 {
 	@NotBlank
 	private Long gameId;
@@ -15,5 +15,5 @@ public class GameStatusRequest
 	public void setgameId(Long gameId) 
 	{
 		this.gameId = gameId;
-	}	
+	}
 }
