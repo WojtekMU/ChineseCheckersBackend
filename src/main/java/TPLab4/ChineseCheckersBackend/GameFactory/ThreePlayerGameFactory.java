@@ -13,7 +13,7 @@ import TPLab4.ChineseCheckersBackend.User.User;
 public class ThreePlayerGameFactory extends GameFactory
 {
 	@Override
-	public Game createGame(List<User> players) 
+	public StandardThreePlayersGame createGame(List<User> players)
 	{
 		StandardThreePlayersGame game = new StandardThreePlayersGame();
 		

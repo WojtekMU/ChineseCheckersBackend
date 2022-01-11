@@ -11,7 +11,7 @@ import TPLab4.ChineseCheckersBackend.Tile.Tile;
 public class StandardFourPlayersMoveChecker extends AbstractMoveChecker 
 {
 	@Override
-	public boolean isCurrenPlayerWinner(Game game) 
+	public boolean isCurrentPlayerWinner(Game game)
 	{
 		List<Tile> secondCorner = tileRepository.getSecondCorner(game.getId());
 		List<Tile> thirdCorner = tileRepository.getThirdCorner(game.getId());

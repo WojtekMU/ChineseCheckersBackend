@@ -136,10 +136,20 @@ public abstract class GameFactory
 	protected void setGameProperties(List<User> players, Game game)
 	{
 		game.getPlayers().addAll(players);
-		game.setPlayerTurn(random.nextInt(players.size()) + 1);
+		if(players.size() != 0)
+		{
+			game.setPlayerTurn(random.nextInt(players.size()) + 1);
+		}
+		else
+		{
+			game.setPlayerTurn(0);
+		}
 		game.setChosenTile(null);
 		game.setDuringMove(false);
 		game.setGameStatus(GameStatus.ONGOING);
+
+		gameRepository.save(game);
+
 		createClearBoard(game);
 		
 		History history = new History();

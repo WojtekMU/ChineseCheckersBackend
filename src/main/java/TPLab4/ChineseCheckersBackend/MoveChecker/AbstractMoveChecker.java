@@ -49,7 +49,7 @@ public abstract class AbstractMoveChecker
 						gameService.updateChosenTile(game, tile);
 					}
 				}
-				else if(isTileWhite(tile) && !isMoveFromCorner(game, tile) && isDistanceOneMove(game.getChosenTile(), tile))
+				else if(isTileWhite(tile) && !isMoveFromCorner(game, tile)) //  && isDistanceOneMove(game.getChosenTile(), tile)
 				{
 					correctMove = true;
 					endTurn = true;
@@ -128,6 +128,6 @@ public abstract class AbstractMoveChecker
 		return colorOrder;
 	}
 	
-	public abstract boolean isCurrenPlayerWinner(Game game);
+	public abstract boolean isCurrentPlayerWinner(Game game);
 	protected abstract boolean isMoveFromCorner(Game game, Tile tile);
 }

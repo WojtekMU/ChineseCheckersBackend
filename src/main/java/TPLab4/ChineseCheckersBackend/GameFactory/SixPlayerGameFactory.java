@@ -14,7 +14,7 @@ import TPLab4.ChineseCheckersBackend.User.User;
 public class SixPlayerGameFactory extends GameFactory
 {
 	@Override
-	public Game createGame(List<User> players) 
+	public StandardSixPlayersGame createGame(List<User> players)
 	{
 		StandardSixPlayersGame game = new StandardSixPlayersGame();
 		

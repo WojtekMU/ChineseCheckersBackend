@@ -1,5 +1,6 @@
 package TPLab4.ChineseCheckersBackend.Game;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,6 +24,8 @@ import TPLab4.ChineseCheckersBackend.Tile.TileRepository;
 import TPLab4.ChineseCheckersBackend.Tile.TileService;
 import TPLab4.ChineseCheckersBackend.User.User;
 import TPLab4.ChineseCheckersBackend.User.UserRepository;
+
+import javax.annotation.PostConstruct;
 
 @Service
 @Transactional
@@ -48,7 +51,7 @@ public class GameService
 	
 	@Autowired
 	private SixPlayerGameFactory sixPlayerGameFactory;
-	
+
 	public Game createGame(List<User> players) 
 	{
 		if(players.size() == 2)

@@ -71,7 +71,7 @@ public abstract class Game
     protected Boolean duringMove;
     
     @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.TIME)
     @Column(name = "create_date", updatable = false)
     protected Date createDate;
     

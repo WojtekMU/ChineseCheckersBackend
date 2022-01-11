@@ -30,6 +30,8 @@ import TPLab4.ChineseCheckersBackend.Tile.TileColor;
 import TPLab4.ChineseCheckersBackend.User.User;
 import TPLab4.ChineseCheckersBackend.User.UserRepository;
 
+import javax.validation.Valid;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/chineseCheckers")
@@ -45,7 +47,7 @@ public class RoomController
 	private UserRepository userRepository;
 	
     @PostMapping(value = "/createRoom")
-    public ResponseEntity<?> createNewGame(@RequestBody CreateRoomRequest createRoomRequest) 
+    public ResponseEntity<?> createNewGame(@Valid @RequestBody CreateRoomRequest createRoomRequest)
     {
     	Optional<User> user = userRepository.findById(createRoomRequest.getUserId());
     	
@@ -65,19 +67,26 @@ public class RoomController
     }
 	
     @GetMapping(value = "/roomList", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Room> getGamesToJoin() 
+    public ResponseEntity<?> getGamesToJoin()
     {
-        return roomRepository.findAll();
+        return ResponseEntity.ok(roomRepository.findAll());
     }
     
     @PostMapping(value = "/playerList", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<User> getPlayersInRoom(@RequestBody PlayersInRoomRequest playersInRoomRequest) 
+    public ResponseEntity<?> getPlayersInRoom(@Valid @RequestBody PlayersInRoomRequest playersInRoomRequest)
     {
-        return roomRepository.getById(playersInRoomRequest.getRoomId()).getPlayers();
+		Optional<Room> room = roomRepository.findById(playersInRoomRequest.getRoomId());
+
+		if(room.isEmpty())
+		{
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("Room does not exist!"));
+		}
+
+        return ResponseEntity.ok(room.get().getPlayers());
     }
     
     @PostMapping(value = "/joinRoom")
-    public ResponseEntity<?> joinGame(@RequestBody JoinRequest joinRequest) 
+    public ResponseEntity<?> joinGame(@Valid @RequestBody JoinRequest joinRequest)
     {
     	Optional<Room> room = roomRepository.findById(joinRequest.getRoomId());
     	Optional<User> user = userRepository.findById(joinRequest.getUserId());
@@ -118,7 +127,7 @@ public class RoomController
     }
     
     @PostMapping(value = "/leaveRoom")
-    public ResponseEntity<?> leaveRoom(@RequestBody LeaveRoomRequest leaveRoomRequest) 
+    public ResponseEntity<?> leaveRoom(@Valid @RequestBody LeaveRoomRequest leaveRoomRequest)
     {
     	Optional<Room> room = roomRepository.findById(leaveRoomRequest.getRoomId());
     	Optional<User> user = userRepository.findById(leaveRoomRequest.getUserId());
@@ -149,19 +158,33 @@ public class RoomController
     }
     
     @PostMapping(value = "/gameStarted")
-    public ResponseEntity<?> gameStarted(@RequestBody GameStartedRequest gameStartedRequest) 
+    public ResponseEntity<?> gameStarted(@Valid @RequestBody GameStartedRequest gameStartedRequest)
     {
-		return ResponseEntity.ok(roomRepository.getById(gameStartedRequest.getRoomId()).isGameStarted().toString());
+		Optional<Room> room = roomRepository.findById(gameStartedRequest.getRoomId());
+
+		if(room.isEmpty())
+		{
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("Room does not exist!"));
+		}
+
+		return ResponseEntity.ok(room.get().isGameStarted().toString());
     }
     
     @PostMapping(value = "/gameId")
-    public ResponseEntity<?> getGameId(@RequestBody GameIdRequest getGameIdRequest) 
+    public ResponseEntity<?> getGameId(@Valid @RequestBody GameIdRequest getGameIdRequest)
     {
-		return ResponseEntity.ok(roomRepository.getById(getGameIdRequest.getRoomId()).getGame().getId());
+		Optional<Room> room = roomRepository.findById(getGameIdRequest.getRoomId());
+
+		if(room.isEmpty())
+		{
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("Room does not exist!"));
+		}
+
+		return ResponseEntity.ok(room.get().getGame().getId());
     }
     
     @PostMapping(value = "/canSeeRoom")
-    public ResponseEntity<?> canSeeRoom(@RequestBody CanSeeRoomRequest canSeeRoomRequest) 
+    public ResponseEntity<?> canSeeRoom(@Valid @RequestBody CanSeeRoomRequest canSeeRoomRequest)
     {
 		Optional<Room> room = roomRepository.findById(canSeeRoomRequest.getRoomId());
 		Optional<User> user = userRepository.findById(canSeeRoomRequest.getUserId());
@@ -185,9 +208,14 @@ public class RoomController
 	}
     
     @PostMapping(value = "/lastRoomUpdate")
-    public ResponseEntity<?> getLastUpdate(@RequestBody LastRoomUpdateRequest lastRoomUpdateRequest) 
+    public ResponseEntity<?> getLastUpdate(@Valid @RequestBody LastRoomUpdateRequest lastRoomUpdateRequest)
     {
     	Optional<Room> room = roomRepository.findById(lastRoomUpdateRequest.getRoomId());
+
+		if(room.isEmpty())
+		{
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("Room does not exist!"));
+		}
 
     	return ResponseEntity.ok(room.get().getLastUpdate());
     }
