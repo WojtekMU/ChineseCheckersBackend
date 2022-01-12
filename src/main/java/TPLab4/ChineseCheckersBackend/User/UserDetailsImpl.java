@@ -1,9 +1,12 @@
 package TPLab4.ChineseCheckersBackend.User;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -19,19 +22,27 @@ public class UserDetailsImpl implements UserDetails
 	@JsonIgnore
 	private String password;
 
-	public UserDetailsImpl(Long id, String username, String password)
+	private Collection<? extends GrantedAuthority> authorities;
+
+	public UserDetailsImpl(Long id, String username, String password, Collection<? extends GrantedAuthority> authorities)
 	{
 		this.id = id;
 		this.username = username;
 		this.password = password;
+		this.authorities = authorities;
 	}
 
 	public static UserDetailsImpl build(User user) 
 	{
+		List<GrantedAuthority> authorities = user.getRoles().stream()
+				.map(role -> new SimpleGrantedAuthority(role.getName().name()))
+				.collect(Collectors.toList());
+
 		return new UserDetailsImpl(
 				user.getId(), 
 				user.getUsername(), 
-				user.getPassword());
+				user.getPassword(),
+				authorities);
 	}
 
 	public Long getId() 
@@ -50,7 +61,6 @@ public class UserDetailsImpl implements UserDetails
 	{
 		return username;
 	}
-
 
 	@Override
 	public boolean equals(Object o) 
@@ -73,7 +83,7 @@ public class UserDetailsImpl implements UserDetails
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() 
 	{
-		return null;
+		return authorities;
 	}
 
 	@Override

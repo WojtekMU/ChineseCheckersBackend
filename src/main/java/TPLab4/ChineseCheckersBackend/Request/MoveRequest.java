@@ -9,9 +9,6 @@ public class MoveRequest
 	
 	@NotBlank
 	private Long gameId;
-	
-	@NotBlank
-	private Long userId;
 
 	public Long getTileId() 
 	{
@@ -31,15 +28,5 @@ public class MoveRequest
 	public void setGameId(Long gameId) 
 	{
 		this.gameId = gameId;
-	}
-
-	public Long getUserId() 
-	{
-		return userId;
-	}
-
-	public void setUserId(Long userId) 
-	{
-		this.userId = userId;
 	}
 }

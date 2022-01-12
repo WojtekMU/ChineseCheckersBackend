@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import TPLab4.ChineseCheckersBackend.Game.Game;
 import TPLab4.ChineseCheckersBackend.User.User;
 
+import java.util.Date;
+
 @Service
 @Transactional
 public class RoomService 
@@ -28,13 +30,15 @@ public class RoomService
     public void joinRoom(User player, Room room) 
     {
 	    room.getPlayers().add(player);
-	 	   
+		room.setLastUpdate(new Date());
+
 	    roomRepository.save(room);
     }
     
     public void leaveRoom(User player, Room room) 
     {
 	    room.getPlayers().remove(player);
+		room.setLastUpdate(new Date());
 	    
 	    if(room.getPlayers().size() == 0)
 	    {

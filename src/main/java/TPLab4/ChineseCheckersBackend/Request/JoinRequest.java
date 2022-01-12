@@ -5,20 +5,7 @@ import javax.validation.constraints.NotBlank;
 public class JoinRequest 
 {
 	@NotBlank
-	private Long userId;
-	
-	@NotBlank
 	private Long roomId;
-
-	public Long getUserId() 
-	{
-		return userId;
-	}
-
-	public void setUserId(Long userId) 
-	{
-		this.userId = userId;
-	}
 	
 	public Long getRoomId() 
 	{

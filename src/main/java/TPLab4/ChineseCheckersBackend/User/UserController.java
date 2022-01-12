@@ -1,5 +1,6 @@
 package TPLab4.ChineseCheckersBackend.User;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +16,8 @@ public class UserController
 	{
 		return "Public Content.";
 	}
-	
+
+	@PreAuthorize("hasRole('USER')")
 	@GetMapping("/user")
 	public String userAccess() 
 	{

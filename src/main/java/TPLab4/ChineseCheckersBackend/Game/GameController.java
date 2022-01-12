@@ -1,5 +1,6 @@
 package TPLab4.ChineseCheckersBackend.Game;
 
+import java.security.Principal;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,28 +8,17 @@ import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
-import TPLab4.ChineseCheckersBackend.Request.GameBoardRequest;
-import TPLab4.ChineseCheckersBackend.Request.GameStatusRequest;
 import TPLab4.ChineseCheckersBackend.History.History;
 import TPLab4.ChineseCheckersBackend.History.HistoryRepository;
 import TPLab4.ChineseCheckersBackend.Move.MoveService;
 import TPLab4.ChineseCheckersBackend.MoveChecker.MoveCheckerGetter;
-import TPLab4.ChineseCheckersBackend.Request.CanSeeGameRequest;
-import TPLab4.ChineseCheckersBackend.Request.ChosenTileRequest;
-import TPLab4.ChineseCheckersBackend.Request.ColorOrderRequest;
 import TPLab4.ChineseCheckersBackend.Request.CreateGameRequest;
-import TPLab4.ChineseCheckersBackend.Request.CurrentPlayerTurnRequest;
 import TPLab4.ChineseCheckersBackend.Request.EndTurnRequest;
-import TPLab4.ChineseCheckersBackend.Request.LastGameUpdateRequest;
-import TPLab4.ChineseCheckersBackend.Request.LeaderboardRequest;
 import TPLab4.ChineseCheckersBackend.Request.MoveRequest;
-import TPLab4.ChineseCheckersBackend.Request.PlayerBoardRequest;
 import TPLab4.ChineseCheckersBackend.Response.MessageResponse;
 import TPLab4.ChineseCheckersBackend.Room.Room;
 import TPLab4.ChineseCheckersBackend.Room.RoomRepository;
@@ -42,7 +32,7 @@ import javax.validation.Valid;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/chineseCheckers")
+@RequestMapping("/api/chineseCheckers/game")
 public class GameController 
 {
     @Autowired
@@ -71,21 +61,40 @@ public class GameController
 	
 	@Autowired
 	private MoveCheckerGetter moveCheckerGetter;
-	
-    @PostMapping(value = "/createGame")
-    public ResponseEntity<?> createNewGame(@Valid @RequestBody CreateGameRequest createGameRequest)
+
+	public void validate(Optional<Game> game, Optional<User> user) throws AccessDeniedException
+	{
+		if(game.isEmpty())
+		{
+			throw new AccessDeniedException("Game does not exist!");
+		}
+
+		if(user.isEmpty())
+		{
+			throw new AccessDeniedException("User does not exist!");
+		}
+
+		if(!game.get().getPlayers().contains(user.get()))
+		{
+			throw new AccessDeniedException("User does not belong to this game!");
+		}
+	}
+
+	@PreAuthorize("hasRole('USER')")
+    @PostMapping(value = "/create")
+    public ResponseEntity<?> createNewGame(@Valid @RequestBody CreateGameRequest createGameRequest, Principal principal)
     {
     	try
     	{
 	    	Optional<Room> room = roomRepository.findById(createGameRequest.getRoomId());
-	    	Optional<User> user = userRepository.findById(createGameRequest.getUserId());
+	    	Optional<User> user = userRepository.findByUsername(principal.getName());
 	    	
 	    	if(user.isEmpty())
 	    	{
 	    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("User does not exist!"));
 	    	}
-	    	
-	    	if(room.isEmpty())
+
+			if(room.isEmpty())
 	    	{
 	    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("Room does not exist!"));
 	    	}
@@ -111,42 +120,60 @@ public class GameController
     		return ResponseEntity.badRequest().body(new MessageResponse(ex.getMessage()));
     	}
     }
-    
-    @PostMapping(value = "/gameBoard", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getBoard(@Valid @RequestBody GameBoardRequest boardRequest)
-    {
-    	Optional<Game> game = gameRepository.findById(boardRequest.getGameId());
 
-		if(game.isEmpty())
+	@PreAuthorize("hasRole('USER')")
+    @GetMapping(value = "/gameBoard", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getBoard(@RequestParam Long gameId, Principal principal)
+    {
+    	Optional<Game> game = gameRepository.findById(gameId);
+		Optional<User> user = userRepository.findByUsername(principal.getName());
+
+		try
 		{
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("Game does not exist!"));
+			validate(game, user);
+		}
+		catch(AccessDeniedException ex)
+		{
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse(ex.getMessage()));
 		}
 
     	return ResponseEntity.ok(gameService.getBoard(game.get()));
     }
-    
-    @PostMapping(value = "/lastGameUpdate")
-    public ResponseEntity<?> getLastGameUpdate(@Valid @RequestBody LastGameUpdateRequest lastGameUpdateRequest)
-    {
-    	Optional<Game> game = gameRepository.findById(lastGameUpdateRequest.getGameId());
 
-		if(game.isEmpty())
+	@PreAuthorize("hasRole('USER')")
+    @GetMapping(value = "/lastUpdate")
+    public ResponseEntity<?> getLastGameUpdate(@RequestParam Long gameId, Principal principal)
+    {
+    	Optional<Game> game = gameRepository.findById(gameId);
+		Optional<User> user = userRepository.findByUsername(principal.getName());
+
+		try
 		{
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("Game does not exist!"));
+			validate(game, user);
+		}
+		catch(AccessDeniedException ex)
+		{
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse(ex.getMessage()));
 		}
 
     	return ResponseEntity.ok(game.get().getLastUpdate());
     }
-    
-    @PostMapping(value = "/chosenTile")
-    public ResponseEntity<?> getChosenTileId(@Valid @RequestBody ChosenTileRequest chosenTileRequest)
+
+	@PreAuthorize("hasRole('USER')")
+    @GetMapping(value = "/chosenTile")
+    public ResponseEntity<?> getChosenTileId(@RequestParam Long gameId, Principal principal)
     {
-    	Optional<Game> game = gameRepository.findById(chosenTileRequest.getGameId());
-    	
-    	if(game.isEmpty())
-    	{
-    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("Game does not exist!"));
-    	}
+    	Optional<Game> game = gameRepository.findById(gameId);
+		Optional<User> user = userRepository.findByUsername(principal.getName());
+
+		try
+		{
+			validate(game, user);
+		}
+		catch(AccessDeniedException ex)
+		{
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse(ex.getMessage()));
+		}
     	
     	if(game.get().getChosenTile() != null)
     	{
@@ -157,104 +184,123 @@ public class GameController
     		return ResponseEntity.ok("");
     	}
     }
-    
-    @PostMapping(value = "/playerBoard", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getPlayerBoard(@Valid @RequestBody PlayerBoardRequest playerBoardRequest)
-    {
-		Optional<Game> game = gameRepository.findById(playerBoardRequest.getGameId());
 
-		if(game.isEmpty())
+	@PreAuthorize("hasRole('USER')")
+    @GetMapping(value = "/playerBoard", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getPlayerBoard(@RequestParam Long gameId, Principal principal)
+    {
+		Optional<Game> game = gameRepository.findById(gameId);
+		Optional<User> user = userRepository.findByUsername(principal.getName());
+
+		try
 		{
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("Game does not exist!"));
+			validate(game, user);
+		}
+		catch(AccessDeniedException ex)
+		{
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse(ex.getMessage()));
 		}
 
     	return ResponseEntity.ok(game.get().getPlayers());
     }
-    
-    @PostMapping(value = "/leaderboard", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getPlayerBoard(@Valid @RequestBody LeaderboardRequest leaderboardRequest)
-    {
-		Optional<Game> game = gameRepository.findById(leaderboardRequest.getGameId());
 
-		if(game.isEmpty())
+	@PreAuthorize("hasRole('USER')")
+    @GetMapping(value = "/leaderboard", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getLeaderboard(@RequestParam Long gameId, Principal principal)
+    {
+		Optional<Game> game = gameRepository.findById(gameId);
+		Optional<User> user = userRepository.findByUsername(principal.getName());
+
+		try
 		{
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("Game does not exist!"));
+			validate(game, user);
+		}
+		catch(AccessDeniedException ex)
+		{
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse(ex.getMessage()));
 		}
 
     	return ResponseEntity.ok(game.get().getHistory().getLeaderboard());
     }
-    	
-//    @PostMapping(value = "/roomId")
-//    public ResponseEntity<?> getRoomId(@RequestBody RoomIdRequest roomIdRequest) 
-//    {
-//    	return ResponseEntity.ok(gameRepository.findById(roomIdRequest.getGameId()).get().getRoom().getId());
-//    }
-    
-    @PostMapping(value = "/gameStatus")
-    public ResponseEntity<?> getGameStatus(@Valid @RequestBody GameStatusRequest gameStatusRequest)
-    {
-		Optional<Game> game = gameRepository.findById(gameStatusRequest.getGameId());
 
-		if(game.isEmpty())
+	@PreAuthorize("hasRole('USER')")
+    @GetMapping(value = "/gameStatus")
+    public ResponseEntity<?> getGameStatus(@RequestParam Long gameId, Principal principal)
+    {
+		Optional<Game> game = gameRepository.findById(gameId);
+		Optional<User> user = userRepository.findByUsername(principal.getName());
+
+		try
 		{
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("Game does not exist!"));
+			validate(game, user);
+		}
+		catch(AccessDeniedException ex)
+		{
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse(ex.getMessage()));
 		}
 
     	return ResponseEntity.ok(game.get().getGameStatus());
     }
-    
-    @PostMapping(value = "/colorOrder", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getPlayerBoard(@Valid @RequestBody ColorOrderRequest colorOrderRequest)
-    {
-		Optional<Game> game = gameRepository.findById(colorOrderRequest.getGameId());
 
-		if(game.isEmpty())
+	@PreAuthorize("hasRole('USER')")
+    @GetMapping(value = "/colorOrder", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getColorOrder(@RequestParam Long gameId, Principal principal)
+    {
+		Optional<Game> game = gameRepository.findById(gameId);
+		Optional<User> user = userRepository.findByUsername(principal.getName());
+
+		try
 		{
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("Game does not exist!"));
+			validate(game, user);
+		}
+		catch(AccessDeniedException ex)
+		{
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse(ex.getMessage()));
 		}
     	
     	return ResponseEntity.ok(moveCheckerGetter.getMoveChecker(game.get()).getColorOrder());
     }
-    
-    @PostMapping(value = "/currentPlayerTurn", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getCurrentPlayerTurn(@Valid @RequestBody CurrentPlayerTurnRequest currentPlayerTurnRequest)
-    {
-		Optional<Game> game = gameRepository.findById(currentPlayerTurnRequest.getGameId());
 
-		if(game.isEmpty())
+	@PreAuthorize("hasRole('USER')")
+    @GetMapping(value = "/currentPlayerTurn", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getCurrentPlayerTurn(@RequestParam Long gameId, Principal principal)
+    {
+		Optional<Game> game = gameRepository.findById(gameId);
+		Optional<User> user = userRepository.findByUsername(principal.getName());
+
+		try
 		{
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("Game does not exist!"));
+			validate(game, user);
+		}
+		catch(AccessDeniedException ex)
+		{
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse(ex.getMessage()));
 		}
 
     	return ResponseEntity.ok(game.get().getPlayerTurn());
     }
-    
-    @PostMapping(value = "/move")
-    public ResponseEntity<?> getBoard(@Valid @RequestBody MoveRequest moveRequest)
+
+	@PreAuthorize("hasRole('USER')")
+    @PutMapping(value = "/move")
+    public ResponseEntity<?> getBoard(@Valid @RequestBody MoveRequest moveRequest, Principal principal)
     {
     	Optional<Tile> tile = tileRepository.findById(moveRequest.getTileId());
-    	Optional<User> player = userRepository.findById(moveRequest.getUserId());
+    	Optional<User> user = userRepository.findByUsername(principal.getName());
     	Optional<Game> game = gameRepository.findById(moveRequest.getGameId());
-    	
-    	if(game.isEmpty())
-    	{
-    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Game does not exist!"));
-    	}
-    	
-    	if(player.isEmpty())
-    	{
-    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Player does not exist!"));
-    	}
+
+		try
+		{
+			validate(game, user);
+		}
+		catch(AccessDeniedException ex)
+		{
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse(ex.getMessage()));
+		}
     	
     	if(tile.isEmpty())
-    	{
-    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Tile does not exist!"));
-    	}
-    	
-    	if(!game.get().getPlayers().contains(player.get()))
-    	{
-    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Player does not belong to this game!"));
-    	}
+		{
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Tile does not exist!"));
+		}
     	
     	if(!game.get().getTileList().contains(tile.get()))
     	{
@@ -263,44 +309,39 @@ public class GameController
     	
     	Optional<History> history = historyRepository.findByGameId(moveRequest.getGameId());
     	
-    	Pair<Boolean, Boolean> result = moveCheckerGetter.getMoveChecker(game.get()).checkMove(player.get(), game.get(), tile.get());
+    	Pair<Boolean, Boolean> result = moveCheckerGetter.getMoveChecker(game.get()).checkMove(user.get(), game.get(), tile.get());
     	
     	if(result.getFirst())
     	{
-    		moveService.saveMove(player.get(), history.get(), game.get().getChosenTile(), tile.get());
+    		moveService.saveMove(user.get(), history.get(), game.get().getChosenTile(), tile.get());
     		gameService.move(game.get().getChosenTile(), tile.get(), game.get());
     	}
 
     	if(result.getSecond())
     	{
-        	this.endTurn(new EndTurnRequest(game.get().getId(), player.get().getId()));
+        	this.endTurn(new EndTurnRequest(game.get().getId()), principal);
     	}
     	
     	return ResponseEntity.ok(new MessageResponse("Ok"));
     }
-    
-    @PostMapping(value = "/endTurn")
-    public ResponseEntity<?> endTurn(@Valid @RequestBody EndTurnRequest endTurnRequest)
+
+	@PreAuthorize("hasRole('USER')")
+    @PutMapping(value = "/endTurn")
+    public ResponseEntity<?> endTurn(@Valid @RequestBody EndTurnRequest endTurnRequest, Principal principal)
     {
     	Optional<Game> game = gameRepository.findById(endTurnRequest.getGameId());
-    	Optional<User> player = userRepository.findById(endTurnRequest.getUserId());
-    	
-    	if(player.isEmpty())
-    	{
-    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Player does not exist!"));
-    	}
-    	
-    	if(game.isEmpty())
-    	{
-    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Game does not exist!"));
-    	}
-    	
-    	if(!game.get().getPlayers().contains(player.get()))
-    	{
-    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Player does not belong to this game!"));
-    	}
+    	Optional<User> user = userRepository.findByUsername(principal.getName());
 
-    	if(game.get().getPlayerWithTurn().getId().equals(endTurnRequest.getUserId()) && game.get().getGameStatus().equals(GameStatus.ONGOING))
+		try
+		{
+			validate(game, user);
+		}
+		catch(AccessDeniedException ex)
+		{
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse(ex.getMessage()));
+		}
+
+    	if(game.get().getPlayerWithTurn().getId().equals(user.get().getId()) && game.get().getGameStatus().equals(GameStatus.ONGOING))
     	{
     		gameService.updateChosenTile(game.get(), null);
     		gameService.updateDuringMove(game.get(), Boolean.FALSE);
@@ -309,7 +350,7 @@ public class GameController
 			{
 				Optional<History> history = historyRepository.findByGameId(game.get().getId());
 				
-				history.get().getLeaderboard().add(player.get());
+				history.get().getLeaderboard().add(user.get());
 				
 				historyRepository.save(history.get());
 			}
@@ -337,33 +378,4 @@ public class GameController
     		
     	return ResponseEntity.ok(new MessageResponse("Ok"));
     }
-    
-    @PostMapping(value = "/canSeeGame")
-    public ResponseEntity<?> canSeeGame(@Valid @RequestBody CanSeeGameRequest canSeeGameRequest)
-    {
-		Optional<Game> game = gameRepository.findById(canSeeGameRequest.getGameId());
-		Optional<User> user = userRepository.findById(canSeeGameRequest.getUserId());
-		
-    	if(user.isEmpty())
-    	{
-    		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("User does not exist!"));
-    	}
-		
-		if(game.isEmpty())
-		{
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("Game does not exist!"));
-		}
-		
-		if(!game.get().getPlayers().contains(user.get()))
-		{
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("You are not in this game!"));
-		}
-		
-		if(!game.get().getGameStatus().equals(GameStatus.ONGOING))
-		{
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Cannot access this game!"));
-		}
-		
-		return ResponseEntity.ok(new MessageResponse("ok")); 
-	}
 }
