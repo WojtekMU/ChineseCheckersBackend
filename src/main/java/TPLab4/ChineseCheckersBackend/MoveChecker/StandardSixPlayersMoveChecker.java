@@ -6,8 +6,9 @@ import org.springframework.stereotype.Component;
 
 import TPLab4.ChineseCheckersBackend.Game.Game;
 import TPLab4.ChineseCheckersBackend.Tile.Tile;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class StandardSixPlayersMoveChecker extends AbstractMoveChecker
 {
 	@Override
@@ -34,7 +35,7 @@ public class StandardSixPlayersMoveChecker extends AbstractMoveChecker
 		}
 		else if(game.getPlayerTurn() == 2)
 		{
-			for(Tile tile : fifthCorner)
+			for(Tile tile : thirdCorner)
 			{
 				if(tile.getColor().equals(colorOrder.get(game.getPlayerTurn())))
 				{
@@ -44,7 +45,7 @@ public class StandardSixPlayersMoveChecker extends AbstractMoveChecker
 		}
 		else if(game.getPlayerTurn() == 3)
 		{
-			for(Tile tile : sixthCorner)
+			for(Tile tile : secondCorner)
 			{
 				if(tile.getColor().equals(colorOrder.get(game.getPlayerTurn())))
 				{
@@ -64,7 +65,7 @@ public class StandardSixPlayersMoveChecker extends AbstractMoveChecker
 		}
 		else if(game.getPlayerTurn() == 5)
 		{
-			for(Tile tile : secondCorner)
+			for(Tile tile : sixthCorner)
 			{
 				if(tile.getColor().equals(colorOrder.get(game.getPlayerTurn())))
 				{
@@ -74,7 +75,7 @@ public class StandardSixPlayersMoveChecker extends AbstractMoveChecker
 		}
 		else if(game.getPlayerTurn() == 6)
 		{
-			for(Tile tile : thirdCorner)
+			for(Tile tile : fifthCorner)
 			{
 				if(tile.getColor().equals(colorOrder.get(game.getPlayerTurn())))
 				{
@@ -87,7 +88,7 @@ public class StandardSixPlayersMoveChecker extends AbstractMoveChecker
 	}
 
 	@Override
-	public boolean isMoveFromCorner(Game game, Tile tile) 
+	protected boolean isMoveFromCorner(Game game, Tile tile)
 	{
 		List<Tile> firstCorner = tileRepository.getFirstCorner(game.getId());
 		List<Tile> secondCorner = tileRepository.getSecondCorner(game.getId());
@@ -104,11 +105,11 @@ public class StandardSixPlayersMoveChecker extends AbstractMoveChecker
 		}
 		else if(game.getPlayerTurn() == 2)
 		{
-			ret = fifthCorner.contains(game.getChosenTile()) && !fifthCorner.contains(tile);
+			ret = thirdCorner.contains(game.getChosenTile()) && !thirdCorner.contains(tile);
 		}
 		else if(game.getPlayerTurn() == 3)
 		{
-			ret = sixthCorner.contains(game.getChosenTile()) && !sixthCorner.contains(tile);
+			ret = secondCorner.contains(game.getChosenTile()) && !secondCorner.contains(tile);
 		}
 		else if(game.getPlayerTurn() == 4)
 		{
@@ -116,11 +117,11 @@ public class StandardSixPlayersMoveChecker extends AbstractMoveChecker
 		}
 		else if(game.getPlayerTurn() == 5)
 		{
-			ret = secondCorner.contains(game.getChosenTile()) && !secondCorner.contains(tile);
+			ret = sixthCorner.contains(game.getChosenTile()) && !sixthCorner.contains(tile);
 		}
 		else if(game.getPlayerTurn() == 6)
 		{
-			ret = thirdCorner.contains(game.getChosenTile()) && !thirdCorner.contains(tile);
+			ret = fifthCorner.contains(game.getChosenTile()) && !fifthCorner.contains(tile);
 		}
 		
 		return ret;

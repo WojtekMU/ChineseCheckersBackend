@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 public interface TileRepository extends JpaRepository<Tile, Long>
 {
 	List<Tile> findByGameId(Long gameId);
-	Optional<Tile> findByXAndYAndGameId(Long x, Long y, Long gameId);
+	Tile getByXAndYAndGameId(Long x, Long y, Long gameId);
 	
 	@Query(value = "SELECT * FROM Tile t WHERE t.game_id = ?1 AND t.y < 5", nativeQuery = true)
 	List<Tile> getFirstCorner(Long gameId);	

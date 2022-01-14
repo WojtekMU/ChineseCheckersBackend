@@ -6,8 +6,9 @@ import org.springframework.stereotype.Component;
 
 import TPLab4.ChineseCheckersBackend.Game.Game;
 import TPLab4.ChineseCheckersBackend.Tile.Tile;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class StandardFourPlayersMoveChecker extends AbstractMoveChecker 
 {
 	@Override
@@ -65,7 +66,7 @@ public class StandardFourPlayersMoveChecker extends AbstractMoveChecker
 	}
 
 	@Override
-	public boolean isMoveFromCorner(Game game, Tile tile) 
+	protected boolean isMoveFromCorner(Game game, Tile tile)
 	{
 		List<Tile> secondCorner = tileRepository.getSecondCorner(game.getId());
 		List<Tile> thirdCorner = tileRepository.getThirdCorner(game.getId());

@@ -1,13 +1,11 @@
 package TPLab4.ChineseCheckersBackend.Game;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
+import org.javatuples.Triplet;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Scope;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,15 +15,10 @@ import TPLab4.ChineseCheckersBackend.GameFactory.ThreePlayerGameFactory;
 import TPLab4.ChineseCheckersBackend.GameFactory.TwoPlayerGameFactory;
 import TPLab4.ChineseCheckersBackend.History.History;
 import TPLab4.ChineseCheckersBackend.History.HistoryRepository;
-import TPLab4.ChineseCheckersBackend.MoveChecker.MoveCheckerGetter;
 import TPLab4.ChineseCheckersBackend.Tile.Tile;
 import TPLab4.ChineseCheckersBackend.Tile.TileColor;
 import TPLab4.ChineseCheckersBackend.Tile.TileRepository;
-import TPLab4.ChineseCheckersBackend.Tile.TileService;
 import TPLab4.ChineseCheckersBackend.User.User;
-import TPLab4.ChineseCheckersBackend.User.UserRepository;
-
-import javax.annotation.PostConstruct;
 
 @Service
 @Transactional
@@ -52,8 +45,33 @@ public class GameService
 	@Autowired
 	private SixPlayerGameFactory sixPlayerGameFactory;
 
-	public Game createGame(List<User> players) 
+	private void validate(Game game, User user) throws AccessDeniedException
 	{
+		if(!game.getPlayers().contains(user))
+		{
+			throw new AccessDeniedException("User does not belong to this game!");
+		}
+	}
+
+	public Game loadGameById(Long gameId) throws GameNotFoundException
+	{
+		Game game = gameRepository.findById(gameId).orElseThrow(() -> new GameNotFoundException("Game does not exist!"));
+
+		return game;
+	}
+
+	public Game createGame(List<User> players, User user) throws AccessDeniedException, CantCreateGameException
+	{
+		if(!players.contains(user))
+		{
+			throw new AccessDeniedException("Cannot start game!");
+		}
+
+		if(!players.get(0).equals(user))
+		{
+			throw new CantCreateGameException("You are not the host!");
+		}
+
 		if(players.size() == 2)
 		{
 			return twoPlayerGameFactory.createGame(players);
@@ -72,30 +90,33 @@ public class GameService
 		}
 		else
 		{
-			throw new IllegalArgumentException("Wrong player number!");
+			throw new CantCreateGameException("Wrong player number!");
 		}
 	}
 
-	public void updatePlayerTurn(Game game) 
+	public Integer updatePlayerTurn(Game game)
 	{
 		Integer playerTurn = game.getPlayerTurn();
-		Optional<History> history = historyRepository.findByGameId(game.getId());
+		History history = game.getHistory();
 		
 		do
 		{
 			if(game.getPlayers().size() == playerTurn)
 			{
 				playerTurn = 1;
-				game.setPlayerTurn(playerTurn);
 			}
 			else
 			{
-				game.setPlayerTurn(++playerTurn);
+				playerTurn++;
 			}
+
+			game.setPlayerTurn(playerTurn);
 		}
-		while(history.get().getLeaderboard().contains(game.getPlayerWithTurn()));
-		
+		while(history.getLeaderboard().contains(game.getPlayerWithTurn()));
+
 		gameRepository.save(game);
+
+		return playerTurn;
 	}
 	
 	public void updateChosenTile(Game game, Tile tile) 
@@ -112,9 +133,46 @@ public class GameService
 		gameRepository.save(game);
 	}
 	
-	public List<Tile> getBoard(Game game) 
+	public List<Tile> getBoard(Game game, User user) throws AccessDeniedException
 	{
+		validate(game, user);
+
 		return game.getTileList();
+	}
+
+	public Date getLastUpdate(Game game, User user) throws AccessDeniedException
+	{
+		validate(game, user);
+
+		return game.getLastUpdate();
+	}
+
+	public GameStatus getGameStatus(Game game, User user) throws AccessDeniedException
+	{
+		validate(game, user);
+
+		return game.getGameStatus();
+	}
+
+	public Integer getPlayerTurn(Game game, User user) throws AccessDeniedException
+	{
+		validate(game, user);
+
+		return game.getPlayerTurn();
+	}
+
+	public Tile getChosenTile(Game game, User user) throws AccessDeniedException
+	{
+		validate(game, user);
+
+		return game.getChosenTile();
+	}
+
+	public List<User> getPlayerBoard(Game game, User user) throws AccessDeniedException
+	{
+		validate(game, user);
+
+		return game.getPlayers();
 	}
 	
 	public void move(Tile firstTile, Tile secondTile, Game game)
@@ -132,7 +190,7 @@ public class GameService
 	
 	public boolean isFinished(Game game)
 	{
-		return game.getPlayers().size() == (historyRepository.findByGameId(game.getId()).get().getLeaderboard().size() + 1);
+		return game.getPlayers().size() == (game.getHistory().getLeaderboard().size() + 1);
 	}
 	
 	public void setStatus(Game game, GameStatus gameStatus) 

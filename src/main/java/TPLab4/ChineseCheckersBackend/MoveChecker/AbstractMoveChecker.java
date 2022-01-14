@@ -14,8 +14,9 @@ import TPLab4.ChineseCheckersBackend.Tile.Tile;
 import TPLab4.ChineseCheckersBackend.Tile.TileColor;
 import TPLab4.ChineseCheckersBackend.Tile.TileRepository;
 import TPLab4.ChineseCheckersBackend.User.User;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public abstract class AbstractMoveChecker 
 {
     protected final List<TileColor> colorOrder = List.of(TileColor.WHITE, TileColor.RED, TileColor.BLUE, TileColor.GREEN, TileColor.PURPLE, TileColor.BROWN, TileColor.ORANGE);
@@ -35,9 +36,12 @@ public abstract class AbstractMoveChecker
 		{
 			if(isDuringMove(game))
 			{
-				if(isTileWhite(tile) && !isMoveFromCorner(game, tile) && isDistanceTwoMove(game.getChosenTile(), tile) && isCorrectTileBetween(game.getChosenTile(), tile, game))
+				if(isTileWhite(tile) && !isMoveFromCorner(game, tile))
 				{
-					correctMove = true;
+					if (isDistanceTwoMove(game.getChosenTile(), tile) && isCorrectTileBetween(game.getChosenTile(), tile, game))
+					{
+						correctMove = true;
+					}
 				}
 			}
 			else
@@ -49,15 +53,22 @@ public abstract class AbstractMoveChecker
 						gameService.updateChosenTile(game, tile);
 					}
 				}
-				else if(isTileWhite(tile) && !isMoveFromCorner(game, tile)) //  && isDistanceOneMove(game.getChosenTile(), tile)
+				else if(isTileWhite(tile) && !isMoveFromCorner(game, tile))
 				{
-					correctMove = true;
-					endTurn = true;
-				}
-				else if(isTileWhite(tile) && !isMoveFromCorner(game, tile) && isDistanceTwoMove(game.getChosenTile(), tile) && isCorrectTileBetween(game.getChosenTile(), tile, game))
-				{
-					correctMove = true;
-					gameService.updateDuringMove(game, Boolean.TRUE);
+					if(isDistanceOneMove(game.getChosenTile(), tile))
+					{
+						correctMove = true;
+						endTurn = true;
+					}
+					if(isDistanceTwoMove(game.getChosenTile(), tile) && isCorrectTileBetween(game.getChosenTile(), tile, game))
+					{
+						correctMove = true;
+						gameService.updateDuringMove(game, Boolean.TRUE);
+					}
+					else
+					{
+						gameService.updateChosenTile(game, null);
+					}
 				}
 				else
 				{
@@ -118,9 +129,9 @@ public abstract class AbstractMoveChecker
 	
 	protected boolean isCorrectTileBetween(Tile firstTile, Tile secondTile, Game game)
 	{
-		Optional<Tile> middleTile = tileRepository.findByXAndYAndGameId((firstTile.getX() + secondTile.getX()) / 2, (firstTile.getY() + secondTile.getY()) / 2, game.getId());
+		Tile middleTile = tileRepository.getByXAndYAndGameId((firstTile.getX() + secondTile.getX()) / 2, (firstTile.getY() + secondTile.getY()) / 2, game.getId());
 		
-		return !middleTile.get().getColor().equals(colorOrder.get(0));
+		return !middleTile.getColor().equals(colorOrder.get(0));
 	}
 	
 	public List<TileColor> getColorOrder() 
