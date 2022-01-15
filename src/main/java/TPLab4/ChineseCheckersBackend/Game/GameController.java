@@ -155,14 +155,7 @@ public class GameController
 
 			Tile chosenTile = gameService.getChosenTile(game, user);
 
-			if(chosenTile != null)
-			{
-				return ResponseEntity.ok(chosenTile.getId());
-			}
-			else
-			{
-				return ResponseEntity.ok("");
-			}
+			return ResponseEntity.ok(chosenTile != null ? chosenTile.getId() : "");
 		}
 		catch(UsernameNotFoundException ex)
 		{
@@ -315,18 +308,7 @@ public class GameController
 			Tile tile = tileService.loadTileById(moveRequest.getTileId());
 			History history = historyService.loadHistoryByGameId(moveRequest.getGameId());
 
-			Pair<Boolean, Boolean> result = moveCheckerGetter.getMoveChecker(game).checkMove(user, game, tile);
-
-			if(result.getFirst())
-			{
-				moveService.saveMove(user, history, game.getChosenTile(), tile);
-				gameService.move(game.getChosenTile(), tile, game);
-			}
-
-			if(result.getSecond())
-			{
-				this.endTurn(new EndTurnRequest(game.getId()), principal);
-			}
+			moveService.move(user, game, tile, history);
 
 			return ResponseEntity.ok(new MessageResponse("Ok"));
 		}
@@ -362,34 +344,7 @@ public class GameController
 			Game game = gameService.loadGameById(endTurnRequest.getGameId());
 			History history = historyService.loadHistoryByGameId(game.getId());
 
-			if(game.getPlayerWithTurn().getId().equals(user.getId()) && game.getGameStatus().equals(GameStatus.ONGOING))
-			{
-				gameService.updateChosenTile(game, null);
-				gameService.updateDuringMove(game, Boolean.FALSE);
-
-				if(moveCheckerGetter.getMoveChecker(game).isCurrentPlayerWinner(game))
-				{
-					historyService.addPlayerToLeaderboard(history, user);
-				}
-
-				if(gameService.isFinished(game))
-				{
-					for(User p : game.getPlayers())
-					{
-						if(!history.getLeaderboard().contains(p))
-						{
-							historyService.addPlayerToLeaderboard(history, p);
-						}
-					}
-
-					gameService.setStatus(game, GameStatus.FINISHED);
-					roomService.detachGame(game.getRoom());
-				}
-				else
-				{
-					gameService.updatePlayerTurn(game);
-				}
-			}
+			moveService.endTurn(user, game, history);
 
 			return ResponseEntity.ok(new MessageResponse("Ok"));
 		}

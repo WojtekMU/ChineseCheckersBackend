@@ -1,6 +1,5 @@
 package TPLab4.ChineseCheckersBackend.History;
 
-import TPLab4.ChineseCheckersBackend.Game.BaseGameGetter;
 import TPLab4.ChineseCheckersBackend.Game.Game;
 import TPLab4.ChineseCheckersBackend.Game.GameRepository;
 import TPLab4.ChineseCheckersBackend.Move.Move;
@@ -24,9 +23,6 @@ public class HistoryService
 
     @Autowired
     private GameRepository gameRepository;
-
-    @Autowired
-    private BaseGameGetter baseGameGetter;
 
     private void validate(History history, User user) throws AccessDeniedException
     {
@@ -84,8 +80,6 @@ public class HistoryService
     {
         validate(history, user);
 
-        Game game = gameRepository.getById(baseGameGetter.getBaseGame(history.getGame()));
-
-        return game.getTileList();
+        return history.getGame().getTileList();
     }
 }

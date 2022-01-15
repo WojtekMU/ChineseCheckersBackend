@@ -4,13 +4,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import TPLab4.ChineseCheckersBackend.Game.Game;
 import TPLab4.ChineseCheckersBackend.Game.StandardThreePlayersGame;
-import TPLab4.ChineseCheckersBackend.MoveChecker.StandardThreePlayersMoveChecker;
 import TPLab4.ChineseCheckersBackend.User.User;
 
 @Component
-public class ThreePlayerGameFactory extends GameFactory
+public class StandardThreePlayersGameFactory extends GameFactory
 {
 	@Override
 	public StandardThreePlayersGame createGame(List<User> players)

@@ -1,28 +1,17 @@
 package TPLab4.ChineseCheckersBackend;
 
-import TPLab4.ChineseCheckersBackend.Game.GameRepository;
-import TPLab4.ChineseCheckersBackend.Game.GameService;
-import TPLab4.ChineseCheckersBackend.Game.GameStatus;
-import TPLab4.ChineseCheckersBackend.Game.StandardTwoPlayersGame;
-import TPLab4.ChineseCheckersBackend.GameFactory.FourPlayerGameFactory;
-import TPLab4.ChineseCheckersBackend.GameFactory.SixPlayerGameFactory;
-import TPLab4.ChineseCheckersBackend.GameFactory.ThreePlayerGameFactory;
-import TPLab4.ChineseCheckersBackend.GameFactory.TwoPlayerGameFactory;
 import TPLab4.ChineseCheckersBackend.Role.ERole;
 import TPLab4.ChineseCheckersBackend.Role.Role;
 import TPLab4.ChineseCheckersBackend.Role.RoleRepository;
-import org.assertj.core.util.Sets;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import TPLab4.ChineseCheckersBackend.User.User;
 import TPLab4.ChineseCheckersBackend.User.UserRepository;
 
-import java.sql.Array;
 import java.util.*;
 
 @SpringBootApplication

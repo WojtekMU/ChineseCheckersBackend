@@ -3,7 +3,6 @@ package TPLab4.ChineseCheckersBackend.History;
 import java.security.Principal;
 import java.util.Optional;
 
-import TPLab4.ChineseCheckersBackend.Game.BaseGameGetter;
 import TPLab4.ChineseCheckersBackend.Game.Game;
 import TPLab4.ChineseCheckersBackend.Game.GameNotFoundException;
 import TPLab4.ChineseCheckersBackend.Game.GameRepository;

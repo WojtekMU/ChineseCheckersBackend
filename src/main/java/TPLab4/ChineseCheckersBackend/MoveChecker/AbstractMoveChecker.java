@@ -27,12 +27,12 @@ public abstract class AbstractMoveChecker
     @Autowired
     protected GameService gameService;
 	
-	public Pair<Boolean, Boolean> checkMove(User player, Game game, Tile tile)
+	public Pair<Boolean, Boolean> checkMove(User user, Game game, Tile tile)
 	{
 		Boolean correctMove = false;
 		Boolean endTurn = false;
 		
-		if(correctPlayer(player, game) && isOngoingGame(game))
+		if(correctPlayer(user, game) && isOngoingGame(game))
 		{
 			if(isDuringMove(game))
 			{
@@ -60,7 +60,7 @@ public abstract class AbstractMoveChecker
 						correctMove = true;
 						endTurn = true;
 					}
-					if(isDistanceTwoMove(game.getChosenTile(), tile) && isCorrectTileBetween(game.getChosenTile(), tile, game))
+					else if(isDistanceTwoMove(game.getChosenTile(), tile) && isCorrectTileBetween(game.getChosenTile(), tile, game))
 					{
 						correctMove = true;
 						gameService.updateDuringMove(game, Boolean.TRUE);
@@ -80,9 +80,19 @@ public abstract class AbstractMoveChecker
 		return Pair.of(correctMove, endTurn);
 	}
 	
-	protected boolean correctPlayer(User player, Game game)
+	public boolean checkEndTurn(User user, Game game)
 	{
-		return game.getPlayerWithTurn().equals(player);
+		return isOngoingGame(game) && correctPlayer(user, game);
+	}
+
+	public boolean isGameFinished(Game game)
+	{
+		return game.getPlayers().size() == (game.getHistory().getLeaderboard().size() + 1);
+	}
+	
+	protected boolean correctPlayer(User user, Game game)
+	{
+		return game.getPlayerWithTurn().equals(user);
 	}
 	
 	protected boolean isOngoingGame(Game game)

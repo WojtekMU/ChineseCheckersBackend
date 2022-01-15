@@ -1,30 +1,23 @@
 import TPLab4.ChineseCheckersBackend.Game.Game;
 import TPLab4.ChineseCheckersBackend.Game.GameService;
 import TPLab4.ChineseCheckersBackend.Game.GameStatus;
-import TPLab4.ChineseCheckersBackend.GameFactory.FourPlayerGameFactory;
-import TPLab4.ChineseCheckersBackend.GameFactory.SixPlayerGameFactory;
-import TPLab4.ChineseCheckersBackend.GameFactory.ThreePlayerGameFactory;
-import TPLab4.ChineseCheckersBackend.GameFactory.TwoPlayerGameFactory;
-import TPLab4.ChineseCheckersBackend.MoveChecker.StandardFourPlayersMoveChecker;
-import TPLab4.ChineseCheckersBackend.MoveChecker.StandardSixPlayersMoveChecker;
-import TPLab4.ChineseCheckersBackend.MoveChecker.StandardThreePlayersMoveChecker;
+import TPLab4.ChineseCheckersBackend.History.History;
 import TPLab4.ChineseCheckersBackend.MoveChecker.StandardTwoPlayersMoveChecker;
 import TPLab4.ChineseCheckersBackend.Tile.Tile;
 import TPLab4.ChineseCheckersBackend.Tile.TileColor;
 import TPLab4.ChineseCheckersBackend.Tile.TileRepository;
 import TPLab4.ChineseCheckersBackend.User.User;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.Mockito.doReturn;
@@ -374,5 +367,78 @@ public class MoveCheckerTest
 
         Assertions.assertEquals(true, result.getFirst());
         Assertions.assertEquals(false, result.getSecond());
+    }
+
+    @Test
+    public void checkEndTurnTest()
+    {
+        Mockito.when(game.getGameStatus()).thenReturn(GameStatus.ONGOING);
+        Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
+
+        boolean result = standardTwoPlayersMoveChecker.checkEndTurn(user, game);
+
+        Assertions.assertEquals(true, result);
+    }
+
+    @Test
+    public void checkEndTurnWrongGameStatusTest()
+    {
+        Mockito.when(game.getGameStatus()).thenReturn(GameStatus.FINISHED);
+        Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
+
+        boolean result = standardTwoPlayersMoveChecker.checkEndTurn(user, game);
+
+        Assertions.assertEquals(false, result);
+    }
+
+    @Test
+    public void checkEndTurnWrongUserTest()
+    {
+        User user1 = Mockito.mock(User.class);
+
+        Mockito.when(game.getGameStatus()).thenReturn(GameStatus.ONGOING);
+        Mockito.when(game.getPlayerWithTurn()).thenReturn(user1);
+
+        boolean result = standardTwoPlayersMoveChecker.checkEndTurn(user, game);
+
+        Assertions.assertEquals(false, result);
+    }
+
+    @Test
+    public void isGameFinishedTrueTest()
+    {
+        User user1 = Mockito.mock(User.class);
+        User user2 = Mockito.mock(User.class);
+        History history = Mockito.mock(History.class);
+
+        List<User> userList = Arrays.asList(user1, user2);
+        List<User> leaderboard = Arrays.asList(user1);
+
+        Mockito.when(game.getPlayers()).thenReturn(userList);
+        Mockito.when(game.getHistory()).thenReturn(history);
+        Mockito.when(history.getLeaderboard()).thenReturn(leaderboard);
+
+        boolean result = standardTwoPlayersMoveChecker.isGameFinished(game);
+
+        Assertions.assertEquals(true, result);
+    }
+
+    @Test
+    public void isGameFinishedFalseTest()
+    {
+        User user1 = Mockito.mock(User.class);
+        User user2 = Mockito.mock(User.class);
+        History history = Mockito.mock(History.class);
+
+        List<User> userList = Arrays.asList(user1, user2);
+        List<User> leaderboard = Arrays.asList();
+
+        Mockito.when(game.getPlayers()).thenReturn(userList);
+        Mockito.when(game.getHistory()).thenReturn(history);
+        Mockito.when(history.getLeaderboard()).thenReturn(leaderboard);
+
+        boolean result = standardTwoPlayersMoveChecker.isGameFinished(game);
+
+        Assertions.assertEquals(false, result);
     }
 }

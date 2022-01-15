@@ -1,4 +1,4 @@
-import TPLab4.ChineseCheckersBackend.Game.BaseGameGetter;
+
 import TPLab4.ChineseCheckersBackend.Game.Game;
 import TPLab4.ChineseCheckersBackend.Game.GameRepository;
 import TPLab4.ChineseCheckersBackend.History.History;
@@ -34,9 +34,6 @@ public class HistoryServiceTest
 
     @Mock
     private GameRepository gameRepository;
-
-    @Mock
-    private BaseGameGetter baseGameGetter;
 
     @InjectMocks
     private HistoryService historyService;

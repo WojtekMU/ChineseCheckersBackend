@@ -3,47 +3,45 @@ package TPLab4.ChineseCheckersBackend.Game;
 import java.util.Date;
 import java.util.List;
 
-import org.javatuples.Triplet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import TPLab4.ChineseCheckersBackend.GameFactory.FourPlayerGameFactory;
-import TPLab4.ChineseCheckersBackend.GameFactory.SixPlayerGameFactory;
-import TPLab4.ChineseCheckersBackend.GameFactory.ThreePlayerGameFactory;
-import TPLab4.ChineseCheckersBackend.GameFactory.TwoPlayerGameFactory;
+import TPLab4.ChineseCheckersBackend.GameFactory.StandardFourPlayersGameFactory;
+import TPLab4.ChineseCheckersBackend.GameFactory.StandardSixPlayersGameFactory;
+import TPLab4.ChineseCheckersBackend.GameFactory.StandardThreePlayersGameFactory;
+import TPLab4.ChineseCheckersBackend.GameFactory.StandardTwoPlayersGameFactory;
 import TPLab4.ChineseCheckersBackend.History.History;
 import TPLab4.ChineseCheckersBackend.History.HistoryRepository;
 import TPLab4.ChineseCheckersBackend.Tile.Tile;
-import TPLab4.ChineseCheckersBackend.Tile.TileColor;
 import TPLab4.ChineseCheckersBackend.Tile.TileRepository;
 import TPLab4.ChineseCheckersBackend.User.User;
 
 @Service
 @Transactional
-public class GameService 
+public class GameService
 {
 	@Autowired
-	private GameRepository gameRepository;    
+	private GameRepository gameRepository;
 
 	@Autowired
 	private TileRepository tileRepository;
-	
+
 	@Autowired
 	private HistoryRepository historyRepository;
-	
+
 	@Autowired
-	private TwoPlayerGameFactory twoPlayerGameFactory;
-	
+	private StandardTwoPlayersGameFactory standardTwoPlayersGameFactory;
+
 	@Autowired
-	private ThreePlayerGameFactory threePlayerGameFactory;
-	
+	private StandardThreePlayersGameFactory standardThreePlayersGameFactory;
+
 	@Autowired
-	private FourPlayerGameFactory fourPlayerGameFactory;
-	
+	private StandardFourPlayersGameFactory standardFourPlayersGameFactory;
+
 	@Autowired
-	private SixPlayerGameFactory sixPlayerGameFactory;
+	private StandardSixPlayersGameFactory standardSixPlayersGameFactory;
 
 	private void validate(Game game, User user) throws AccessDeniedException
 	{
@@ -74,19 +72,19 @@ public class GameService
 
 		if(players.size() == 2)
 		{
-			return twoPlayerGameFactory.createGame(players);
+			return standardTwoPlayersGameFactory.createGame(players);
 		}
 		else if(players.size() == 3)
 		{
-			return threePlayerGameFactory.createGame(players);
+			return standardThreePlayersGameFactory.createGame(players);
 		}
 		else if(players.size() == 4)
 		{
-			return fourPlayerGameFactory.createGame(players);
+			return standardFourPlayersGameFactory.createGame(players);
 		}
 		else if(players.size() == 6)
 		{
-			return sixPlayerGameFactory.createGame(players);
+			return standardSixPlayersGameFactory.createGame(players);
 		}
 		else
 		{
@@ -98,7 +96,7 @@ public class GameService
 	{
 		Integer playerTurn = game.getPlayerTurn();
 		History history = game.getHistory();
-		
+
 		do
 		{
 			if(game.getPlayers().size() == playerTurn)
@@ -118,21 +116,21 @@ public class GameService
 
 		return playerTurn;
 	}
-	
-	public void updateChosenTile(Game game, Tile tile) 
+
+	public void updateChosenTile(Game game, Tile tile)
 	{
 		game.setChosenTile(tile);
-		
+
 		gameRepository.save(game);
 	}
-	
-	public void updateDuringMove(Game game, Boolean bool) 
+
+	public void updateDuringMove(Game game, Boolean bool)
 	{
 		game.setDuringMove(bool);
-		
+
 		gameRepository.save(game);
 	}
-	
+
 	public List<Tile> getBoard(Game game, User user) throws AccessDeniedException
 	{
 		validate(game, user);
@@ -174,29 +172,16 @@ public class GameService
 
 		return game.getPlayers();
 	}
-	
-	public void move(Tile firstTile, Tile secondTile, Game game)
-	{
-		TileColor firstTileColor = firstTile.getColor();
-		
-		firstTile.setColor(TileColor.WHITE);
-		secondTile.setColor(firstTileColor);
-		game.setChosenTile(secondTile);
-		
-		tileRepository.save(firstTile);
-		tileRepository.save(secondTile);
-		gameRepository.save(game);
-	}
-	
+
 	public boolean isFinished(Game game)
 	{
 		return game.getPlayers().size() == (game.getHistory().getLeaderboard().size() + 1);
 	}
-	
-	public void setStatus(Game game, GameStatus gameStatus) 
+
+	public void setStatus(Game game, GameStatus gameStatus)
 	{
 		game.setGameStatus(gameStatus);
-		
+
 		gameRepository.save(game);
 	}
 }

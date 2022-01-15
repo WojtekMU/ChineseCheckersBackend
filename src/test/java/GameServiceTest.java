@@ -1,25 +1,18 @@
 import TPLab4.ChineseCheckersBackend.Game.*;
-import TPLab4.ChineseCheckersBackend.GameFactory.FourPlayerGameFactory;
-import TPLab4.ChineseCheckersBackend.GameFactory.SixPlayerGameFactory;
-import TPLab4.ChineseCheckersBackend.GameFactory.ThreePlayerGameFactory;
-import TPLab4.ChineseCheckersBackend.GameFactory.TwoPlayerGameFactory;
+import TPLab4.ChineseCheckersBackend.GameFactory.StandardFourPlayersGameFactory;
+import TPLab4.ChineseCheckersBackend.GameFactory.StandardSixPlayersGameFactory;
+import TPLab4.ChineseCheckersBackend.GameFactory.StandardThreePlayersGameFactory;
+import TPLab4.ChineseCheckersBackend.GameFactory.StandardTwoPlayersGameFactory;
 import TPLab4.ChineseCheckersBackend.History.History;
 import TPLab4.ChineseCheckersBackend.History.HistoryRepository;
-import TPLab4.ChineseCheckersBackend.Room.CantJoinRoomException;
-import TPLab4.ChineseCheckersBackend.Room.Room;
-import TPLab4.ChineseCheckersBackend.Room.RoomNotFoundException;
-import TPLab4.ChineseCheckersBackend.Tile.Tile;
-import TPLab4.ChineseCheckersBackend.Tile.TileColor;
 import TPLab4.ChineseCheckersBackend.Tile.TileRepository;
 import TPLab4.ChineseCheckersBackend.User.User;
-import org.javatuples.Triplet;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -43,16 +36,16 @@ public class GameServiceTest
     private HistoryRepository historyRepository;
 
     @Mock
-    private TwoPlayerGameFactory twoPlayerGameFactory;
+    private StandardTwoPlayersGameFactory standardTwoPlayersGameFactory;
 
     @Mock
-    private ThreePlayerGameFactory threePlayerGameFactory;
+    private StandardThreePlayersGameFactory standardThreePlayersGameFactory;
 
     @Mock
-    private FourPlayerGameFactory fourPlayerGameFactory;
+    private StandardFourPlayersGameFactory standardFourPlayersGameFactory;
 
     @Mock
-    private SixPlayerGameFactory sixPlayerGameFactory;
+    private StandardSixPlayersGameFactory standardSixPlayersGameFactory;
 
     @InjectMocks
     private GameService gameService;
@@ -100,7 +93,7 @@ public class GameServiceTest
         userList.add(user6);
 
         gameService.createGame(userList, user1);
-        verify(sixPlayerGameFactory, times(1)).createGame(userList);
+        verify(standardSixPlayersGameFactory, times(1)).createGame(userList);
     }
 
     @Test
@@ -141,7 +134,7 @@ public class GameServiceTest
         userList.add(user4);
 
         gameService.createGame(userList, user1);
-        verify(fourPlayerGameFactory, times(1)).createGame(userList);
+        verify(standardFourPlayersGameFactory, times(1)).createGame(userList);
     }
 
     @Test
@@ -158,7 +151,7 @@ public class GameServiceTest
         userList.add(user3);
 
         gameService.createGame(userList, user1);
-        verify(threePlayerGameFactory, times(1)).createGame(userList);
+        verify(standardThreePlayersGameFactory, times(1)).createGame(userList);
     }
 
     @Test
@@ -173,7 +166,7 @@ public class GameServiceTest
         userList.add(user2);
 
         gameService.createGame(userList, user1);
-        verify(twoPlayerGameFactory, times(1)).createGame(userList);
+        verify(standardTwoPlayersGameFactory, times(1)).createGame(userList);
     }
 
     @Test
@@ -280,15 +273,15 @@ public class GameServiceTest
         Assertions.assertEquals(1, playerTurn);
     }
 
-    @Test
-    public void moveTest()
-    {
-        Tile firstTile = Mockito.mock(Tile.class);
-        Tile secondTile = Mockito.mock(Tile.class);
-        Game game = Mockito.mock(Game.class);
-
-        Mockito.when(secondTile.getColor()).thenReturn(TileColor.RED);
-
-        gameService.move(firstTile, secondTile, game);
-    }
+//    @Test
+//    public void moveTest()
+//    {
+//        Tile firstTile = Mockito.mock(Tile.class);
+//        Tile secondTile = Mockito.mock(Tile.class);
+//        Game game = Mockito.mock(Game.class);
+//
+//        Mockito.when(secondTile.getColor()).thenReturn(TileColor.RED);
+//
+//        gameService.move(firstTile, secondTile, game);
+//    }
 }
