@@ -19,14 +19,26 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import TPLab4.ChineseCheckersBackend.User.UserDetailsServiceImpl;
 
+/**
+ * Authentication token filter.
+ */
 public class AuthTokenFilter extends OncePerRequestFilter 
 {
+	/**
+	 * Jwt utilities
+	 */
 	@Autowired
 	private JwtUtils jwtUtils;
 
+	/**
+	 * User details service implementation
+	 */
 	@Autowired
 	private UserDetailsServiceImpl userDetailsService;
 
+	/**
+	 * Logger
+	 */
 	private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
 	@Override
@@ -56,13 +68,18 @@ public class AuthTokenFilter extends OncePerRequestFilter
 		filterChain.doFilter(request, response);
 	}
 
-	private String parseJwt(HttpServletRequest request) 
+	/**
+	 * Jwt parsing method.
+	 * @param request HTTP servlet request
+	 * @return Authentication header type
+	 */
+	private String parseJwt(HttpServletRequest request)
 	{
 		String headerAuth = request.getHeader("Authorization");
 
 		if(StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer "))
 		{
-			return headerAuth.substring(7, headerAuth.length());
+			return headerAuth.substring(7);
 		}
 
 		return null;

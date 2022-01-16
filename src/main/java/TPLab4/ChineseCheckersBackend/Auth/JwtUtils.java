@@ -16,17 +16,34 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 
+/**
+ * Jwt utilities class
+ */
 @Component
 public class JwtUtils 
 {
+	/**
+	 * Logger
+	 */
 	private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
+	/**
+	 * Jwt secret
+	 */
 	@Value("${chineseCheckers.jwtSecret}")
 	private String jwtSecret;
 
+	/**
+	 * Jwt expiration time
+	 */
 	@Value("${chineseCheckers.jwtExpirationMs}")
 	private int jwtExpirationMs;
 
+	/**
+	 * Jwt token generator.
+	 * @param authentication Authentication
+	 * @return Jwt token
+	 */
 	public String generateJwtToken(Authentication authentication) 
 	{
 
@@ -40,11 +57,21 @@ public class JwtUtils
 				.compact();
 	}
 
+	/**
+	 * Method for getting user name from token.
+	 * @param token Jwt token
+	 * @return Username
+	 */
 	public String getUserNameFromJwtToken(String token) 
 	{
 		return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
 	}
 
+	/**
+	 * Method for validating jwt tokens.
+	 * @param authToken Jwt token
+	 * @return True if token is valid, else false.
+	 */
 	public boolean validateJwtToken(String authToken) 
 	{
 		try 

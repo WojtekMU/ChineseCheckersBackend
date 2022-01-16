@@ -21,17 +21,31 @@ import org.springframework.web.bind.annotation.*;
 import TPLab4.ChineseCheckersBackend.User.User;
 import TPLab4.ChineseCheckersBackend.User.UserRepository;
 
+/**
+ * REST controller for history.
+ */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/chineseCheckers/history")
 public class HistoryController 
 {
+	/**
+	 * History service
+	 */
 	@Autowired
 	private HistoryService historyService;
 
+	/**
+	 * User service
+	 */
 	@Autowired
 	private UserService userService;
 
+	/**
+	 * Method handing replays request.
+	 * @param principal User sending the request.
+	 * @return User replays list or error message.
+	 */
 	@PreAuthorize("hasRole('USER')")
     @GetMapping(value = "/replays", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getReplays(Principal principal)
@@ -56,6 +70,12 @@ public class HistoryController
 		}
     }
 
+	/**
+	 * Method for handling moves request.
+	 * @param historyId History id
+	 * @param principal User sending the request.
+	 * @return Moves list or error message.
+	 */
 	@PreAuthorize("hasRole('USER')")
 	@GetMapping(value = "/moves", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getMoves(@RequestParam Long historyId, Principal principal)
@@ -81,6 +101,12 @@ public class HistoryController
 		}
 	}
 
+	/**
+	 * Method for handling replay board request.
+	 * @param historyId History id
+	 * @param principal User sending the request.
+	 * @return Replay list or error message.
+	 */
 	@PreAuthorize("hasRole('USER')")
 	@GetMapping(value = "/replayBoard", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getReplayBoard(@RequestParam Long historyId, Principal principal)

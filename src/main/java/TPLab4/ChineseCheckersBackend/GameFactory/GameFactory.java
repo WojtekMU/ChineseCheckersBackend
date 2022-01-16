@@ -18,28 +18,58 @@ import TPLab4.ChineseCheckersBackend.Tile.TileRepository;
 import TPLab4.ChineseCheckersBackend.Tile.TileService;
 import TPLab4.ChineseCheckersBackend.User.User;
 import TPLab4.ChineseCheckersBackend.User.UserRepository;
-	
+
+/**
+ * Abstract game factory class
+ */
 @Component
 public abstract class GameFactory 
-{    
+{
+	/**
+	 * Tile service
+	 */
 	@Autowired
 	protected TileService tileService;
-	
+
+	/**
+	 * Tile repository
+	 */
 	@Autowired
 	protected TileRepository tileRepository;
-	
+
+	/**
+	 * Game repository
+	 */
 	@Autowired
 	protected GameRepository gameRepository;
-	
+
+	/**
+	 * History repository
+	 */
 	@Autowired
 	protected HistoryRepository historyRepository;
-	
+
+	/**
+	 * Color order
+	 */
     protected final List<TileColor> colorOrder = List.of(TileColor.WHITE, TileColor.RED, TileColor.BLUE, TileColor.GREEN, TileColor.PURPLE, TileColor.BROWN, TileColor.ORANGE);
 
+	/**
+	 * Random number generator
+	 */
     protected static Random random = new Random();
-    
+
+	/**
+	 * Create game method.
+	 * @param players Player list
+	 * @return Game
+	 */
 	public abstract Game createGame(List<User> players);
-	
+
+	/**
+	 * Method for creating a clear board.
+	 * @param game Game
+	 */
 	protected void createClearBoard(Game game)
 	{
 		for(Long i = 1L; i <= 17L; i++)
@@ -60,7 +90,12 @@ public abstract class GameFactory
 			}
 		}
 	}
-	
+
+	/**
+	 * Method for filling the first corner
+	 * @param game Game
+	 * @param color Fill color
+	 */
 	protected void fillFirstCorner(Game game, TileColor color)
 	{
 		Long gameId = game.getId();
@@ -72,7 +107,12 @@ public abstract class GameFactory
 			tileService.updateTileColor(tile, color);
 		}
 	}
-	
+
+	/**
+	 * Method for filling the second corner
+	 * @param game Game
+	 * @param color Fill color
+	 */
 	protected void fillSecondCorner(Game game, TileColor color)
 	{
 		Long gameId = game.getId();
@@ -84,7 +124,12 @@ public abstract class GameFactory
 			tileService.updateTileColor(tile, color);
 		}
 	}
-	
+
+	/**
+	 * Method for filling the third corner
+	 * @param game Game
+	 * @param color Fill color
+	 */
 	protected void fillThirdCorner(Game game, TileColor color)
 	{
 		Long gameId = game.getId();
@@ -96,7 +141,12 @@ public abstract class GameFactory
 			tileService.updateTileColor(tile, color);
 		}
 	}
-	
+
+	/**
+	 * Method for filling the fourth corner
+	 * @param game Game
+	 * @param color Fill color
+	 */
 	protected void fillFourthCorner(Game game, TileColor color)
 	{
 		Long gameId = game.getId();
@@ -108,7 +158,12 @@ public abstract class GameFactory
 			tileService.updateTileColor(tile, color);
 		}
 	}
-	
+
+	/**
+	 * Method for filling the fifth corner
+	 * @param game Game
+	 * @param color Fill color
+	 */
 	protected void fillFifthCorner(Game game, TileColor color)
 	{
 		Long gameId = game.getId();
@@ -120,7 +175,12 @@ public abstract class GameFactory
 			tileService.updateTileColor(tile, color);
 		}
 	}
-	
+
+	/**
+	 * Method for filling the sixth corner
+	 * @param game Game
+	 * @param color Fill color
+	 */
 	protected void fillSixthCorner(Game game, TileColor color)
 	{
 		Long gameId = game.getId();
@@ -132,7 +192,12 @@ public abstract class GameFactory
 			tileService.updateTileColor(tile, color);
 		}
 	}
-	
+
+	/**
+	 * Method for setting game properties.
+	 * @param players Player list
+	 * @param game Game
+	 */
 	protected void setGameProperties(List<User> players, Game game)
 	{
 		game.getPlayers().addAll(players);

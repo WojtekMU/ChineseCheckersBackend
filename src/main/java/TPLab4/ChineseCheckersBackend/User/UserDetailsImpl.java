@@ -11,19 +11,44 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+/**
+ * User details class.
+ */
 public class UserDetailsImpl implements UserDetails 
 {
+	/**
+	 * Serialization id.
+	 */
 	private static final long serialVersionUID = 1L;
 
-	private Long id;
+	/**
+	 * User id.
+	 */
+	private final Long id;
 
-	private String username;
+	/**
+	 * User username.
+	 */
+	private final String username;
 
+	/**
+	 * User hashed password.
+	 */
 	@JsonIgnore
-	private String password;
+	private final String password;
 
-	private Collection<? extends GrantedAuthority> authorities;
+	/**
+	 * User authorities.
+	 */
+	private final Collection<? extends GrantedAuthority> authorities;
 
+	/**
+	 * User details constructor.
+	 * @param id Id
+	 * @param username Username
+	 * @param password Password
+	 * @param authorities User authorities set
+	 */
 	public UserDetailsImpl(Long id, String username, String password, Collection<? extends GrantedAuthority> authorities)
 	{
 		this.id = id;
@@ -32,6 +57,11 @@ public class UserDetailsImpl implements UserDetails
 		this.authorities = authorities;
 	}
 
+	/**
+	 * Method building user details.
+	 * @param user User
+	 * @return UserDetailsImpl object
+	 */
 	public static UserDetailsImpl build(User user) 
 	{
 		List<GrantedAuthority> authorities = user.getRoles().stream()
@@ -45,6 +75,10 @@ public class UserDetailsImpl implements UserDetails
 				authorities);
 	}
 
+	/**
+	 * User id getter.
+	 * @return Id
+	 */
 	public Long getId() 
 	{
 		return id;

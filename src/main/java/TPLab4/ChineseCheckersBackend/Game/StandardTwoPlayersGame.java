@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import TPLab4.ChineseCheckersBackend.MoveChecker.StandardTwoPlayersMoveChecker;
 
+/**
+ * Standard two players game class
+ */
 @Entity
 public class StandardTwoPlayersGame extends Game 
 {

@@ -1,5 +1,8 @@
 package TPLab4.ChineseCheckersBackend.Game;
 
+/**
+ * Game type enum
+ */
 public enum GameType 
 {
     STANDARD_TWO_PLAYERS,

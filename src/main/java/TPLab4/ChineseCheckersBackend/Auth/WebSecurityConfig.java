@@ -18,6 +18,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import TPLab4.ChineseCheckersBackend.User.UserDetailsServiceImpl;
 
+/**
+ * Web security configuration class
+ */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(
@@ -27,12 +30,22 @@ import TPLab4.ChineseCheckersBackend.User.UserDetailsServiceImpl;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 {
 
+	/**
+	 * User details service implementation
+	 */
 	@Autowired
 	private UserDetailsServiceImpl userDetailsService;
 
+	/**
+	 * Authentication handler
+	 */
 	@Autowired
 	private AuthEntryPointJwt unauthorizedHandler;
 
+	/**
+	 * Method returning authentication token filter.
+	 * @return Authentication token filter.
+	 */
 	@Bean
 	public AuthTokenFilter authenticationJwtTokenFilter() 
 	{
@@ -52,6 +65,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 		return super.authenticationManagerBean();
 	}
 
+	/**
+	 * Method returning the password encoder.
+	 * @return Password encoder
+	 */
 	@Bean
 	public PasswordEncoder passwordEncoder() 
 	{

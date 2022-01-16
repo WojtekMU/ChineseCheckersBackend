@@ -31,26 +31,49 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * REST controller for authentication
+ */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController 
 {
+	/**
+	 * Authentication menager
+	 */
 	@Autowired
 	private AuthenticationManager authenticationManager;
 
+	/**
+	 * User repository
+	 */
 	@Autowired
 	private UserRepository userRepository;
 
+	/**
+	 * Role repository
+	 */
 	@Autowired
 	private RoleRepository roleRepository;
 
+	/**
+	 * Password encoder
+	 */
 	@Autowired
 	private PasswordEncoder encoder;
 
+	/**
+	 * Jwt utilities
+	 */
 	@Autowired
 	private JwtUtils jwtUtils;
 
+	/**
+	 * Method for handling sign in request.
+	 * @param loginRequest Login request
+	 * @return Server response
+	 */
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest)
 	{
@@ -71,6 +94,11 @@ public class AuthController
 				roles));
 	}
 
+	/**
+	 * Method for handling sign up request.
+	 * @param signUpRequest Register request
+	 * @return Server response
+	 */
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest)
 	{

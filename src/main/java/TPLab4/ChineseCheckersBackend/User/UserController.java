@@ -6,21 +6,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * REST Controller for user.
+ */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/chineseCheckers")
+@RequestMapping("/api/chineseCheckers/user")
 public class UserController 
 {
-	@GetMapping("/all")
-	public String allAccess() 
-	{
-		return "Public Content.";
-	}
 
-	@PreAuthorize("hasRole('USER')")
-	@GetMapping("/user")
-	public String userAccess() 
-	{
-		return "User Content.";
-	}
 }

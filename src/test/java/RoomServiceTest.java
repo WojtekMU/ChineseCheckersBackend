@@ -1,4 +1,3 @@
-import TPLab4.ChineseCheckersBackend.ChineseCheckers;
 import TPLab4.ChineseCheckersBackend.Room.*;
 import TPLab4.ChineseCheckersBackend.User.User;
 import com.google.common.collect.ImmutableSet;
@@ -79,7 +78,7 @@ public class RoomServiceTest
             User user6 = Mockito.mock(User.class);
 
             List<User> usersInRoom = Arrays.asList(user1, user2, user3, user4, user5 ,user6);
-            Mockito.when(room1.getPlayers()).thenReturn(usersInRoom);
+            Mockito.when(room1.getUsers()).thenReturn(usersInRoom);
             roomService.joinRoom(user, room1);
         });
     }
@@ -104,7 +103,7 @@ public class RoomServiceTest
         List<User> usersInRoom = new ArrayList<User>();
         usersInRoom.add(user);
         usersInRoom.add(user1);
-        Mockito.when(room1.getPlayers()).thenReturn(usersInRoom);
+        Mockito.when(room1.getUsers()).thenReturn(usersInRoom);
         Mockito.when(room1.getGameStarted()).thenReturn(false);
         roomService.leaveRoom(user, room1);
         verify(roomRepository, times(2)).save(room1);
@@ -117,7 +116,7 @@ public class RoomServiceTest
         roomService.joinRoom(user, room1);
         List<User> usersInRoom = new ArrayList<User>();
         usersInRoom.add(user);
-        Mockito.when(room1.getPlayers()).thenReturn(usersInRoom);
+        Mockito.when(room1.getUsers()).thenReturn(usersInRoom);
         Mockito.when(room1.getGameStarted()).thenReturn(false);
         roomService.leaveRoom(user, room1);
         verify(roomRepository, times(1)).delete(room1);
@@ -129,7 +128,7 @@ public class RoomServiceTest
         AccessDeniedException thrown = Assertions.assertThrows(AccessDeniedException.class, () -> {
             Room room1 = Mockito.mock(Room.class);
             List<User> usersInRoom = new ArrayList<User>();
-            Mockito.when(room1.getPlayers()).thenReturn(usersInRoom);
+            Mockito.when(room1.getUsers()).thenReturn(usersInRoom);
             roomService.leaveRoom(user, room1);
         });
     }
@@ -142,7 +141,7 @@ public class RoomServiceTest
             roomService.joinRoom(user, room1);
             List<User> usersInRoom = new ArrayList<User>();
             usersInRoom.add(user);
-            Mockito.when(room1.getPlayers()).thenReturn(usersInRoom);
+            Mockito.when(room1.getUsers()).thenReturn(usersInRoom);
             Mockito.when(room1.getGameStarted()).thenReturn(true);
             roomService.leaveRoom(user, room1);
         });

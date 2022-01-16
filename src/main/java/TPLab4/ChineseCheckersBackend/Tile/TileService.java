@@ -8,13 +8,25 @@ import org.springframework.transaction.annotation.Transactional;
 
 import TPLab4.ChineseCheckersBackend.Game.Game;
 
+/**
+ * Tile service class
+ */
 @Service
 @Transactional
 public class TileService 
 {
+	/**
+	 * Tile repository
+	 */
 	@Autowired
 	private TileRepository tileRepository;
 
+	/**
+	 * Method which loads tile by id.
+	 * @param tileId Tile id
+	 * @return Tile
+	 * @throws TileNotFoundException When tile was not found.
+	 */
 	public Tile loadTileById(Long tileId) throws TileNotFoundException
 	{
 		Tile tile = tileRepository.findById(tileId).orElseThrow(() -> new TileNotFoundException("Tile does not exist!"));
@@ -22,6 +34,14 @@ public class TileService
 		return tile;
 	}
 
+	/**
+	 * Method for creating a tile.
+	 * @param x X coordinate
+	 * @param y Y coordinate
+	 * @param color TileColor
+	 * @param game Game
+	 * @return New tile
+	 */
 	public Tile createTile(Long x, Long y, TileColor color, Game game) 
 	{
 		Tile tile = new Tile();
@@ -34,7 +54,12 @@ public class TileService
 
 		return tile;
 	}
-	
+
+	/**
+	 * Method which updates tile color
+	 * @param tile Tile
+	 * @param color TileColor
+	 */
 	public void updateTileColor(Tile tile, TileColor color)
 	{
 		tile.setColor(color);

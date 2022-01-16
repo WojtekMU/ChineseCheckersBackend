@@ -9,7 +9,6 @@ import TPLab4.ChineseCheckersBackend.Tile.TileNotFoundException;
 import TPLab4.ChineseCheckersBackend.Tile.TileService;
 import TPLab4.ChineseCheckersBackend.User.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -66,7 +65,7 @@ public class GameController
     	{
 	    	Room room = roomService.loadRoomById(createGameRequest.getRoomId());
 			User user = userService.loadUserByUsername(principal.getName());
-	    	Game game = gameService.createGame(room.getPlayers(), user);
+	    	Game game = gameService.createGame(room.getUsers(), user);
 	    	
 	    	roomService.setGameStarted(room, game);
 	    	

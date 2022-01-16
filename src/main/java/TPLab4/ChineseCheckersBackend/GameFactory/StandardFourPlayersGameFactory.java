@@ -7,6 +7,9 @@ import org.springframework.stereotype.Component;
 import TPLab4.ChineseCheckersBackend.Game.StandardFourPlayersGame;
 import TPLab4.ChineseCheckersBackend.User.User;
 
+/**
+ * Standard four players game factory class
+ */
 @Component
 public class StandardFourPlayersGameFactory extends GameFactory
 {

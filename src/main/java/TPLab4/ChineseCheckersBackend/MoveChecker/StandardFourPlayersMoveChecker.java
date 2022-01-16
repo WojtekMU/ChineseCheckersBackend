@@ -8,6 +8,9 @@ import TPLab4.ChineseCheckersBackend.Game.Game;
 import TPLab4.ChineseCheckersBackend.Tile.Tile;
 import org.springframework.stereotype.Service;
 
+/**
+ * Move checker class for a standard four players game
+ */
 @Service
 public class StandardFourPlayersMoveChecker extends AbstractMoveChecker 
 {

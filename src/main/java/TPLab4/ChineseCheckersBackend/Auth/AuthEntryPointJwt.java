@@ -17,10 +17,16 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Authentication entry point class
+ */
 @Component
 public class AuthEntryPointJwt implements AuthenticationEntryPoint 
 {
 
+	/**
+	 * Logger
+	 */
 	private static final Logger logger = LoggerFactory.getLogger(AuthEntryPointJwt.class);
 
 	@Override

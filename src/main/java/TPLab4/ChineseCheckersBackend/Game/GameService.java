@@ -18,31 +18,61 @@ import TPLab4.ChineseCheckersBackend.Tile.Tile;
 import TPLab4.ChineseCheckersBackend.Tile.TileRepository;
 import TPLab4.ChineseCheckersBackend.User.User;
 
+/**
+ * Game service class
+ */
 @Service
 @Transactional
 public class GameService
 {
+	/**
+	 * Game repository
+	 */
 	@Autowired
 	private GameRepository gameRepository;
 
+	/**
+	 * Tile repository
+	 */
 	@Autowired
 	private TileRepository tileRepository;
 
+	/**
+	 * History repository
+	 */
 	@Autowired
 	private HistoryRepository historyRepository;
 
+	/**
+	 * Standard two players game factory
+	 */
 	@Autowired
 	private StandardTwoPlayersGameFactory standardTwoPlayersGameFactory;
 
+	/**
+	 * Standard three players game factory
+	 */
 	@Autowired
 	private StandardThreePlayersGameFactory standardThreePlayersGameFactory;
 
+	/**
+	 * Standard four players game factory
+	 */
 	@Autowired
 	private StandardFourPlayersGameFactory standardFourPlayersGameFactory;
 
+	/**
+	 * Standard six players game factory
+	 */
 	@Autowired
 	private StandardSixPlayersGameFactory standardSixPlayersGameFactory;
 
+	/**
+	 * Method validating whether user has access to an element.
+	 * @param game Game
+	 * @param user User
+	 * @throws AccessDeniedException If the user does not have access.
+	 */
 	private void validate(Game game, User user) throws AccessDeniedException
 	{
 		if(!game.getPlayers().contains(user))
@@ -51,6 +81,12 @@ public class GameService
 		}
 	}
 
+	/**
+	 * Method for loading game by id.
+	 * @param gameId Game id
+	 * @return Game
+	 * @throws GameNotFoundException When game was not found.d
+	 */
 	public Game loadGameById(Long gameId) throws GameNotFoundException
 	{
 		Game game = gameRepository.findById(gameId).orElseThrow(() -> new GameNotFoundException("Game does not exist!"));
@@ -58,6 +94,14 @@ public class GameService
 		return game;
 	}
 
+	/**
+	 * Method for creating a game.
+	 * @param players Player list
+	 * @param user User requesting game creation.
+	 * @return Game
+	 * @throws AccessDeniedException When user is not allowed to create a game.
+	 * @throws CantCreateGameException When game can not be created.
+	 */
 	public Game createGame(List<User> players, User user) throws AccessDeniedException, CantCreateGameException
 	{
 		if(!players.contains(user))
@@ -92,6 +136,11 @@ public class GameService
 		}
 	}
 
+	/**
+	 * Method for updating turn.
+	 * @param game Game
+	 * @return Player turn
+	 */
 	public Integer updatePlayerTurn(Game game)
 	{
 		Integer playerTurn = game.getPlayerTurn();
@@ -117,6 +166,11 @@ public class GameService
 		return playerTurn;
 	}
 
+	/**
+	 * Method for updating chosen tile.
+	 * @param game Game
+	 * @param tile Tile
+	 */
 	public void updateChosenTile(Game game, Tile tile)
 	{
 		game.setChosenTile(tile);
@@ -124,6 +178,11 @@ public class GameService
 		gameRepository.save(game);
 	}
 
+	/**
+	 * Method for updating during move.
+	 * @param game Game
+	 * @param bool Boolean value
+	 */
 	public void updateDuringMove(Game game, Boolean bool)
 	{
 		game.setDuringMove(bool);
@@ -131,6 +190,13 @@ public class GameService
 		gameRepository.save(game);
 	}
 
+	/**
+	 * Method for getting the game board.
+	 * @param game Game
+	 * @param user User requesting
+	 * @return Game board
+	 * @throws AccessDeniedException When user is not allowed to get the element.
+	 */
 	public List<Tile> getBoard(Game game, User user) throws AccessDeniedException
 	{
 		validate(game, user);
@@ -138,6 +204,13 @@ public class GameService
 		return game.getTileList();
 	}
 
+	/**
+	 * Method for getting last update.
+	 * @param game Game
+	 * @param user User requesting
+	 * @return Last update
+	 * @throws AccessDeniedException When user is not allowed to get the element.
+	 */
 	public Date getLastUpdate(Game game, User user) throws AccessDeniedException
 	{
 		validate(game, user);
@@ -145,6 +218,13 @@ public class GameService
 		return game.getLastUpdate();
 	}
 
+	/**
+	 * Method for getting game status.
+	 * @param game Game
+	 * @param user User requesting
+	 * @return Game status
+	 * @throws AccessDeniedException When user is not allowed to get the element.
+	 */
 	public GameStatus getGameStatus(Game game, User user) throws AccessDeniedException
 	{
 		validate(game, user);
@@ -152,6 +232,13 @@ public class GameService
 		return game.getGameStatus();
 	}
 
+	/**
+	 * Method for getting player turn.
+	 * @param game Game
+	 * @param user User requesting
+	 * @return Player turns
+	 * @throws AccessDeniedException When user is not allowed to get the element.
+	 */
 	public Integer getPlayerTurn(Game game, User user) throws AccessDeniedException
 	{
 		validate(game, user);
@@ -159,6 +246,13 @@ public class GameService
 		return game.getPlayerTurn();
 	}
 
+	/**
+	 * Method for getting chosen tile.
+	 * @param game Game
+	 * @param user User requesting
+	 * @return Chosen tile
+	 * @throws AccessDeniedException When user is not allowed to get the element.
+	 */
 	public Tile getChosenTile(Game game, User user) throws AccessDeniedException
 	{
 		validate(game, user);
@@ -166,6 +260,13 @@ public class GameService
 		return game.getChosenTile();
 	}
 
+	/**
+	 * Method for getting the player board.
+	 * @param game Game
+	 * @param user User requesting
+	 * @return Player board
+	 * @throws AccessDeniedException When user is not allowed to get the element.
+	 */
 	public List<User> getPlayerBoard(Game game, User user) throws AccessDeniedException
 	{
 		validate(game, user);
@@ -173,11 +274,11 @@ public class GameService
 		return game.getPlayers();
 	}
 
-	public boolean isFinished(Game game)
-	{
-		return game.getPlayers().size() == (game.getHistory().getLeaderboard().size() + 1);
-	}
-
+	/**
+	 * Method for setting the game status.
+	 * @param game Game
+	 * @param gameStatus Game status
+	 */
 	public void setStatus(Game game, GameStatus gameStatus)
 	{
 		game.setGameStatus(gameStatus);
