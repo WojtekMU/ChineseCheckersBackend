@@ -7,6 +7,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import TPLab4.ChineseCheckersBackend.User.User;
@@ -18,19 +20,26 @@ import java.util.*;
  * Main class of the application
  */
 @SpringBootApplication
+@EnableScheduling
 public class ChineseCheckers 
 {
 	/**
 	 * Spring application launcher
-	 * @param args Starting arguments
+	 * @param args Starting arguments3
 	 */
 	public static void main(String[] args) 
 	{
 		SpringApplication.run(ChineseCheckers.class, args);
 	}
-	
+
+	/**
+	 * Method for adding roles to database
+	 * @param userRepository User repository
+	 * @param roleRepository Role repository
+	 * @return CommandLineRunner
+	 */
     @Bean
-    public CommandLineRunner init(RoleRepository roleRepository) {
+    public CommandLineRunner init(UserRepository userRepository, RoleRepository roleRepository) {
         return (args) -> {
 			if(!roleRepository.existsByName(ERole.ROLE_USER))
 			{

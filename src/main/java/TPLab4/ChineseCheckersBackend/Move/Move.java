@@ -43,19 +43,17 @@ public class Move
 	@JsonIgnore
     private History history;
 
-	/**
-	 * Move first tile.
-	 */
-	@ManyToOne
-    @JoinColumn(name = "first_tile_id")
-    private Tile firstTile;
+	@Column(name = "first_tile_x")
+	private Long firstTileX;
 
-	/**
-	 * Move second tile.
-	 */
-	@ManyToOne
-    @JoinColumn(name = "second_tile_id")
-    private Tile secondTile;
+	@Column(name = "first_tile_y")
+	private Long firstTileY;
+
+	@Column(name = "second_tile_x")
+	private Long secondTileX;
+
+	@Column(name = "second_tile_y")
+	private Long secondTileY;
 
 	/**
 	 * Move id getter.
@@ -112,38 +110,66 @@ public class Move
 	}
 
 	/**
-	 * Move first tile getter.
-	 * @return Move first tile
+	 * First tile x getter.
+	 * @return First tile x
 	 */
-	public Tile getFirstTile() 
-	{
-		return firstTile;
+	public Long getFirstTileX() {
+		return firstTileX;
 	}
 
 	/**
-	 * Move first tile setter.
-	 * @param firstTile Tile
+	 * First tile x setter.
+	 * @param firstTileX X coordinate
 	 */
-	public void setFirstTile(Tile firstTile) 
-	{
-		this.firstTile = firstTile;
+	public void setFirstTileX(Long firstTileX) {
+		this.firstTileX = firstTileX;
 	}
 
 	/**
-	 * Move second tile getter.
-	 * @return Move second tile
+	 * First tile y getter.
+	 * @return First tile y
 	 */
-	public Tile getSecondTile()
-	{
-		return secondTile;
+	public Long getFirstTileY() {
+		return firstTileY;
 	}
 
 	/**
-	 * Move second tile setter.
-	 * @param secondTile Tile
+	 * First tile y setter.
+	 * @param firstTileY Y coordinate
 	 */
-	public void setSecondTile(Tile secondTile)
-	{
-		this.secondTile = secondTile;
+	public void setFirstTileY(Long firstTileY) {
+		this.firstTileY = firstTileY;
+	}
+
+	/**
+	 * Second tile x getter.
+	 * @return Second tile x
+	 */
+	public Long getSecondTileX() {
+		return secondTileX;
+	}
+
+	/**
+	 * Second tile x setter.
+	 * @param secondTileX X coordinate
+	 */
+	public void setSecondTileX(Long secondTileX) {
+		this.secondTileX = secondTileX;
+	}
+
+	/**
+	 * Second tile y getter.
+	 * @return Second tile y
+	 */
+	public Long getSecondTileY() {
+		return secondTileY;
+	}
+
+	/**
+	 * Second tile y setter.
+	 * @param secondTileY Y coordinate
+	 */
+	public void setSecondTileY(Long secondTileY) {
+		this.secondTileY = secondTileY;
 	}
 }

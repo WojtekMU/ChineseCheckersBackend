@@ -36,6 +36,7 @@ public class User
 	/**
 	 * Hashed password of the user.
 	 */
+	@JsonIgnore
 	@Column(name = "password", nullable = false)
 	private String password;
 

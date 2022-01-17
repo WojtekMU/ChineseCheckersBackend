@@ -215,6 +215,7 @@ public abstract class AbstractMoveChecker
 	 * Method checking whether there is a correctly colored tile between.
 	 * @param firstTile First tile
 	 * @param secondTile Second tile
+	 * @param game Game
 	 * @return True when there is a correctly colored tile between, else false.
 	 */
 	protected boolean isCorrectTileBetween(Tile firstTile, Tile secondTile, Game game)

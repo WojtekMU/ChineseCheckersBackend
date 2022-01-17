@@ -31,32 +31,62 @@ import TPLab4.ChineseCheckersBackend.User.User;
 
 import javax.validation.Valid;
 
+/**
+ * REST controller for games
+ */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/chineseCheckers/game")
 public class GameController 
 {
+	/**
+	 * Game service
+	 */
     @Autowired
     private GameService gameService;
-    
-    @Autowired
+
+	/**
+	 * Room service
+	 */
+	@Autowired
     private RoomService roomService;
-    
-    @Autowired
+
+	/**
+	 * Move service
+	 */
+	@Autowired
     private MoveService moveService;
 
+	/**
+	 * User service
+	 */
 	@Autowired
 	private UserService userService;
 
+	/**
+	 * Tile service
+	 */
 	@Autowired
 	private TileService tileService;
 
+	/**
+	 * History service
+	 */
 	@Autowired
 	private HistoryService historyService;
 
+	/**
+	 * Move checker getter
+	 */
 	@Autowired
 	private MoveCheckerGetter moveCheckerGetter;
 
+	/**
+	 * Method handling create game request.
+	 * @param createGameRequest Create game request
+	 * @param principal USer requesting
+	 * @return Game id ore error message
+	 */
 	@PreAuthorize("hasRole('USER')")
     @PostMapping(value = "/create")
     public ResponseEntity<?> createNewGame(@Valid @RequestBody CreateGameRequest createGameRequest, Principal principal)
@@ -66,7 +96,9 @@ public class GameController
 	    	Room room = roomService.loadRoomById(createGameRequest.getRoomId());
 			User user = userService.loadUserByUsername(principal.getName());
 	    	Game game = gameService.createGame(room.getUsers(), user);
-	    	
+			History history = historyService.createHistory(game);
+
+			gameService.setHistory(game, history);
 	    	roomService.setGameStarted(room, game);
 	    	
 	    	return ResponseEntity.ok(game.getId());
@@ -93,6 +125,12 @@ public class GameController
 		}
     }
 
+	/**
+	 * Method handling game board request.
+	 * @param gameId Game id
+	 * @param principal User requesting
+	 * @return Game board or error message
+	 */
 	@PreAuthorize("hasRole('USER')")
     @GetMapping(value = "/gameBoard", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getBoard(@RequestParam Long gameId, Principal principal)
@@ -118,6 +156,12 @@ public class GameController
 		}
     }
 
+	/**
+	 * Method handling last update request.
+	 * @param gameId Game id
+	 * @param principal User requesting
+	 * @return Last update time or error message
+	 */
 	@PreAuthorize("hasRole('USER')")
     @GetMapping(value = "/lastUpdate")
     public ResponseEntity<?> getLastGameUpdate(@RequestParam Long gameId, Principal principal)
@@ -143,6 +187,12 @@ public class GameController
 		}
     }
 
+	/**
+	 * Method handling chosen tile request.
+	 * @param gameId Game id
+	 * @param principal User requesting
+	 * @return Chosen tile or error message
+	 */
 	@PreAuthorize("hasRole('USER')")
     @GetMapping(value = "/chosenTile")
     public ResponseEntity<?> getChosenTileId(@RequestParam Long gameId, Principal principal)
@@ -170,6 +220,12 @@ public class GameController
 		}
     }
 
+	/**
+	 * Method handling player board request.
+	 * @param gameId Game id
+	 * @param principal User requesting
+	 * @return Player board or error message
+	 */
 	@PreAuthorize("hasRole('USER')")
     @GetMapping(value = "/playerBoard", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getPlayerBoard(@RequestParam Long gameId, Principal principal)
@@ -195,6 +251,12 @@ public class GameController
 		}
     }
 
+	/**
+	 * Method handling leaderboard request.
+	 * @param gameId Game id
+	 * @param principal User requesting
+	 * @return Leaderboard or error message
+	 */
 	@PreAuthorize("hasRole('USER')")
     @GetMapping(value = "/leaderboard", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getLeaderboard(@RequestParam Long gameId, Principal principal)
@@ -222,6 +284,12 @@ public class GameController
 		}
     }
 
+	/**
+	 * Method handling game status request.
+	 * @param gameId Game id
+	 * @param principal User requesting
+	 * @return Game status or error message
+	 */
 	@PreAuthorize("hasRole('USER')")
     @GetMapping(value = "/gameStatus")
     public ResponseEntity<?> getGameStatus(@RequestParam Long gameId, Principal principal)
@@ -247,6 +315,12 @@ public class GameController
 		}
     }
 
+	/**
+	 * Method handling color order request.
+	 * @param gameId Game id
+	 * @param principal User requesting
+	 * @return Color order or error message
+	 */
 	@PreAuthorize("hasRole('USER')")
     @GetMapping(value = "/colorOrder", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getColorOrder(@RequestParam Long gameId, Principal principal)
@@ -271,6 +345,12 @@ public class GameController
 		}
     }
 
+	/**
+	 * Method handling current player turn request.
+	 * @param gameId Game id
+	 * @param principal User requesting
+	 * @return Current player turn or error message
+	 */
 	@PreAuthorize("hasRole('USER')")
     @GetMapping(value = "/currentPlayerTurn", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getCurrentPlayerTurn(@RequestParam Long gameId, Principal principal)
@@ -296,6 +376,12 @@ public class GameController
 		}
     }
 
+	/**
+	 * Method handling move request.
+	 * @param moveRequest Move request
+	 * @param principal User requesting
+	 * @return Server response
+	 */
 	@PreAuthorize("hasRole('USER')")
     @PutMapping(value = "/move")
     public ResponseEntity<?> move(@Valid @RequestBody MoveRequest moveRequest, Principal principal)
@@ -305,7 +391,7 @@ public class GameController
 			User user = userService.loadUserByUsername(principal.getName());
 			Game game = gameService.loadGameById(moveRequest.getGameId());
 			Tile tile = tileService.loadTileById(moveRequest.getTileId());
-			History history = historyService.loadHistoryByGameId(moveRequest.getGameId());
+			History history = game.getHistory();
 
 			moveService.move(user, game, tile, history);
 
@@ -333,6 +419,12 @@ public class GameController
 		}
     }
 
+	/**
+	 * Method handling end turn request.
+	 * @param endTurnRequest End turn request
+	 * @param principal User requesting
+	 * @return Server response
+	 */
 	@PreAuthorize("hasRole('USER')")
     @PutMapping(value = "/endTurn")
     public ResponseEntity<?> endTurn(@Valid @RequestBody EndTurnRequest endTurnRequest, Principal principal)
@@ -341,7 +433,7 @@ public class GameController
 		{
 			User user = userService.loadUserByUsername(principal.getName());
 			Game game = gameService.loadGameById(endTurnRequest.getGameId());
-			History history = historyService.loadHistoryByGameId(game.getId());
+			History history = game.getHistory();
 
 			moveService.endTurn(user, game, history);
 

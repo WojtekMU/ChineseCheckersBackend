@@ -1,10 +1,7 @@
 
 import TPLab4.ChineseCheckersBackend.Game.Game;
 import TPLab4.ChineseCheckersBackend.Game.GameRepository;
-import TPLab4.ChineseCheckersBackend.History.History;
-import TPLab4.ChineseCheckersBackend.History.HistoryNotFoundException;
-import TPLab4.ChineseCheckersBackend.History.HistoryRepository;
-import TPLab4.ChineseCheckersBackend.History.HistoryService;
+import TPLab4.ChineseCheckersBackend.History.*;
 import TPLab4.ChineseCheckersBackend.Tile.Tile;
 import TPLab4.ChineseCheckersBackend.Tile.TileNotFoundException;
 import TPLab4.ChineseCheckersBackend.Tile.TileService;
@@ -59,26 +56,6 @@ public class HistoryServiceTest
     }
 
     @Test
-    public void loadHistoryByGameIdTest()
-    {
-        Long gameId  = 1L;
-        History history1 = Mockito.mock(History.class);
-        Mockito.when(historyRepository.findByGameId(gameId)).thenReturn(Optional.of(history1));
-        History history2 = historyService.loadHistoryByGameId(gameId);
-        Assertions.assertEquals(history1, history2);
-    }
-
-    @Test
-    public void loadHistoryByGameIdHistoryNotFoundTest()
-    {
-        HistoryNotFoundException thrown = Assertions.assertThrows(HistoryNotFoundException.class, () -> {
-            Long gameId  = 1L;
-            Mockito.when(gameRepository.findById(gameId)).thenReturn(Optional.empty());
-            historyService.loadHistoryByGameId(gameId);
-        });
-    }
-
-    @Test
     public void addPlayerToLeaderboardTest()
     {
         History history = Mockito.mock(History.class);
@@ -94,7 +71,7 @@ public class HistoryServiceTest
     @Test
     public void addPlayerToLeaderboardPlayerAlreadyOnLeaderboardTest()
     {
-        AccessDeniedException thrown = Assertions.assertThrows(AccessDeniedException.class, () -> {
+        CannotAddPlayerToHistoryException thrown = Assertions.assertThrows(CannotAddPlayerToHistoryException.class, () -> {
             History history = Mockito.mock(History.class);
             User user = Mockito.mock(User.class);
 

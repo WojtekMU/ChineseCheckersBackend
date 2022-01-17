@@ -1,5 +1,6 @@
 package TPLab4.ChineseCheckersBackend.History;
 
+import TPLab4.ChineseCheckersBackend.Game.BaseGameGetter;
 import TPLab4.ChineseCheckersBackend.Game.Game;
 import TPLab4.ChineseCheckersBackend.Game.GameRepository;
 import TPLab4.ChineseCheckersBackend.Move.Move;
@@ -34,6 +35,12 @@ public class HistoryService
     private GameRepository gameRepository;
 
     /**
+     * Base game getter
+     */
+    @Autowired
+    private BaseGameGetter baseGameGetter;
+
+    /**
      * Method validating whether user has access to an element.
      * @param history History
      * @param user User
@@ -41,7 +48,7 @@ public class HistoryService
      */
     private void validate(History history, User user) throws AccessDeniedException
     {
-        if(!history.getGame().getPlayers().contains(user))
+       if(!history.getLeaderboard().contains(user))
         {
             throw new AccessDeniedException("User does not have access to this replay!");
         }
@@ -61,14 +68,16 @@ public class HistoryService
     }
 
     /**
-     * Method loading history by game id.
-     * @param gameId Game id
+     * Method for creating history.
+     * @param game Game
      * @return History
-     * @throws HistoryNotFoundException When history was not found.
      */
-    public History loadHistoryByGameId(Long gameId) throws RoomNotFoundException
+    public History createHistory(Game game)
     {
-        History history = historyRepository.findByGameId(gameId).orElseThrow(() -> new HistoryNotFoundException("History does not exist!"));
+        History history = new History();
+        history.setGameType(game.getClass().getSimpleName());
+
+        historyRepository.save(history);
 
         return history;
     }
@@ -81,7 +90,7 @@ public class HistoryService
      */
     public List<User> getLeaderboard(History history, User user)
     {
-        validate(history, user);
+        //validate(history, user);
 
         return history.getLeaderboard();
     }
@@ -136,6 +145,8 @@ public class HistoryService
     {
         validate(history, user);
 
-        return history.getGame().getTileList();
+        Game baseGame = gameRepository.getById(baseGameGetter.getBaseGame(history.getGameType()));
+
+        return baseGame.getTileList();
     }
 }

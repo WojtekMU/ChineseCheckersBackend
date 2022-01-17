@@ -1,9 +1,14 @@
 package TPLab4.ChineseCheckersBackend.Game;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +22,8 @@ import TPLab4.ChineseCheckersBackend.History.HistoryRepository;
 import TPLab4.ChineseCheckersBackend.Tile.Tile;
 import TPLab4.ChineseCheckersBackend.Tile.TileRepository;
 import TPLab4.ChineseCheckersBackend.User.User;
+
+import javax.annotation.PostConstruct;
 
 /**
  * Game service class
@@ -284,5 +291,39 @@ public class GameService
 		game.setGameStatus(gameStatus);
 
 		gameRepository.save(game);
+	}
+
+	/**
+	 * Method for setting history.
+	 * @param game Game
+	 * @param history History
+	 */
+	public void setHistory(Game game, History history)
+	{
+		game.setHistory(history);
+
+		gameRepository.save(game);
+	}
+
+	/**
+	 * Method for deleting finished games.
+	 */
+	@PostConstruct
+	@Scheduled(fixedDelay = 5000)
+	public void deleteFinishedGames	()
+	{
+		Set<Game> finishedGames = gameRepository.findAllByGameStatus(GameStatus.FINISHED);
+		Date now = new Date();
+
+		for(Game game : finishedGames)
+		{
+			Duration duration = Duration.between(now.toInstant(), game.getLastUpdate().toInstant());
+			long diff = Math.abs(duration.toSeconds());
+
+			if(diff >= 5)
+			{
+				gameRepository.delete(game);
+			}
+		}
 	}
 }

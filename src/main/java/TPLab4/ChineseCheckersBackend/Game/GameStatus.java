@@ -5,7 +5,16 @@ package TPLab4.ChineseCheckersBackend.Game;
  */
 public enum GameStatus 
 {
+	/**
+	 * Base game
+	 */
 	BASE,
+	/**
+	 * Ongoing game
+	 */
 	ONGOING,
+	/**
+	 * Finished game
+	 */
 	FINISHED
 }

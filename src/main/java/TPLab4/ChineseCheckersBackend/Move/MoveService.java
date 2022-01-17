@@ -107,8 +107,7 @@ public class MoveService
 	 * @param game Game
 	 * @param history History
 	 */
-	public void endTurn(User user, Game game, History history)
-	{
+	public void endTurn(User user, Game game, History history)  {
 		if(moveCheckerGetter.getMoveChecker(game).checkEndTurn(user, game))
 		{
 			gameService.updateChosenTile(game, null);
@@ -129,8 +128,8 @@ public class MoveService
 					}
 				}
 
-				gameService.setStatus(game, GameStatus.FINISHED);
 				roomService.detachGame(game.getRoom());
+				gameService.setStatus(game, GameStatus.FINISHED);
 			}
 			else
 			{
@@ -152,8 +151,10 @@ public class MoveService
 		
 		move.setPlayer(user);
 		move.setHistory(history);
-		move.setFirstTile(firstTile);
-		move.setSecondTile(secondTile);
+		move.setFirstTileX(firstTile.getX());
+		move.setFirstTileY(firstTile.getY());
+		move.setSecondTileX(secondTile.getX());
+		move.setSecondTileY(secondTile.getY());
 		
 		moveRepository.save(move);
 	}

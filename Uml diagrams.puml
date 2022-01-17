@@ -1,15 +1,4 @@
 @startuml
-class HistoryServiceTest {
-- HistoryRepository historyRepository
-- GameRepository gameRepository
-- HistoryService historyService
-+ void loadHistoryByIdTest()
-+ void loadHistoryByIdHistoryNotFoundTest()
-+ void loadHistoryByGameIdTest()
-+ void loadHistoryByGameIdHistoryNotFoundTest()
-+ void addPlayerToLeaderboardTest()
-+ void addPlayerToLeaderboardPlayerAlreadyOnLeaderboardTest()
-}
 class TPLab4.ChineseCheckersBackend.History.CannotAddPlayerToHistoryException {
 }
 class TPLab4.ChineseCheckersBackend.Auth.AuthEntryPointJwt {
@@ -84,6 +73,7 @@ class TPLab4.ChineseCheckersBackend.Auth.WebSecurityConfig {
 }
 interface TPLab4.ChineseCheckersBackend.Role.RoleRepository {
 ~ Optional<Role> findByName(ERole)
+~ Boolean existsByName(ERole)
 }
 class TPLab4.ChineseCheckersBackend.Auth.AuthTokenFilter {
 - JwtUtils jwtUtils
@@ -91,12 +81,6 @@ class TPLab4.ChineseCheckersBackend.Auth.AuthTokenFilter {
 - {static} Logger logger
 # void doFilterInternal(HttpServletRequest,HttpServletResponse,FilterChain)
 - String parseJwt(HttpServletRequest)
-}
-class UserServiceTest {
-- UserRepository userRepository
-- UserService userService
-+ void loadUserByUsernameTest()
-+ void loadUserByUsernameUserNotFoundTest()
 }
 interface TPLab4.ChineseCheckersBackend.User.UserDetailsService {
 ~ UserDetails loadUserByUsername(String)
@@ -119,18 +103,24 @@ class TPLab4.ChineseCheckersBackend.Move.Move {
 - Long id
 - User player
 - History history
-- Tile firstTile
-- Tile secondTile
+- Long firstTileX
+- Long firstTileY
+- Long secondTileX
+- Long secondTileY
 + Long getId()
 + void setId(Long)
 + User getPlayer()
 + void setPlayer(User)
 + History getHistory()
 + void setHistory(History)
-+ Tile getFirstTile()
-+ void setFirstTile(Tile)
-+ Tile getSecondTile()
-+ void setSecondTile(Tile)
++ Long getFirstTileX()
++ void setFirstTileX(Long)
++ Long getFirstTileY()
++ void setFirstTileY(Long)
++ Long getSecondTileX()
++ void setSecondTileX(Long)
++ Long getSecondTileY()
++ void setSecondTileY(Long)
 }
 class TPLab4.ChineseCheckersBackend.History.HistoryController {
 - HistoryService historyService
@@ -236,6 +226,7 @@ class TPLab4.ChineseCheckersBackend.Room.RoomService {
 + void detachGame(Room)
 }
 enum TPLab4.ChineseCheckersBackend.Game.GameStatus {
++  BASE
 +  ONGOING
 +  FINISHED
 }
@@ -255,22 +246,17 @@ class TPLab4.ChineseCheckersBackend.Move.MoveService {
 + void endTurn(User,Game,History)
 - void saveMove(User,History,Tile,Tile)
 }
-class StandardTwoPlayersMoveCheckerTest {
-# TileRepository tileRepository
-# GameService gameService
-- StandardTwoPlayersMoveChecker standardTwoPlayersMoveChecker
-- User user
-- Game game
-- Tile tile
-- Tile chosenTile
-+ void checkMoveTwoPlayersPlayerOneOutOfOppositeCornerTest()
-+ void checkMoveTwoPlayersPlayerOneInsideOppositeCornerTest()
-+ void checkMoveTwoPlayersPlayerTwoOutOfOppositeCornerTest()
-+ void checkMoveTwoPlayersPlayerTwoInsideOppositeCornerTest()
-+ void checkMoveTwoPlayersPlayerOneIsNotWinnerTest()
-+ void checkMoveTwoPlayersPlayerOneIsWinnerTest()
-+ void checkMoveTwoPlayersPlayerTwoIsNotWinnerTest()
-+ void checkMoveTwoPlayersPlayerTwoIsWinnerTest()
+class TPLab4.ChineseCheckersBackend.Game.BaseGameGetter {
+- StandardTwoPlayersGameFactory standardTwoPlayersGameFactory
+- StandardThreePlayersGameFactory standardThreePlayersGameFactory
+- StandardFourPlayersGameFactory standardFourPlayersGameFactory
+- StandardSixPlayersGameFactory standardSixPlayersGameFactory
+- GameService gameService
+- GameRepository gameRepository
+- {static} Map<String,Long> baseGameMap
+- void initMap()
+- Game createBaseGame(GameFactory)
++ Long getBaseGame(String)
 }
 class TPLab4.ChineseCheckersBackend.Game.GameService {
 - GameRepository gameRepository
@@ -293,6 +279,8 @@ class TPLab4.ChineseCheckersBackend.Game.GameService {
 + Tile getChosenTile(Game,User)
 + List<User> getPlayerBoard(Game,User)
 + void setStatus(Game,GameStatus)
++ void setHistory(Game,History)
++ void deleteFinishedGames()
 }
 class TPLab4.ChineseCheckersBackend.MoveChecker.StandardThreePlayersMoveChecker {
 + boolean isCurrentPlayerWinner(Game)
@@ -344,14 +332,6 @@ class TPLab4.ChineseCheckersBackend.User.UserService {
 ~ UserRepository userRepository
 + User loadUserByUsername(String)
 }
-class StandardThreePlayersGameFactoryTest {
-- TileService tileService
-- TileRepository tileRepository
-- GameRepository gameRepository
-- HistoryRepository historyRepository
-- StandardThreePlayersGameFactory standardThreePlayersGameFactory
-+ void standardThreePlayersGameFactoryTest()
-}
 class TPLab4.ChineseCheckersBackend.Tile.TileService {
 - TileRepository tileRepository
 + Tile loadTileById(Long)
@@ -378,60 +358,7 @@ interface TPLab4.ChineseCheckersBackend.History.HistoryRepository {
 ~ Optional<History> findByGameId(Long)
 ~ List<History> findByLeaderboard_Id(Long)
 }
-class StandardFourPlayersMoveCheckerTest {
-# TileRepository tileRepository
-# GameService gameService
-- StandardFourPlayersMoveChecker standardFourPlayersMoveChecker
-- User user
-- Game game
-- Tile tile
-- Tile chosenTile
-+ void checkMoveFourPlayersPlayerOneOutOfOppositeCornerTest()
-+ void checkMoveFourPlayersPlayerOneInsideOppositeCornerTest()
-+ void checkMoveFourPlayersPlayerTwoOutOfOppositeCornerTest()
-+ void checkMoveFourPlayersPlayerTwoInsideOppositeCornerTest()
-+ void checkMoveFourPlayersPlayerThreeOutOfOppositeCornerTest()
-+ void checkMoveFourPlayersPlayerThreeInsideOppositeCornerTest()
-+ void checkMoveFourPlayersPlayerFourOutOfOppositeCornerTest()
-+ void checkMoveFourPlayersPlayerFourInsideOppositeCornerTest()
-+ void checkMoveFourPlayersPlayerOneIsNotWinnerTest()
-+ void checkMoveFourPlayersPlayerOneIsWinnerTest()
-+ void checkMoveFourPlayersPlayerTwoIsNotWinnerTest()
-+ void checkMoveFourPlayersPlayerTwoIsWinnerTest()
-+ void checkMoveFourPlayersPlayerThreeIsNotWinnerTest()
-+ void checkMoveFourPlayersPlayerThreeIsWinnerTest()
-+ void checkMoveFourPlayersPlayerFourIsNotWinnerTest()
-+ void checkMoveFourPlayersPlayerFourIsWinnerTest()
-}
-class MoveServiceTest {
-- MoveRepository moveRepository
-- TileRepository tileRepository
-- GameRepository gameRepository
-- GameService gameService
-- RoomService roomService
-- HistoryService historyService
-- MoveCheckerGetter moveCheckerGetter
-- MoveService moveService
-- User user
-- Game game
-- Tile tile
-- History history
-+ void endTurnAddWinnerWithoutFinishTest()
-+ void endTurnNoNewWinnerTest()
-+ void endTurnFinishedGameTest()
-+ void moveGoodMoveWithEndTurnTest()
-+ void moveGoodMoveWithoutEndTurnTest()
-+ void moveBadMoveTest()
-}
 class TPLab4.ChineseCheckersBackend.Game.CantCreateGameException {
-}
-class StandardSixPlayersGameFactoryTest {
-- TileService tileService
-- TileRepository tileRepository
-- GameRepository gameRepository
-- HistoryRepository historyRepository
-- StandardSixPlayersGameFactory standardSixPlayersGameFactory
-+ void standardSixPlayersGameFactoryTest()
 }
 class TPLab4.ChineseCheckersBackend.Request.EndTurnRequest {
 - Long gameId
@@ -455,12 +382,6 @@ class TPLab4.ChineseCheckersBackend.Room.RoomController {
 + ResponseEntity<?> getGameId(Long,Principal)
 + ResponseEntity<?> getLastUpdate(Long,Principal)
 }
-enum TPLab4.ChineseCheckersBackend.Game.GameType {
-+  STANDARD_TWO_PLAYERS
-+  STANDARD_THREE_PLAYERS
-+  STANDARD_FOUR_PLAYERS
-+  STANDARD_SIX_PLAYERS
-}
 class TPLab4.ChineseCheckersBackend.ChineseCheckers {
 + {static} void main(String[])
 + CommandLineRunner init(UserRepository,RoleRepository)
@@ -475,8 +396,6 @@ class TPLab4.ChineseCheckersBackend.Tile.Tile {
 - TileColor color
 - Game game
 - Game chosenTileGame
-- Set<Move> movesWithFirstTile
-- Set<Move> movesWithSecondTile
 + Long getId()
 + Long getX()
 + void setX(Long)
@@ -489,155 +408,33 @@ class TPLab4.ChineseCheckersBackend.Tile.Tile {
 + void setId(Long)
 + Game getChosenTileGame()
 + void setChosenTileGame(Game)
-+ Set<Move> getMovesWithFirstTile()
-+ void setMovesWithFirstTile(Set<Move>)
-+ Set<Move> getMovesWithSecondTile()
-+ void setMovesWithSecondTile(Set<Move>)
 }
 class TPLab4.ChineseCheckersBackend.GameFactory.StandardSixPlayersGameFactory {
 + StandardSixPlayersGame createGame(List<User>)
 }
 class TPLab4.ChineseCheckersBackend.Game.StandardSixPlayersGame {
 }
-class StandardSixPlayersMoveCheckerTest {
-# TileRepository tileRepository
-# GameService gameService
-- StandardSixPlayersMoveChecker standardSixPlayersMoveChecker
-- User user
-- Game game
-- Tile tile
-- Tile chosenTile
-+ void checkMoveSixPlayersPlayerOneOutOfOppositeCornerTest()
-+ void checkMoveSixPlayersPlayerOneInsideOppositeCornerTest()
-+ void checkMoveSixPlayersPlayerTwoOutOfOppositeCornerTest()
-+ void checkMoveSixPlayersPlayerTwoInsideOppositeCornerTest()
-+ void checkMoveSixPlayersPlayerThreeOutOfOppositeCornerTest()
-+ void checkMoveSixPlayersPlayerThreeInsideOppositeCornerTest()
-+ void checkMoveSixPlayersPlayerFourOutOfOppositeCornerTest()
-+ void checkMoveSixPlayersPlayerFourInsideOppositeCornerTest()
-+ void checkMoveSixPlayersPlayerFiveOutOfOppositeCornerTest()
-+ void checkMoveSixPlayersPlayerFiveInsideOppositeCornerTest()
-+ void checkMoveSixPlayersPlayerSixOutOfOppositeCornerTest()
-+ void checkMoveSixPlayersPlayerSixInsideOppositeCornerTest()
-+ void checkMoveSixPlayersPlayerOneIsNotWinnerTest()
-+ void checkMoveSixPlayersPlayerOneIsWinnerTest()
-+ void checkMoveSixPlayersPlayerTwoIsNotWinnerTest()
-+ void checkMoveSixPlayersPlayerTwoIsWinnerTest()
-+ void checkMoveSixPlayersPlayerThreeIsNotWinnerTest()
-+ void checkMoveSixPlayersPlayerThreeIsWinnerTest()
-+ void checkMoveSixPlayersPlayerFourIsNotWinnerTest()
-+ void checkMoveSixPlayersPlayerFourIsWinnerTest()
-+ void checkMoveSixPlayersPlayerFiveIsNotWinnerTest()
-+ void checkMoveSixPlayersPlayerFiveIsWinnerTest()
-+ void checkMoveSixPlayersPlayerSixIsNotWinnerTest()
-+ void checkMoveSixPlayersPlayerSixIsWinnerTest()
-}
 class TPLab4.ChineseCheckersBackend.User.UserController {
 }
 class TPLab4.ChineseCheckersBackend.Tile.TileNotFoundException {
 }
-class TileServiceTest {
-- TileRepository tileRepository
-- TileService tileService
-+ void loadTileByIdTest()
-+ void loadTileByIdTileNotFoundTest()
-+ void createTileTest()
-}
-class UserDetailsServiceImplTest {
-- UserRepository userRepository
-- UserDetailsServiceImpl userDetailsServiceImpl
-+ void loadUserByUsernameTest()
-+ void loadUserByUsernameUserNotFoundTest()
-}
 class TPLab4.ChineseCheckersBackend.GameFactory.StandardTwoPlayersGameFactory {
 + StandardTwoPlayersGame createGame(List<User>)
 }
-class MoveCheckerTest {
-# TileRepository tileRepository
-# GameService gameService
-- StandardTwoPlayersMoveChecker standardTwoPlayersMoveChecker
-- User user
-- Game game
-- Tile tile
-- Tile chosenTile
-+ void checkMoveDistanceOneDuringMoveFalseTest()
-+ void checkMoveDistanceOneDuringMoveTrueTest()
-+ void checkMoveWrongPlayerTest()
-+ void checkMoveWrongGameStatusTest()
-+ void checkMoveWrongTileColorTest()
-+ void checkMoveChosenTileNullTest()
-+ void checkMoveWrongDistanceTest()
-+ void checkMoveDistanceTwoTest()
-+ void checkMoveDistanceTwoWrongTileBetweenTest()
-+ void checkMoveDistanceTwoWrongTileTest()
-+ void checkMoveDistanceTwoDuringMoveTest()
-+ void checkEndTurnTest()
-+ void checkEndTurnWrongGameStatusTest()
-+ void checkEndTurnWrongUserTest()
-+ void isGameFinishedTrueTest()
-+ void isGameFinishedFalseTest()
-}
 class TPLab4.ChineseCheckersBackend.Room.CantLeaveRoomException {
-}
-class GameServiceTest {
-- GameRepository gameRepository
-- TileRepository tileRepository
-- HistoryRepository historyRepository
-- StandardTwoPlayersGameFactory standardTwoPlayersGameFactory
-- StandardThreePlayersGameFactory standardThreePlayersGameFactory
-- StandardFourPlayersGameFactory standardFourPlayersGameFactory
-- StandardSixPlayersGameFactory standardSixPlayersGameFactory
-- GameService gameService
-- User user
-+ void loadGameByIdTest()
-+ void loadGameByIdGameNotFoundTest()
-+ void createGameSixPlayersTest()
-+ void createGameFivePlayersTest()
-+ void createGameFourPlayersTest()
-+ void createGameThreePlayersTest()
-+ void createGameTwoPlayersTest()
-+ void createGameOnePlayerTest()
-+ void createGameNotTheHostTest()
-+ void createGameNotInRoomTest()
-+ void updatePlayerTurnTest()
-+ void updatePlayerTurnWithReturnTest()
 }
 class TPLab4.ChineseCheckersBackend.MoveChecker.StandardFourPlayersMoveChecker {
 + boolean isCurrentPlayerWinner(Game)
 # boolean isMoveFromCorner(Game,Tile)
 }
 interface TPLab4.ChineseCheckersBackend.Game.GameRepository {
+~ Set<Game> findAllByGameStatus(GameStatus)
 }
 class TPLab4.ChineseCheckersBackend.Room.RoomNotFoundException {
 }
 class TPLab4.ChineseCheckersBackend.Game.StandardThreePlayersGame {
 }
 interface TPLab4.ChineseCheckersBackend.Move.MoveRepository {
-}
-class RoomServiceTest {
-- RoomRepository roomRepository
-- RoomService roomService
-- User user
-+ void createRoomTest()
-+ void createRoomUserAlreadyInRoomTest()
-+ void joinRoomTest()
-+ void joinRoomUserAlreadyInRoomTest()
-+ void joinRoomRoomIsFullTest()
-+ void joinRoomGameAlreadyStartedTest()
-+ void leaveRoomTest()
-+ void leaveRoomDeleteTest()
-+ void leaveRoomNotInRoomTest()
-+ void leaveRoomGameAlreadyStartedTest()
-+ void loadRoomByIdTest()
-+ void loadRoomByIdRoomNotFoundTest()
-}
-class StandardTwoPlayersGameFactoryTest {
-- TileService tileService
-- TileRepository tileRepository
-- GameRepository gameRepository
-- HistoryRepository historyRepository
-- StandardTwoPlayersGameFactory standardTwoPlayersGameFactory
-+ void standardTwoPlayersGameFactoryTest()
 }
 class TPLab4.ChineseCheckersBackend.Auth.AuthController {
 - AuthenticationManager authenticationManager
@@ -647,14 +444,6 @@ class TPLab4.ChineseCheckersBackend.Auth.AuthController {
 - JwtUtils jwtUtils
 + ResponseEntity<?> authenticateUser(LoginRequest)
 + ResponseEntity<?> registerUser(SignupRequest)
-}
-class StandardFourPlayersGameFactoryTest {
-- TileService tileService
-- TileRepository tileRepository
-- GameRepository gameRepository
-- HistoryRepository historyRepository
-- StandardFourPlayersGameFactory standardFourPlayersGameFactory
-+ void standardFourPlayersGameFactoryTest()
 }
 class TPLab4.ChineseCheckersBackend.User.UserDetailsServiceImpl {
 - UserRepository userRepository
@@ -671,9 +460,10 @@ class TPLab4.ChineseCheckersBackend.Request.MoveRequest {
 class TPLab4.ChineseCheckersBackend.History.HistoryService {
 - HistoryRepository historyRepository
 - GameRepository gameRepository
+- BaseGameGetter baseGameGetter
 - void validate(History,User)
 + History loadHistoryById(Long)
-+ History loadHistoryByGameId(Long)
++ History createHistory(Game)
 + List<User> getLeaderboard(History,User)
 + void addPlayerToLeaderboard(History,User)
 + List<History> getReplays(User)
@@ -722,27 +512,6 @@ abstract class TPLab4.ChineseCheckersBackend.MoveChecker.AbstractMoveChecker {
 + {abstract}boolean isCurrentPlayerWinner(Game)
 # {abstract}boolean isMoveFromCorner(Game,Tile)
 }
-class StandardThreePlayersMoveCheckerTest {
-# TileRepository tileRepository
-# GameService gameService
-- StandardThreePlayersMoveChecker standardThreePlayersMoveChecker
-- User user
-- Game game
-- Tile tile
-- Tile chosenTile
-+ void checkMoveThreePlayersPlayerOneOutOfOppositeCornerTest()
-+ void checkMoveThreePlayersPlayerOneInsideOppositeCornerTest()
-+ void checkMoveThreePlayersPlayerTwoOutOfOppositeCornerTest()
-+ void checkMoveThreePlayersPlayerTwoInsideOppositeCornerTest()
-+ void checkMoveThreePlayersPlayerThreeOutOfOppositeCornerTest()
-+ void checkMoveThreePlayersPlayerThreeInsideOppositeCornerTest()
-+ void checkMoveThreePlayersPlayerOneIsNotWinnerTest()
-+ void checkMoveThreePlayersPlayerOneIsWinnerTest()
-+ void checkMoveThreePlayersPlayerTwoIsNotWinnerTest()
-+ void checkMoveThreePlayersPlayerTwoIsWinnerTest()
-+ void checkMoveThreePlayersPlayerThreeIsNotWinnerTest()
-+ void checkMoveThreePlayersPlayerThreeIsWinnerTest()
-}
 enum TPLab4.ChineseCheckersBackend.Role.ERole {
 +  ROLE_USER
 +  ROLE_ADMIN
@@ -771,6 +540,7 @@ class TPLab4.ChineseCheckersBackend.Request.JoinRequest {
 }
 class TPLab4.ChineseCheckersBackend.History.History {
 - Long id
+- String gameType
 - Game game
 ~ List<User> leaderboard
 - Date createDate
@@ -785,6 +555,8 @@ class TPLab4.ChineseCheckersBackend.History.History {
 + void setCreateDate(Date)
 + List<Move> getMoves()
 + void setMoves(List<Move>)
++ String getGameType()
++ void setGameType(String)
 }
 
 

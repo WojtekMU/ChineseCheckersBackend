@@ -67,20 +67,6 @@ public class Tile
     private Game chosenTileGame;
 
 	/**
-	 * Moves with this tile as first tile.
-	 */
-    @OneToMany(mappedBy="firstTile")
-    @JsonIgnore
-    private Set<Move> movesWithFirstTile;
-
-	/**
-	 * Moves with this tile as second tile.
-	 */
-    @OneToMany(mappedBy="secondTile")
-    @JsonIgnore
-    private Set<Move> movesWithSecondTile;
-
-	/**
 	 * Empty tile constructor.
 	 */
 	public Tile() {}
@@ -203,37 +189,5 @@ public class Tile
 	 */
 	public void setChosenTileGame(Game chosenTileGame) {
 		this.chosenTileGame = chosenTileGame;
-	}
-
-	/**
-	 * Moves with first tile getter.
-	 * @return Moves with first tile
-	 */
-	public Set<Move> getMovesWithFirstTile() {
-		return movesWithFirstTile;
-	}
-
-	/**
-	 * Moves with first tile setter.
-	 * @param movesWithFirstTile Moves set
-	 */
-	public void setMovesWithFirstTile(Set<Move> movesWithFirstTile) {
-		this.movesWithFirstTile = movesWithFirstTile;
-	}
-
-	/**
-	 * Moves with second tile getter.
-	 * @return Moves with second tile
-	 */
-	public Set<Move> getMovesWithSecondTile() {
-		return movesWithSecondTile;
-	}
-
-	/**
-	 * Moves with second tile setter.
-	 * @param movesWithSecondTile Moves set
-	 */
-	public void setMovesWithSecondTile(Set<Move> movesWithSecondTile) {
-		this.movesWithSecondTile = movesWithSecondTile;
 	}
 }

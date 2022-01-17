@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 public interface TileRepository extends JpaRepository<Tile, Long>
 {
 	/**
-	 * Method which filds tile by game id.
+	 * Method which finds tile by game id.
 	 * @param gameId Game id
 	 * @return Optional of tile
 	 */

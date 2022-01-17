@@ -18,6 +18,7 @@ import javax.persistence.OrderColumn;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
 import TPLab4.ChineseCheckersBackend.Game.Game;
@@ -39,10 +40,16 @@ public class History
     private Long id;
 
 	/**
+	 * Game type
+	 */
+	@Column
+	private String gameType;
+
+	/**
 	 * Game attached to history/
 	 */
-	@OneToOne
-	@JoinColumn(name = "game_id")
+	@OneToOne(mappedBy = "history")
+	@JsonIgnore
     private Game game;
 
 	/**
@@ -163,5 +170,23 @@ public class History
 	public void setMoves(List<Move> moves) 
 	{
 		this.moves = moves;
+	}
+
+	/**
+	 * Game type getter.
+	 * @return Game type
+	 */
+	public String getGameType()
+	{
+		return gameType;
+	}
+
+	/**
+	 * Game type setter.
+	 * @param gameType Game type
+	 */
+	public void setGameType(String gameType)
+	{
+		this.gameType = gameType;
 	}
 }

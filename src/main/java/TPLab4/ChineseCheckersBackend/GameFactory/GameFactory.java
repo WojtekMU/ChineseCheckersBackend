@@ -207,8 +207,9 @@ public abstract class GameFactory
 		}
 		else
 		{
-			game.setPlayerTurn(0);
+			game.setPlayerTurn(null);
 		}
+
 		game.setChosenTile(null);
 		game.setDuringMove(false);
 		game.setGameStatus(GameStatus.ONGOING);
@@ -216,10 +217,7 @@ public abstract class GameFactory
 		gameRepository.save(game);
 
 		createClearBoard(game);
-		
-		History history = new History();
-		history.setGame(game);
-		
-		historyRepository.save(history);
+
+		gameRepository.save(game);
 	}
 }

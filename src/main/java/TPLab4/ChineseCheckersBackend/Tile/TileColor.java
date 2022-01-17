@@ -5,11 +5,32 @@ package TPLab4.ChineseCheckersBackend.Tile;
  */
 public enum TileColor 
 {
+	/**
+	 * White
+	 */
 	WHITE,
+	/**
+	 * Red
+	 */
 	RED,
+	/**
+	 * Blue
+	 */
 	BLUE,
+	/**
+	 * Green
+	 */
 	GREEN,
+	/**
+	 * Purple
+	 */
 	PURPLE,
+	/**
+	 * Brown
+	 */
 	BROWN,
+	/**
+	 * Orange
+	 */
 	ORANGE
 }
