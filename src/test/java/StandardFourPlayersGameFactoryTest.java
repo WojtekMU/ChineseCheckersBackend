@@ -1,9 +1,7 @@
 import TPLab4.ChineseCheckersBackend.Game.Game;
 import TPLab4.ChineseCheckersBackend.Game.GameRepository;
 import TPLab4.ChineseCheckersBackend.Game.StandardFourPlayersGame;
-import TPLab4.ChineseCheckersBackend.Game.StandardTwoPlayersGame;
 import TPLab4.ChineseCheckersBackend.GameFactory.StandardFourPlayersGameFactory;
-import TPLab4.ChineseCheckersBackend.GameFactory.StandardTwoPlayersGameFactory;
 import TPLab4.ChineseCheckersBackend.History.HistoryRepository;
 import TPLab4.ChineseCheckersBackend.Tile.TileRepository;
 import TPLab4.ChineseCheckersBackend.Tile.TileService;
@@ -20,8 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @ExtendWith(SpringExtension.class)
-public class StandardFourPlayersGameFactoryTest
-{
+public class StandardFourPlayersGameFactoryTest {
     @Mock
     private TileService tileService;
 
@@ -38,8 +35,7 @@ public class StandardFourPlayersGameFactoryTest
     private StandardFourPlayersGameFactory standardFourPlayersGameFactory;
 
     @Test
-    public void standardFourPlayersGameFactoryTest()
-    {
+    public void standardFourPlayersGameFactoryTest() {
         User user1 = Mockito.mock(User.class);
         User user2 = Mockito.mock(User.class);
         User user3 = Mockito.mock(User.class);

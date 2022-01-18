@@ -4,7 +4,6 @@ import TPLab4.ChineseCheckersBackend.GameFactory.*;
 import TPLab4.ChineseCheckersBackend.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -16,8 +15,7 @@ import java.util.Set;
  * Base game getter class
  */
 @Component
-public class BaseGameGetter
-{
+public class BaseGameGetter {
     /**
      * Standard two players game factory
      */
@@ -63,8 +61,7 @@ public class BaseGameGetter
      * Base game map initializer
      */
     @PostConstruct
-    private void initMap()
-    {
+    private void initMap() {
         Set<Game> baseGames = gameRepository.findAllByGameStatus(GameStatus.BASE);
 
         gameRepository.deleteAll(baseGames);
@@ -82,11 +79,11 @@ public class BaseGameGetter
 
     /**
      * Method for creating a base game
+     *
      * @param gameFactory Game factory
      * @return Game
      */
-    private Game createBaseGame(GameFactory gameFactory)
-    {
+    private Game createBaseGame(GameFactory gameFactory) {
         Game game = gameFactory.createGame(new ArrayList<User>());
         gameService.setStatus(game, GameStatus.BASE);
         gameService.updateChosenTile(game, null);
@@ -97,11 +94,11 @@ public class BaseGameGetter
 
     /**
      * Base game id getter
+     *
      * @param gameType Game type
      * @return Base game id
      */
-    public Long getBaseGame(String gameType)
-    {
+    public Long getBaseGame(String gameType) {
         return baseGameMap.get(gameType);
     }
 }

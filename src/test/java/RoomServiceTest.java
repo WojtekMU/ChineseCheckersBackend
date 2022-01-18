@@ -16,8 +16,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(SpringExtension.class)
-public class RoomServiceTest
-{
+public class RoomServiceTest {
     @Mock
     private RoomRepository roomRepository;
 
@@ -28,16 +27,14 @@ public class RoomServiceTest
     private User user;
 
     @Test
-    public void createRoomTest()
-    {
+    public void createRoomTest() {
         Room room1 = roomService.createRoom(user);
         Mockito.when(roomService.createRoom(user)).thenReturn(room1);
         verify(roomRepository, times(1)).save(room1);
     }
 
     @Test
-    public void createRoomUserAlreadyInRoomTest()
-    {
+    public void createRoomUserAlreadyInRoomTest() {
         CantCreateRoomException thrown = Assertions.assertThrows(CantCreateRoomException.class, () -> {
             Room room1 = Mockito.mock(Room.class);
             roomService.createRoom(user);
@@ -48,15 +45,13 @@ public class RoomServiceTest
     }
 
     @Test
-    public void joinRoomTest()
-    {
+    public void joinRoomTest() {
         Room room1 = Mockito.mock(Room.class);
         roomService.joinRoom(user, room1);
     }
 
     @Test
-    public void joinRoomUserAlreadyInRoomTest()
-    {
+    public void joinRoomUserAlreadyInRoomTest() {
         CantJoinRoomException thrown = Assertions.assertThrows(CantJoinRoomException.class, () -> {
             Room room1 = Mockito.mock(Room.class);
             Set<Room> rooms = ImmutableSet.of(room1);
@@ -66,8 +61,7 @@ public class RoomServiceTest
     }
 
     @Test
-    public void joinRoomRoomIsFullTest()
-    {
+    public void joinRoomRoomIsFullTest() {
         CantJoinRoomException thrown = Assertions.assertThrows(CantJoinRoomException.class, () -> {
             Room room1 = Mockito.mock(Room.class);
             User user1 = Mockito.mock(User.class);
@@ -77,15 +71,14 @@ public class RoomServiceTest
             User user5 = Mockito.mock(User.class);
             User user6 = Mockito.mock(User.class);
 
-            List<User> usersInRoom = Arrays.asList(user1, user2, user3, user4, user5 ,user6);
+            List<User> usersInRoom = Arrays.asList(user1, user2, user3, user4, user5, user6);
             Mockito.when(room1.getUsers()).thenReturn(usersInRoom);
             roomService.joinRoom(user, room1);
         });
     }
 
     @Test
-    public void joinRoomGameAlreadyStartedTest()
-    {
+    public void joinRoomGameAlreadyStartedTest() {
         CantJoinRoomException thrown = Assertions.assertThrows(CantJoinRoomException.class, () -> {
             Room room1 = Mockito.mock(Room.class);
 
@@ -95,8 +88,7 @@ public class RoomServiceTest
     }
 
     @Test
-    public void leaveRoomTest()
-    {
+    public void leaveRoomTest() {
         Room room1 = Mockito.mock(Room.class);
         User user1 = Mockito.mock(User.class);
         roomService.joinRoom(user, room1);
@@ -110,8 +102,7 @@ public class RoomServiceTest
     }
 
     @Test
-    public void leaveRoomDeleteTest()
-    {
+    public void leaveRoomDeleteTest() {
         Room room1 = Mockito.mock(Room.class);
         roomService.joinRoom(user, room1);
         List<User> usersInRoom = new ArrayList<User>();
@@ -123,8 +114,7 @@ public class RoomServiceTest
     }
 
     @Test
-    public void leaveRoomNotInRoomTest()
-    {
+    public void leaveRoomNotInRoomTest() {
         AccessDeniedException thrown = Assertions.assertThrows(AccessDeniedException.class, () -> {
             Room room1 = Mockito.mock(Room.class);
             List<User> usersInRoom = new ArrayList<User>();
@@ -134,8 +124,7 @@ public class RoomServiceTest
     }
 
     @Test
-    public void leaveRoomGameAlreadyStartedTest()
-    {
+    public void leaveRoomGameAlreadyStartedTest() {
         CantLeaveRoomException thrown = Assertions.assertThrows(CantLeaveRoomException.class, () -> {
             Room room1 = Mockito.mock(Room.class);
             roomService.joinRoom(user, room1);
@@ -148,9 +137,8 @@ public class RoomServiceTest
     }
 
     @Test
-    public void loadRoomByIdTest()
-    {
-        Long roomId  = 1L;
+    public void loadRoomByIdTest() {
+        Long roomId = 1L;
         Room room1 = Mockito.mock(Room.class);
         Mockito.when(roomRepository.findById(roomId)).thenReturn(Optional.of(room1));
         Room room2 = roomService.loadRoomById(roomId);
@@ -158,10 +146,9 @@ public class RoomServiceTest
     }
 
     @Test
-    public void loadRoomByIdRoomNotFoundTest()
-    {
+    public void loadRoomByIdRoomNotFoundTest() {
         RoomNotFoundException thrown = Assertions.assertThrows(RoomNotFoundException.class, () -> {
-            Long roomId  = 1L;
+            Long roomId = 1L;
             Mockito.when(roomRepository.findById(roomId)).thenReturn(Optional.empty());
             roomService.loadRoomById(roomId);
         });

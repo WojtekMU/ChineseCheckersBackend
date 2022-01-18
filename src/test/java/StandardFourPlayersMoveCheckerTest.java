@@ -2,9 +2,6 @@ import TPLab4.ChineseCheckersBackend.Game.Game;
 import TPLab4.ChineseCheckersBackend.Game.GameService;
 import TPLab4.ChineseCheckersBackend.Game.GameStatus;
 import TPLab4.ChineseCheckersBackend.MoveChecker.StandardFourPlayersMoveChecker;
-import TPLab4.ChineseCheckersBackend.MoveChecker.StandardSixPlayersMoveChecker;
-import TPLab4.ChineseCheckersBackend.MoveChecker.StandardThreePlayersMoveChecker;
-import TPLab4.ChineseCheckersBackend.MoveChecker.StandardTwoPlayersMoveChecker;
 import TPLab4.ChineseCheckersBackend.Tile.Tile;
 import TPLab4.ChineseCheckersBackend.Tile.TileColor;
 import TPLab4.ChineseCheckersBackend.Tile.TileRepository;
@@ -22,8 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ExtendWith(SpringExtension.class)
-public class StandardFourPlayersMoveCheckerTest
-{
+public class StandardFourPlayersMoveCheckerTest {
     @Mock
     protected TileRepository tileRepository;
 
@@ -46,8 +42,7 @@ public class StandardFourPlayersMoveCheckerTest
     private Tile chosenTile;
 
     @Test
-    public void checkMoveFourPlayersPlayerOneOutOfOppositeCornerTest()
-    {
+    public void checkMoveFourPlayersPlayerOneOutOfOppositeCornerTest() {
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
         Mockito.when(game.getGameStatus()).thenReturn(GameStatus.ONGOING);
         Mockito.when(game.getDuringMove()).thenReturn(false);
@@ -78,8 +73,7 @@ public class StandardFourPlayersMoveCheckerTest
     }
 
     @Test
-    public void checkMoveFourPlayersPlayerOneInsideOppositeCornerTest()
-    {
+    public void checkMoveFourPlayersPlayerOneInsideOppositeCornerTest() {
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
         Mockito.when(game.getGameStatus()).thenReturn(GameStatus.ONGOING);
         Mockito.when(game.getDuringMove()).thenReturn(false);
@@ -111,8 +105,7 @@ public class StandardFourPlayersMoveCheckerTest
     }
 
     @Test
-    public void checkMoveFourPlayersPlayerTwoOutOfOppositeCornerTest()
-    {
+    public void checkMoveFourPlayersPlayerTwoOutOfOppositeCornerTest() {
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
         Mockito.when(game.getGameStatus()).thenReturn(GameStatus.ONGOING);
         Mockito.when(game.getDuringMove()).thenReturn(false);
@@ -143,8 +136,7 @@ public class StandardFourPlayersMoveCheckerTest
     }
 
     @Test
-    public void checkMoveFourPlayersPlayerTwoInsideOppositeCornerTest()
-    {
+    public void checkMoveFourPlayersPlayerTwoInsideOppositeCornerTest() {
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
         Mockito.when(game.getGameStatus()).thenReturn(GameStatus.ONGOING);
         Mockito.when(game.getDuringMove()).thenReturn(false);
@@ -176,8 +168,7 @@ public class StandardFourPlayersMoveCheckerTest
     }
 
     @Test
-    public void checkMoveFourPlayersPlayerThreeOutOfOppositeCornerTest()
-    {
+    public void checkMoveFourPlayersPlayerThreeOutOfOppositeCornerTest() {
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
         Mockito.when(game.getGameStatus()).thenReturn(GameStatus.ONGOING);
         Mockito.when(game.getDuringMove()).thenReturn(false);
@@ -208,8 +199,7 @@ public class StandardFourPlayersMoveCheckerTest
     }
 
     @Test
-    public void checkMoveFourPlayersPlayerThreeInsideOppositeCornerTest()
-    {
+    public void checkMoveFourPlayersPlayerThreeInsideOppositeCornerTest() {
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
         Mockito.when(game.getGameStatus()).thenReturn(GameStatus.ONGOING);
         Mockito.when(game.getDuringMove()).thenReturn(false);
@@ -241,8 +231,7 @@ public class StandardFourPlayersMoveCheckerTest
     }
 
     @Test
-    public void checkMoveFourPlayersPlayerFourOutOfOppositeCornerTest()
-    {
+    public void checkMoveFourPlayersPlayerFourOutOfOppositeCornerTest() {
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
         Mockito.when(game.getGameStatus()).thenReturn(GameStatus.ONGOING);
         Mockito.when(game.getDuringMove()).thenReturn(false);
@@ -273,8 +262,7 @@ public class StandardFourPlayersMoveCheckerTest
     }
 
     @Test
-    public void checkMoveFourPlayersPlayerFourInsideOppositeCornerTest()
-    {
+    public void checkMoveFourPlayersPlayerFourInsideOppositeCornerTest() {
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
         Mockito.when(game.getGameStatus()).thenReturn(GameStatus.ONGOING);
         Mockito.when(game.getDuringMove()).thenReturn(false);
@@ -306,8 +294,7 @@ public class StandardFourPlayersMoveCheckerTest
     }
 
     @Test
-    public void checkMoveFourPlayersPlayerOneIsNotWinnerTest()
-    {
+    public void checkMoveFourPlayersPlayerOneIsNotWinnerTest() {
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
         Mockito.when(tile.getColor()).thenReturn(TileColor.RED);
         Mockito.when(game.getPlayerTurn()).thenReturn(1);
@@ -319,8 +306,7 @@ public class StandardFourPlayersMoveCheckerTest
         List<Tile> fifthCorner = new ArrayList<Tile>();
         List<Tile> sixthCorner = new ArrayList<Tile>();
 
-        for(int i = 0; i < 9; i++)
-        {
+        for (int i = 0; i < 9; i++) {
             thirdCorner.add(tile);
         }
 
@@ -339,8 +325,7 @@ public class StandardFourPlayersMoveCheckerTest
     }
 
     @Test
-    public void checkMoveFourPlayersPlayerOneIsWinnerTest()
-    {
+    public void checkMoveFourPlayersPlayerOneIsWinnerTest() {
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
         Mockito.when(tile.getColor()).thenReturn(TileColor.RED);
         Mockito.when(game.getPlayerTurn()).thenReturn(1);
@@ -352,8 +337,7 @@ public class StandardFourPlayersMoveCheckerTest
         List<Tile> fifthCorner = new ArrayList<Tile>();
         List<Tile> sixthCorner = new ArrayList<Tile>();
 
-        for(int i = 0; i < 10; i++)
-        {
+        for (int i = 0; i < 10; i++) {
             thirdCorner.add(tile);
         }
 
@@ -372,8 +356,7 @@ public class StandardFourPlayersMoveCheckerTest
     }
 
     @Test
-    public void checkMoveFourPlayersPlayerTwoIsNotWinnerTest()
-    {
+    public void checkMoveFourPlayersPlayerTwoIsNotWinnerTest() {
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
         Mockito.when(tile.getColor()).thenReturn(TileColor.BLUE);
         Mockito.when(game.getPlayerTurn()).thenReturn(2);
@@ -385,8 +368,7 @@ public class StandardFourPlayersMoveCheckerTest
         List<Tile> fifthCorner = new ArrayList<Tile>();
         List<Tile> sixthCorner = new ArrayList<Tile>();
 
-        for(int i = 0; i < 9; i++)
-        {
+        for (int i = 0; i < 9; i++) {
             secondCorner.add(tile);
         }
 
@@ -405,8 +387,7 @@ public class StandardFourPlayersMoveCheckerTest
     }
 
     @Test
-    public void checkMoveFourPlayersPlayerTwoIsWinnerTest()
-    {
+    public void checkMoveFourPlayersPlayerTwoIsWinnerTest() {
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
         Mockito.when(tile.getColor()).thenReturn(TileColor.BLUE);
         Mockito.when(game.getPlayerTurn()).thenReturn(2);
@@ -418,8 +399,7 @@ public class StandardFourPlayersMoveCheckerTest
         List<Tile> fifthCorner = new ArrayList<Tile>();
         List<Tile> sixthCorner = new ArrayList<Tile>();
 
-        for(int i = 0; i < 10; i++)
-        {
+        for (int i = 0; i < 10; i++) {
             secondCorner.add(tile);
         }
 
@@ -438,8 +418,7 @@ public class StandardFourPlayersMoveCheckerTest
     }
 
     @Test
-    public void checkMoveFourPlayersPlayerThreeIsNotWinnerTest()
-    {
+    public void checkMoveFourPlayersPlayerThreeIsNotWinnerTest() {
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
         Mockito.when(tile.getColor()).thenReturn(TileColor.GREEN);
         Mockito.when(game.getPlayerTurn()).thenReturn(3);
@@ -451,8 +430,7 @@ public class StandardFourPlayersMoveCheckerTest
         List<Tile> fifthCorner = new ArrayList<Tile>();
         List<Tile> sixthCorner = new ArrayList<Tile>();
 
-        for(int i = 0; i < 9; i++)
-        {
+        for (int i = 0; i < 9; i++) {
             sixthCorner.add(tile);
         }
 
@@ -471,8 +449,7 @@ public class StandardFourPlayersMoveCheckerTest
     }
 
     @Test
-    public void checkMoveFourPlayersPlayerThreeIsWinnerTest()
-    {
+    public void checkMoveFourPlayersPlayerThreeIsWinnerTest() {
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
         Mockito.when(tile.getColor()).thenReturn(TileColor.GREEN);
         Mockito.when(game.getPlayerTurn()).thenReturn(3);
@@ -484,8 +461,7 @@ public class StandardFourPlayersMoveCheckerTest
         List<Tile> fifthCorner = new ArrayList<Tile>();
         List<Tile> sixthCorner = new ArrayList<Tile>();
 
-        for(int i = 0; i < 10; i++)
-        {
+        for (int i = 0; i < 10; i++) {
             sixthCorner.add(tile);
         }
 
@@ -504,8 +480,7 @@ public class StandardFourPlayersMoveCheckerTest
     }
 
     @Test
-    public void checkMoveFourPlayersPlayerFourIsNotWinnerTest()
-    {
+    public void checkMoveFourPlayersPlayerFourIsNotWinnerTest() {
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
         Mockito.when(tile.getColor()).thenReturn(TileColor.PURPLE);
         Mockito.when(game.getPlayerTurn()).thenReturn(4);
@@ -517,8 +492,7 @@ public class StandardFourPlayersMoveCheckerTest
         List<Tile> fifthCorner = new ArrayList<Tile>();
         List<Tile> sixthCorner = new ArrayList<Tile>();
 
-        for(int i = 0; i < 9; i++)
-        {
+        for (int i = 0; i < 9; i++) {
             fifthCorner.add(tile);
         }
 
@@ -537,8 +511,7 @@ public class StandardFourPlayersMoveCheckerTest
     }
 
     @Test
-    public void checkMoveFourPlayersPlayerFourIsWinnerTest()
-    {
+    public void checkMoveFourPlayersPlayerFourIsWinnerTest() {
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
         Mockito.when(tile.getColor()).thenReturn(TileColor.PURPLE);
         Mockito.when(game.getPlayerTurn()).thenReturn(4);
@@ -550,8 +523,7 @@ public class StandardFourPlayersMoveCheckerTest
         List<Tile> fifthCorner = new ArrayList<Tile>();
         List<Tile> sixthCorner = new ArrayList<Tile>();
 
-        for(int i = 0; i < 10; i++)
-        {
+        for (int i = 0; i < 10; i++) {
             fifthCorner.add(tile);
         }
 

@@ -24,8 +24,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(SpringExtension.class)
-public class GameServiceTest
-{
+public class GameServiceTest {
     @Mock
     private GameRepository gameRepository;
 
@@ -54,9 +53,8 @@ public class GameServiceTest
     private User user;
 
     @Test
-    public void loadGameByIdTest()
-    {
-        Long gameId  = 1L;
+    public void loadGameByIdTest() {
+        Long gameId = 1L;
         Game game1 = Mockito.mock(Game.class);
         Mockito.when(gameRepository.findById(gameId)).thenReturn(Optional.of(game1));
         Game game2 = gameService.loadGameById(gameId);
@@ -64,18 +62,16 @@ public class GameServiceTest
     }
 
     @Test
-    public void loadGameByIdGameNotFoundTest()
-    {
+    public void loadGameByIdGameNotFoundTest() {
         GameNotFoundException thrown = Assertions.assertThrows(GameNotFoundException.class, () -> {
-            Long gameId  = 1L;
+            Long gameId = 1L;
             Mockito.when(gameRepository.findById(gameId)).thenReturn(Optional.empty());
             gameService.loadGameById(gameId);
         });
     }
 
     @Test
-    public void createGameSixPlayersTest()
-    {
+    public void createGameSixPlayersTest() {
         User user1 = Mockito.mock(User.class);
         User user2 = Mockito.mock(User.class);
         User user3 = Mockito.mock(User.class);
@@ -97,8 +93,7 @@ public class GameServiceTest
     }
 
     @Test
-    public void createGameFivePlayersTest()
-    {
+    public void createGameFivePlayersTest() {
         CantCreateGameException thrown = Assertions.assertThrows(CantCreateGameException.class, () -> {
             User user1 = Mockito.mock(User.class);
             User user2 = Mockito.mock(User.class);
@@ -119,8 +114,7 @@ public class GameServiceTest
     }
 
     @Test
-    public void createGameFourPlayersTest()
-    {
+    public void createGameFourPlayersTest() {
         User user1 = Mockito.mock(User.class);
         User user2 = Mockito.mock(User.class);
         User user3 = Mockito.mock(User.class);
@@ -138,8 +132,7 @@ public class GameServiceTest
     }
 
     @Test
-    public void createGameThreePlayersTest()
-    {
+    public void createGameThreePlayersTest() {
         User user1 = Mockito.mock(User.class);
         User user2 = Mockito.mock(User.class);
         User user3 = Mockito.mock(User.class);
@@ -155,8 +148,7 @@ public class GameServiceTest
     }
 
     @Test
-    public void createGameTwoPlayersTest()
-    {
+    public void createGameTwoPlayersTest() {
         User user1 = Mockito.mock(User.class);
         User user2 = Mockito.mock(User.class);
 
@@ -170,8 +162,7 @@ public class GameServiceTest
     }
 
     @Test
-    public void createGameOnePlayerTest()
-    {
+    public void createGameOnePlayerTest() {
         CantCreateGameException thrown = Assertions.assertThrows(CantCreateGameException.class, () -> {
             User user1 = Mockito.mock(User.class);
 
@@ -184,8 +175,7 @@ public class GameServiceTest
     }
 
     @Test
-    public void createGameNotTheHostTest()
-    {
+    public void createGameNotTheHostTest() {
         CantCreateGameException thrown = Assertions.assertThrows(CantCreateGameException.class, () -> {
             User user1 = Mockito.mock(User.class);
             User user2 = Mockito.mock(User.class);
@@ -200,8 +190,7 @@ public class GameServiceTest
     }
 
     @Test
-    public void createGameNotInRoomTest()
-    {
+    public void createGameNotInRoomTest() {
         AccessDeniedException thrown = Assertions.assertThrows(AccessDeniedException.class, () -> {
             User user1 = Mockito.mock(User.class);
             User user2 = Mockito.mock(User.class);
@@ -216,8 +205,7 @@ public class GameServiceTest
     }
 
     @Test
-    public void updatePlayerTurnTest()
-    {
+    public void updatePlayerTurnTest() {
         Game game = Mockito.mock(Game.class);
         History history = Mockito.mock(History.class);
         User user1 = Mockito.mock(User.class);
@@ -245,8 +233,7 @@ public class GameServiceTest
     }
 
     @Test
-    public void updatePlayerTurnWithReturnTest()
-    {
+    public void updatePlayerTurnWithReturnTest() {
         Game game = Mockito.mock(Game.class);
         History history = Mockito.mock(History.class);
         User user1 = Mockito.mock(User.class);

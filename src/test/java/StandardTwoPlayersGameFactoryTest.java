@@ -12,15 +12,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
 import java.util.List;
 
 @ExtendWith(SpringExtension.class)
-public class StandardTwoPlayersGameFactoryTest
-{
+public class StandardTwoPlayersGameFactoryTest {
     @Mock
     private TileService tileService;
 
@@ -37,8 +35,7 @@ public class StandardTwoPlayersGameFactoryTest
     private StandardTwoPlayersGameFactory standardTwoPlayersGameFactory;
 
     @Test
-    public void standardTwoPlayersGameFactoryTest()
-    {
+    public void standardTwoPlayersGameFactoryTest() {
         User user1 = Mockito.mock(User.class);
         User user2 = Mockito.mock(User.class);
 

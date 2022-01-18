@@ -20,11 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.Mockito.doReturn;
-
 @ExtendWith(SpringExtension.class)
-public class MoveCheckerTest
-{
+public class MoveCheckerTest {
     @Mock
     protected TileRepository tileRepository;
 
@@ -47,8 +44,7 @@ public class MoveCheckerTest
     private Tile chosenTile;
 
     @Test
-    public void checkMoveDistanceOneDuringMoveFalseTest()
-    {
+    public void checkMoveDistanceOneDuringMoveFalseTest() {
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
         Mockito.when(game.getGameStatus()).thenReturn(GameStatus.ONGOING);
         Mockito.when(game.getDuringMove()).thenReturn(false);
@@ -74,8 +70,7 @@ public class MoveCheckerTest
     }
 
     @Test
-    public void checkMoveDistanceOneDuringMoveTrueTest()
-    {
+    public void checkMoveDistanceOneDuringMoveTrueTest() {
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
         Mockito.when(game.getGameStatus()).thenReturn(GameStatus.ONGOING);
         Mockito.when(game.getDuringMove()).thenReturn(true);
@@ -101,8 +96,7 @@ public class MoveCheckerTest
     }
 
     @Test
-    public void checkMoveWrongPlayerTest()
-    {
+    public void checkMoveWrongPlayerTest() {
         User user2 = Mockito.mock(User.class);
 
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user2);
@@ -130,8 +124,7 @@ public class MoveCheckerTest
     }
 
     @Test
-    public void checkMoveWrongGameStatusTest()
-    {
+    public void checkMoveWrongGameStatusTest() {
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
         Mockito.when(game.getGameStatus()).thenReturn(GameStatus.FINISHED);
         Mockito.when(game.getDuringMove()).thenReturn(false);
@@ -157,8 +150,7 @@ public class MoveCheckerTest
     }
 
     @Test
-    public void checkMoveWrongTileColorTest()
-    {
+    public void checkMoveWrongTileColorTest() {
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
         Mockito.when(game.getGameStatus()).thenReturn(GameStatus.FINISHED);
         Mockito.when(game.getDuringMove()).thenReturn(false);
@@ -184,8 +176,7 @@ public class MoveCheckerTest
     }
 
     @Test
-    public void checkMoveChosenTileNullTest()
-    {
+    public void checkMoveChosenTileNullTest() {
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
         Mockito.when(game.getGameStatus()).thenReturn(GameStatus.ONGOING);
         Mockito.when(game.getDuringMove()).thenReturn(false);
@@ -211,8 +202,7 @@ public class MoveCheckerTest
     }
 
     @Test
-    public void checkMoveWrongDistanceTest()
-    {
+    public void checkMoveWrongDistanceTest() {
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
         Mockito.when(game.getGameStatus()).thenReturn(GameStatus.ONGOING);
         Mockito.when(game.getDuringMove()).thenReturn(false);
@@ -238,8 +228,7 @@ public class MoveCheckerTest
     }
 
     @Test
-    public void checkMoveDistanceTwoTest()
-    {
+    public void checkMoveDistanceTwoTest() {
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
         Mockito.when(game.getGameStatus()).thenReturn(GameStatus.ONGOING);
         Mockito.when(game.getDuringMove()).thenReturn(false);
@@ -271,8 +260,7 @@ public class MoveCheckerTest
     }
 
     @Test
-    public void checkMoveDistanceTwoWrongTileBetweenTest()
-    {
+    public void checkMoveDistanceTwoWrongTileBetweenTest() {
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
         Mockito.when(game.getGameStatus()).thenReturn(GameStatus.ONGOING);
         Mockito.when(game.getDuringMove()).thenReturn(false);
@@ -304,8 +292,7 @@ public class MoveCheckerTest
     }
 
     @Test
-    public void checkMoveDistanceTwoWrongTileTest()
-    {
+    public void checkMoveDistanceTwoWrongTileTest() {
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
         Mockito.when(game.getGameStatus()).thenReturn(GameStatus.ONGOING);
         Mockito.when(game.getDuringMove()).thenReturn(false);
@@ -337,8 +324,7 @@ public class MoveCheckerTest
     }
 
     @Test
-    public void checkMoveDistanceTwoDuringMoveTest()
-    {
+    public void checkMoveDistanceTwoDuringMoveTest() {
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
         Mockito.when(game.getGameStatus()).thenReturn(GameStatus.ONGOING);
         Mockito.when(game.getDuringMove()).thenReturn(true);
@@ -370,8 +356,7 @@ public class MoveCheckerTest
     }
 
     @Test
-    public void checkEndTurnTest()
-    {
+    public void checkEndTurnTest() {
         Mockito.when(game.getGameStatus()).thenReturn(GameStatus.ONGOING);
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
 
@@ -381,8 +366,7 @@ public class MoveCheckerTest
     }
 
     @Test
-    public void checkEndTurnWrongGameStatusTest()
-    {
+    public void checkEndTurnWrongGameStatusTest() {
         Mockito.when(game.getGameStatus()).thenReturn(GameStatus.FINISHED);
         Mockito.when(game.getPlayerWithTurn()).thenReturn(user);
 
@@ -392,8 +376,7 @@ public class MoveCheckerTest
     }
 
     @Test
-    public void checkEndTurnWrongUserTest()
-    {
+    public void checkEndTurnWrongUserTest() {
         User user1 = Mockito.mock(User.class);
 
         Mockito.when(game.getGameStatus()).thenReturn(GameStatus.ONGOING);
@@ -405,8 +388,7 @@ public class MoveCheckerTest
     }
 
     @Test
-    public void isGameFinishedTrueTest()
-    {
+    public void isGameFinishedTrueTest() {
         User user1 = Mockito.mock(User.class);
         User user2 = Mockito.mock(User.class);
         History history = Mockito.mock(History.class);
@@ -424,8 +406,7 @@ public class MoveCheckerTest
     }
 
     @Test
-    public void isGameFinishedFalseTest()
-    {
+    public void isGameFinishedFalseTest() {
         User user1 = Mockito.mock(User.class);
         User user2 = Mockito.mock(User.class);
         History history = Mockito.mock(History.class);

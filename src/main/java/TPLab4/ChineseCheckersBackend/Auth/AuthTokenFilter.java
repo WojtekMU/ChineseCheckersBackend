@@ -1,12 +1,6 @@
 package TPLab4.ChineseCheckersBackend.Auth;
 
-import java.io.IOException;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import TPLab4.ChineseCheckersBackend.User.UserDetailsServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,71 +11,68 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import TPLab4.ChineseCheckersBackend.User.UserDetailsServiceImpl;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * Authentication token filter.
  */
-public class AuthTokenFilter extends OncePerRequestFilter 
-{
-	/**
-	 * Jwt utilities
-	 */
-	@Autowired
-	private JwtUtils jwtUtils;
+public class AuthTokenFilter extends OncePerRequestFilter {
+    /**
+     * Jwt utilities
+     */
+    @Autowired
+    private JwtUtils jwtUtils;
 
-	/**
-	 * User details service implementation
-	 */
-	@Autowired
-	private UserDetailsServiceImpl userDetailsService;
+    /**
+     * User details service implementation
+     */
+    @Autowired
+    private UserDetailsServiceImpl userDetailsService;
 
-	/**
-	 * Logger
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
+    /**
+     * Logger
+     */
+    private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
-	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-			throws ServletException, IOException 
-	{
-		try 
-		{
-			String jwt = parseJwt(request);
-			if(jwt != null && jwtUtils.validateJwtToken(jwt))
-			{
-				String username = jwtUtils.getUserNameFromJwtToken(jwt);
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        try {
+            String jwt = parseJwt(request);
+            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+                String username = jwtUtils.getUserNameFromJwtToken(jwt);
 
-				UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-						userDetails, null, userDetails.getAuthorities());
-				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-				SecurityContextHolder.getContext().setAuthentication(authentication);
-			}
-		} 
-		catch(Exception e)
-		{
-			logger.error("Cannot set user authentication: {}", e);
-		}
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        } catch (Exception e) {
+            logger.error("Cannot set user authentication: {}", e);
+        }
 
-		filterChain.doFilter(request, response);
-	}
+        filterChain.doFilter(request, response);
+    }
 
-	/**
-	 * Jwt parsing method.
-	 * @param request HTTP servlet request
-	 * @return Authentication header type
-	 */
-	private String parseJwt(HttpServletRequest request)
-	{
-		String headerAuth = request.getHeader("Authorization");
+    /**
+     * Jwt parsing method.
+     *
+     * @param request HTTP servlet request
+     * @return Authentication header type
+     */
+    private String parseJwt(HttpServletRequest request) {
+        String headerAuth = request.getHeader("Authorization");
 
-		if(StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer "))
-		{
-			return headerAuth.substring(7);
-		}
+        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
+            return headerAuth.substring(7);
+        }
 
-		return null;
-	}
+        return null;
+    }
 }

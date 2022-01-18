@@ -3,8 +3,7 @@ package TPLab4.ChineseCheckersBackend.Role;
 /**
  * User role enum
  */
-public enum ERole
-{
+public enum ERole {
     /**
      * User role
      */

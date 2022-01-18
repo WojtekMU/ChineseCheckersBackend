@@ -1,10 +1,5 @@
-
-import TPLab4.ChineseCheckersBackend.Game.Game;
 import TPLab4.ChineseCheckersBackend.Game.GameRepository;
 import TPLab4.ChineseCheckersBackend.History.*;
-import TPLab4.ChineseCheckersBackend.Tile.Tile;
-import TPLab4.ChineseCheckersBackend.Tile.TileNotFoundException;
-import TPLab4.ChineseCheckersBackend.Tile.TileService;
 import TPLab4.ChineseCheckersBackend.User.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -12,8 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
@@ -24,8 +17,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(SpringExtension.class)
-public class HistoryServiceTest
-{
+public class HistoryServiceTest {
     @Mock
     private HistoryRepository historyRepository;
 
@@ -36,9 +28,8 @@ public class HistoryServiceTest
     private HistoryService historyService;
 
     @Test
-    public void loadHistoryByIdTest()
-    {
-        Long historyId  = 1L;
+    public void loadHistoryByIdTest() {
+        Long historyId = 1L;
         History history1 = Mockito.mock(History.class);
         Mockito.when(historyRepository.findById(historyId)).thenReturn(Optional.of(history1));
         History history2 = historyService.loadHistoryById(historyId);
@@ -46,18 +37,16 @@ public class HistoryServiceTest
     }
 
     @Test
-    public void loadHistoryByIdHistoryNotFoundTest()
-    {
+    public void loadHistoryByIdHistoryNotFoundTest() {
         HistoryNotFoundException thrown = Assertions.assertThrows(HistoryNotFoundException.class, () -> {
-            Long historyId  = 1L;
+            Long historyId = 1L;
             Mockito.when(historyRepository.findById(historyId)).thenReturn(Optional.empty());
             historyService.loadHistoryById(historyId);
         });
     }
 
     @Test
-    public void addPlayerToLeaderboardTest()
-    {
+    public void addPlayerToLeaderboardTest() {
         History history = Mockito.mock(History.class);
         User user = Mockito.mock(User.class);
 
@@ -69,8 +58,7 @@ public class HistoryServiceTest
     }
 
     @Test
-    public void addPlayerToLeaderboardPlayerAlreadyOnLeaderboardTest()
-    {
+    public void addPlayerToLeaderboardPlayerAlreadyOnLeaderboardTest() {
         CannotAddPlayerToHistoryException thrown = Assertions.assertThrows(CannotAddPlayerToHistoryException.class, () -> {
             History history = Mockito.mock(History.class);
             User user = Mockito.mock(User.class);

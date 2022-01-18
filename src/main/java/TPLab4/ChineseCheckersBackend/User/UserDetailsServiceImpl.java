@@ -11,22 +11,20 @@ import org.springframework.transaction.annotation.Transactional;
  * User details service implementation.
  */
 @Service
-public class UserDetailsServiceImpl implements UserDetailsService 
-{
-	/**
-	 * User repository
-	 */
-	@Autowired
-	private UserRepository userRepository;
+public class UserDetailsServiceImpl implements UserDetailsService {
+    /**
+     * User repository
+     */
+    @Autowired
+    private UserRepository userRepository;
 
-	@Override
-	@Transactional
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException 
-	{
-		User user = userRepository.findByUsername(username)
-				.orElseThrow(() -> new UsernameNotFoundException("Wrong credentials"));
+    @Override
+    @Transactional
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Wrong credentials"));
 
-		return UserDetailsImpl.build(user);
-	}
+        return UserDetailsImpl.build(user);
+    }
 
 }

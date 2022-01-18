@@ -6,8 +6,7 @@ import javax.persistence.*;
  * Class representing user roles.
  */
 @Entity
-public class Role
-{
+public class Role {
     /**
      * Role id.
      */
@@ -25,10 +24,12 @@ public class Role
     /**
      * Role empty constructor.
      */
-    public Role() {}
+    public Role() {
+    }
 
     /**
      * Role constructor.
+     *
      * @param name Role name
      */
     public Role(ERole name) {
@@ -37,6 +38,7 @@ public class Role
 
     /**
      * Role id getter.
+     *
      * @return Role id
      */
     public Integer getId() {
@@ -45,6 +47,7 @@ public class Role
 
     /**
      * Role id setter.
+     *
      * @param id Long value
      */
     public void setId(Integer id) {
@@ -53,6 +56,7 @@ public class Role
 
     /**
      * Role name getter.
+     *
      * @return Role name
      */
     public ERole getName() {
@@ -61,6 +65,7 @@ public class Role
 
     /**
      * Role name setter
+     *
      * @param name Name
      */
     public void setName(ERole name) {

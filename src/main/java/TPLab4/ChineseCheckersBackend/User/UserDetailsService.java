@@ -6,10 +6,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 /**
  * User service class
  */
-public interface UserDetailsService 
-{
+public interface UserDetailsService {
     /**
      * Method which loads user by username.
+     *
      * @param username Username
      * @return UserDetails object
      * @throws UsernameNotFoundException When user is not found.
