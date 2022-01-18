@@ -1,0 +1,13 @@
+TPLab4.ChineseCheckersBackend
+TPLab4.ChineseCheckersBackend.Auth
+TPLab4.ChineseCheckersBackend.Game
+TPLab4.ChineseCheckersBackend.GameFactory
+TPLab4.ChineseCheckersBackend.History
+TPLab4.ChineseCheckersBackend.Move
+TPLab4.ChineseCheckersBackend.MoveChecker
+TPLab4.ChineseCheckersBackend.Request
+TPLab4.ChineseCheckersBackend.Response
+TPLab4.ChineseCheckersBackend.Role
+TPLab4.ChineseCheckersBackend.Room
+TPLab4.ChineseCheckersBackend.Tile
+TPLab4.ChineseCheckersBackend.User

@@ -1,0 +1,29 @@
+package TPLab4.ChineseCheckersBackend.GameFactory;
+
+import TPLab4.ChineseCheckersBackend.Game.StandardTwoPlayersGame;
+import TPLab4.ChineseCheckersBackend.User.User;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+/**
+ * Standard two players game factory class
+ */
+@Component
+public class StandardTwoPlayersGameFactory extends GameFactory {
+    @Override
+    public StandardTwoPlayersGame createGame(List<User> players) {
+        StandardTwoPlayersGame game = new StandardTwoPlayersGame();
+
+        setGameProperties(players, game);
+
+        gameRepository.save(game);
+
+        fillFirstCorner(game, colorOrder.get(1));
+        fillFourthCorner(game, colorOrder.get(2));
+
+        gameRepository.save(game);
+
+        return game;
+    }
+}
